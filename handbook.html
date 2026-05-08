@@ -13,10 +13,16 @@
             display: flex;
             gap: 0;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
+            margin-bottom: 0;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            position: sticky;
+            top: 56px;
+            z-index: 99;
+            background: rgba(240, 228, 200, 0.96);
+            backdrop-filter: blur(10px);
         }
+        .tab-content-area { padding-top: 40px; }
         .tab-btn {
             font-family: 'Cinzel', serif;
             font-size: 0.72em;
@@ -575,6 +581,8 @@
         <button class="tab-btn" onclick="switchTab('advancement',this)">Advancement</button>
     </div>
 
+    <div class="tab-content-area">
+
     <!-- ═══════════════════════════════════════════════════════
          TAB 1: HOW TO PLAY
     ════════════════════════════════════════════════════════ -->
@@ -901,6 +909,8 @@
         </div>
 
     </div><!-- /tab-advancement -->
+
+    </div><!-- /tab-content-area -->
 
 </div><!-- /container -->
 
