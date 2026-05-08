@@ -6,6 +6,8 @@ services:
     container_name: brackenroll-dev
     volumes:
       - ./:/usr/share/nginx/html:ro
+      - /home/kevbot/daggerheart-resources/data:/usr/share/nginx/data:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - proxy
     labels:

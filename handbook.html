@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Handbook — The Verdant Curse</title>
+    <title>Player Handbook — Brackenroll</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -456,7 +456,7 @@
 <body>
 
 <nav class="site-nav">
-    <a href="index.html" class="nav-logo">verdant curse</a>
+    <a href="index.html" class="nav-logo">brackenroll</a>
     <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
         <ul class="nav-links">
         <li><a href="primer.html">The World</a></li>
@@ -620,62 +620,7 @@
 
         <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Your class defines what you're built for. Each class has two subclasses — you choose one at character creation. Click any class to see full details including subclass features.</p>
 
-        <div class="card-grid-3">
-            <div class="click-card" onclick="openModal('modal-warrior')">
-                <div class="click-card-name">Warrior</div>
-                <div class="click-card-role">Melee Fighter</div>
-                <p class="click-card-desc">Built for the front line. The more dire the situation, the more dangerous a Warrior becomes. Sustained damage and relentless pressure.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-ranger')">
-                <div class="click-card-name">Ranger</div>
-                <div class="click-card-role">Hunter &amp; Tracker</div>
-                <p class="click-card-desc">Patient, precise, and dangerous at range. Lock onto a target and pursue with relentless focus. Knows the wilderness better than most know their homes.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-rogue')">
-                <div class="click-card-name">Rogue</div>
-                <div class="click-card-role">Trickster &amp; Operative</div>
-                <p class="click-card-desc">Fast, clever, built for situations most people don't survive. Exploits openings, vanishes when needed, and always knows someone useful.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-guardian')">
-                <div class="click-card-name">Guardian</div>
-                <div class="click-card-role">Protector &amp; Tank</div>
-                <p class="click-card-desc">Absorbs punishment and keeps fighting. Stands between their allies and whatever wants to kill them — and gets angrier the more they're hit.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-bard')">
-                <div class="click-card-name">Bard</div>
-                <div class="click-card-role">Performer &amp; Support</div>
-                <p class="click-card-desc">The glue of the party — lifts others through music, words, or sheer personality. Can buff allies, distract enemies, and pull off feats of social manipulation.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-druid')">
-                <div class="click-card-name">Druid</div>
-                <div class="click-card-role">Nature Mage &amp; Shapeshifter</div>
-                <p class="click-card-desc">Tied to the living world. Can channel raw elemental power or transform into creatures of the wild. Unpredictable in the best way.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-seraph')">
-                <div class="click-card-name">Seraph</div>
-                <div class="click-card-role">Divine Warrior</div>
-                <p class="click-card-desc">Serves a higher power. Prayer Dice give flexible support and offense. Their bond with a god shapes how they fight and protect those in their care.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-sorcerer')">
-                <div class="click-card-name">Sorcerer</div>
-                <div class="click-card-role">Raw Magic Caster</div>
-                <p class="click-card-desc">Born with magic in the blood. Doesn't learn spells — wrestles them into shape. High risk, high reward. Volatile and powerful in equal measure.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-            <div class="click-card" onclick="openModal('modal-wizard')">
-                <div class="click-card-name">Wizard</div>
-                <div class="click-card-role">Scholarly Mage</div>
-                <p class="click-card-desc">Earns power through study. Carries a deeper library of domain cards than most. Experiences let them apply specialized knowledge at critical moments.</p>
-                <div class="click-card-hint">Tap to view subclasses →</div>
-            </div>
-        </div>
+        <div class="card-grid-3" id="class-grid"><p style="color:var(--ink-dim);font-style:italic;">Loading classes…</p></div>
 
     </div><!-- /tab-classes -->
 
@@ -686,80 +631,7 @@
 
         <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Your ancestry is where you come from — the body you inhabit, the instincts that are simply part of who you are. Each ancestry comes with two features that reflect what makes your people distinct. Click any ancestry to see the full description and mechanical features.</p>
 
-        <div class="card-grid-6">
-            <div class="anc-card" onclick="openModal('modal-clank')">
-                <div class="anc-card-name">Clank</div>
-                <div class="anc-card-desc">Sentient mechanical beings — no two built the same.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-drakona')">
-                <div class="anc-card-name">Drakona</div>
-                <div class="anc-card-desc">Wingless dragons in humanoid form with elemental breath.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-dwarf')">
-                <div class="anc-card-name">Dwarf</div>
-                <div class="anc-card-desc">Short, broad, built to last. Renowned for endurance.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-elf')">
-                <div class="anc-card-name">Elf</div>
-                <div class="anc-card-desc">Tall, sharp-sensed, and acutely attuned to the world.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-faerie')">
-                <div class="anc-card-name">Faerie</div>
-                <div class="anc-card-desc">Winged, insectile — beauty and strangeness entwined.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-faun')">
-                <div class="anc-card-name">Faun</div>
-                <div class="anc-card-desc">Humanoid above, goat-like below. Nimble and forceful.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-firbolg')">
-                <div class="anc-card-name">Firbolg</div>
-                <div class="anc-card-desc">Bovine humanoids with remarkable strength and patience.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-fungril')">
-                <div class="anc-card-name">Fungril</div>
-                <div class="anc-card-desc">Humanoid mushrooms with mycelial network communication.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-galapa')">
-                <div class="anc-card-name">Galapa</div>
-                <div class="anc-card-desc">Anthropomorphic turtles with protective retractable shells.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-giant')">
-                <div class="anc-card-name">Giant</div>
-                <div class="anc-card-desc">Towering humanoids with broad reach and natural endurance.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-goblin')">
-                <div class="anc-card-name">Goblin</div>
-                <div class="anc-card-desc">Small, sharp-eyed, and built for awareness and speed.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-halfling')">
-                <div class="anc-card-name">Halfling</div>
-                <div class="anc-card-desc">Small but lucky — they bring fortune to everyone around them.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-human')">
-                <div class="anc-card-name">Human</div>
-                <div class="anc-card-desc">Adaptable and driven. Built for endurance and reinvention.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-infernis')">
-                <div class="anc-card-name">Infernis</div>
-                <div class="anc-card-desc">Descended from demons — fearless and dread-inducing.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-katari')">
-                <div class="anc-card-name">Katari</div>
-                <div class="anc-card-desc">Feline humanoids with sharp instincts and retractable claws.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-orc')">
-                <div class="anc-card-name">Orc</div>
-                <div class="anc-card-desc">Direct, tusked, and harder to bring down than most.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-ribbet')">
-                <div class="anc-card-name">Ribbet</div>
-                <div class="anc-card-desc">Anthropomorphic frogs — amphibious and surprisingly dangerous.</div>
-            </div>
-            <div class="anc-card" onclick="openModal('modal-simiah')">
-                <div class="anc-card-name">Simiah</div>
-                <div class="anc-card-desc">Simian humanoids — nimble, sure-footed, and hard to hit.</div>
-            </div>
-        </div>
+        <div class="card-grid-6" id="ancestry-grid"><p style="color:var(--ink-dim);font-style:italic;">Loading ancestries…</p></div>
 
     </div><!-- /tab-ancestries -->
 
@@ -911,955 +783,141 @@
 
 </div><!-- /container -->
 
-<!-- ═══════════════════════════════════════════════════════════
-     CLASS MODALS
-════════════════════════════════════════════════════════════ -->
-
-<!-- WARRIOR -->
-<div id="modal-warrior" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-warrior')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-warrior')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Warrior</div>
-        <div class="modal-subtitle">Melee Fighter · Blade &amp; Bone</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Warriors are built for the front line — trained fighters who turn danger into fuel. The more dire the situation, the more dangerous a Warrior becomes. They excel at sustained damage and wearing down whatever stands in front of them.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">No Mercy</div>
-            <p>Spend 3 Hope to gain a +1 bonus to your attack rolls until your next rest.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Call of the Brave</div>
-            <div class="subclass-tagline">Use the might of your enemies to fuel your own power.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Courage (Foundation)</div>
-                <p>When you fail a roll with Fear, you gain a Hope.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Battle Ritual (Foundation)</div>
-                <p>Once per long rest, before you attempt something incredibly dangerous or face a foe who clearly outmatches you, describe your ritual or preparations. Clear 2 Stress and gain 2 Hope.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Rise to the Challenge (Specialization)</div>
-                <p>While you have 2 or fewer Hit Points remaining, you can roll a d20 as your Hope Die.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Camaraderie (Mastery)</div>
-                <p>You can initiate a Tag Team Roll one additional time per session. When an ally initiates a Tag Team Roll with you, they only need to spend 2 Hope.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Call of the Slayer</div>
-            <div class="subclass-tagline">Strike down adversaries with immense force.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Slayer (Foundation)</div>
-                <p>Gain a pool of Slayer Dice. On a roll with Hope, place a d6 in the pool instead of taking Hope. Pool maximum equals your Proficiency. Spend Slayer Dice on attack or damage rolls. At session end, clear unspent dice and gain 1 Hope per die cleared.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Weapon Specialist (Specialization)</div>
-                <p>When you succeed on an attack, spend a Hope to add damage dice from a secondary weapon. Once per long rest, reroll any 1s on your Slayer Dice.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Martial Preparation (Mastery)</div>
-                <p>Your party gains the Martial Preparation downtime move. During a rest, describe training with your group — you and each ally who chooses this move gain a d6 Slayer Die.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- RANGER -->
-<div id="modal-ranger" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-ranger')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-ranger')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Ranger</div>
-        <div class="modal-subtitle">Hunter &amp; Tracker · Bone &amp; Sage</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Rangers are patient, precise, and dangerous at range. They can lock onto a target and pursue with relentless focus — and they know the wilderness better than most people know their own homes.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Hold Them Off</div>
-            <p>Spend 3 Hope when you succeed on an attack to use that same roll against two additional adversaries within range.</p>
-        </div>
-        <div class="modal-section-head">Class Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Ranger's Focus</div>
-            <p>Spend a Hope and make an attack. On a success, deal normal damage and temporarily mark the target as your Focus. While they are your Focus, you gain bonuses against them.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Beastbound</div>
-            <div class="subclass-tagline">Form a deep bond with an animal ally.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Companion (Foundation)</div>
-                <p>You have an animal companion of your choice (at GM's discretion). They stay by your side unless told otherwise. When you level up, you also choose a level-up option for your companion.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Expert Training + Battle-Bonded (Specialization)</div>
-                <p>Choose an additional level-up option for your companion. When an adversary attacks you while within your companion's Melee range, gain a +2 bonus to your Evasion against that attack.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Advanced Training + Loyal Friend (Mastery)</div>
-                <p>Choose two additional level-up options for your companion. Once per long rest, when damage would mark your companion's last Stress or your last HP, you can intervene for each other.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Wayfinder</div>
-            <div class="subclass-tagline">Hunt your prey and strike with deadly force.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Ruthless Predator (Foundation)</div>
-                <p>When you make a damage roll, mark a Stress to gain +1 to your Proficiency. When you deal Severe damage, the target must mark a Stress.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Path Forward (Foundation)</div>
-                <p>When traveling to a previously visited location or using an object that has been there, you can identify the shortest, most direct path.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Elusive Predator (Specialization)</div>
-                <p>When your Focus makes an attack against you, you gain benefits to evade and counter.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ROGUE -->
-<div id="modal-rogue" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-rogue')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-rogue')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Rogue</div>
-        <div class="modal-subtitle">Trickster &amp; Operative · Midnight &amp; Grace</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Rogues are fast, clever, and built for situations most people don't survive. They exploit openings, disappear when needed, and always seem to know someone useful in the next town.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Rogue's Dodge</div>
-            <p>Spend 3 Hope to gain a +2 bonus to your Evasion until the next time an attack succeeds against you.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Nightwalker</div>
-            <div class="subclass-tagline">Manipulate shadows to move through the environment.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Shadow Stepper (Foundation)</div>
-                <p>Move from shadow to shadow. When you move into darkness or a shadow cast by another creature or object, mark a Stress to disappear and reappear in another shadow within Far range. When you reappear, you are Cloaked.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Dark Cloud (Specialization)</div>
-                <p>Make a Spellcast Roll (15). On success, create a temporary dark cloud covering any area within Close range — no one can see through it in either direction. You're Cloaked from adversaries the cloud blocks.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Adrenaline (Specialization)</div>
-                <p>While you're Vulnerable, add your level to your damage rolls.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Syndicate</div>
-            <div class="subclass-tagline">Maintain a web of contacts everywhere you go.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Well-Connected (Foundation)</div>
-                <p>When you arrive in a prominent location, you know somebody there. Name them, note how they're useful, and choose one fact: they owe you a favor (but are hard to find), they'll want something in return, they're always in trouble, you used to be together, or you didn't part well.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Contacts Everywhere (Specialization)</div>
-                <p>Once per session, call on a shady contact. Choose one: they provide gold or a needed item; give +3 to your next Hope or Fear Die result; or add 2d8 damage to your next attack.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Reliable Backup (Mastery)</div>
-                <p>You can use Contacts Everywhere more frequently and with greater effect.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- GUARDIAN -->
-<div id="modal-guardian" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-guardian')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-guardian')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Guardian</div>
-        <div class="modal-subtitle">Protector &amp; Tank · Bone &amp; Valor</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Guardians absorb punishment and keep fighting. They protect their allies by standing between them and whatever wants to kill them — and have an uncanny ability to get angrier the more they're hit.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Frontline Tank</div>
-            <p>Spend 3 Hope to clear 2 Armor Slots.</p>
-        </div>
-        <div class="modal-section-head">Class Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Unstoppable</div>
-            <p>Once per long rest, become Unstoppable. Gain an Unstoppable Die (d4 at level 1, d6 at level 5). Start at value 1; increase by one each time you deal 1+ HP of damage. When the value would exceed maximum, the mode ends. While Unstoppable: reduce damage severity by one threshold, add the die's current value to damage, and you can't be Restrained or Vulnerable.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Stalwart</div>
-            <div class="subclass-tagline">Take heavy blows and keep fighting.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Unwavering + Iron Will (Foundation)</div>
-                <p>Gain a permanent +1 to your damage thresholds. When you take physical damage, mark an additional Armor Slot to reduce severity.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Unrelenting + Partners-in-Arms (Specialization)</div>
-                <p>Gain a permanent +2 to damage thresholds. When an ally within Very Close range takes damage, mark an Armor Slot to reduce severity by one threshold.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Undaunted + Loyal Protector (Mastery)</div>
-                <p>Gain a permanent +3 to damage thresholds. When an ally within Close range has 2 or fewer HP and would take damage, mark a Stress to sprint to their side and take the hit instead.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Vengeance</div>
-            <div class="subclass-tagline">Strike down enemies who harm you or your allies.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">At Ease + Revenge (Foundation)</div>
-                <p>Gain an additional Stress slot. When an adversary within Melee range succeeds on an attack against you, mark 2 Stress to force that attacker to mark a Hit Point.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Act of Reprisal (Specialization)</div>
-                <p>When an adversary damages an ally within Melee range, gain a +1 to your Proficiency for your next successful attack against that adversary.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Nemesis (Mastery)</div>
-                <p>Spend 2 Hope to Prioritize an adversary until your next rest. When attacking your Prioritized adversary, you can swap the results of your Hope and Fear Dice. One Prioritized target at a time.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- BARD -->
-<div id="modal-bard" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-bard')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-bard')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Bard</div>
-        <div class="modal-subtitle">Performer &amp; Support · Grace &amp; Splendor</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Bards lift others up through music, words, or sheer force of personality. They're the glue of a party — buffing allies, distracting enemies, and pulling off feats of social manipulation warriors can only dream of.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Make a Scene</div>
-            <p>Spend 3 Hope to temporarily Distract a target within Close range, giving them a -2 penalty to their Difficulty.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Troubadour</div>
-            <div class="subclass-tagline">Play music to bolster your allies.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Gifted Performer (Foundation)</div>
-                <p>Perform for others. Each song can be used once per long rest: <em>Relaxing Song</em> — you and all allies within Close range clear a Hit Point. <em>Epic Song</em> — make a target within Close range temporarily Vulnerable. <em>Heartbreaking Song</em> — you and all allies within Close range gain a Hope.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Maestro (Specialization)</div>
-                <p>When you give a Rally Die to an ally, they can gain a Hope or clear a Stress.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Virtuoso (Mastery)</div>
-                <p>You can perform each Gifted Performer song twice instead of once per long rest.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Wordsmith</div>
-            <div class="subclass-tagline">Use wordplay and captivate crowds.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Rousing Speech (Foundation)</div>
-                <p>Once per long rest, give a heartfelt speech. All allies within Far range clear 2 Stress.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Heart of a Poet (Foundation)</div>
-                <p>After making an action roll to impress, persuade, or offend someone, spend a Hope to add a d4 to the roll.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Eloquent (Specialization)</div>
-                <p>Once per session when you encourage an ally, choose one: let them find a needed mundane object; Help an Ally without spending Hope; or give them an additional downtime move during their next rest.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- DRUID -->
-<div id="modal-druid" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-druid')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-druid')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Druid</div>
-        <div class="modal-subtitle">Nature Mage &amp; Shapeshifter · Arcana &amp; Sage</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Druids are tied to the living world — they can channel the raw power of natural elements or transform into creatures of the wild. They're unpredictable in the best way, bending the environment to their needs.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Evolution</div>
-            <p>Spend 3 Hope to transform into a Beastform without marking a Stress. When you do, raise one trait by +1 until you drop out of that form.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Warden of the Elements</div>
-            <div class="subclass-tagline">Embody the natural elements of the wild.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Elemental Incarnation (Foundation)</div>
-                <p>Mark a Stress to Channel one element until you take Severe damage or your next rest. <em>Fire:</em> adversaries in Melee take 1d10 magic damage when they hit you. <em>Earth:</em> bonus to damage thresholds equal to Proficiency. <em>Water:</em> when you deal Melee damage, other nearby adversaries mark a Stress. <em>Air:</em> hover, advantage on Agility Rolls.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Elemental Aura (Specialization)</div>
-                <p>Once per rest while Channeling, assume an aura within Close range matching your element — each element provides a persistent battlefield effect for you and nearby creatures.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Elemental Dominion (Mastery)</div>
-                <p>While Channeling, gain a powerful additional benefit tied to your element — enhanced Proficiency, damage reduction, counterattack opportunities, or flight.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Warden of Renewal</div>
-            <div class="subclass-tagline">Use powerful magic to heal and restore your party.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Clarity of Nature (Foundation)</div>
-                <p>Once per long rest, create a space of natural serenity within Close range. After a few minutes of rest inside it, clear Stress equal to your Instinct, distributed between you and your allies as you choose.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- SERAPH -->
-<div id="modal-seraph" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-seraph')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-seraph')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Seraph</div>
-        <div class="modal-subtitle">Divine Warrior · Codex &amp; Splendor</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Seraphs serve a higher power — divine warriors who carry prayer like a weapon. Prayer Dice give them flexible support and offense, and their bond with their god shapes everything about how they fight and protect.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Life Support</div>
-            <p>Spend 3 Hope to clear a Hit Point on an ally within Close range.</p>
-        </div>
-        <div class="modal-section-head">Class Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Prayer Dice</div>
-            <p>At the start of each session, roll a number of d4s equal to your Spellcast trait and place them on your sheet. Spend any number to aid yourself or an ally within Far range: reduce incoming damage, add to a roll result after it's made, or gain Hope equal to the die result. Clear all unspent Prayer Dice at session end. Spellcast trait: Strength.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Divine Protector</div>
-            <div class="subclass-tagline">Wield a spirit weapon and heal those in your care.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Spirit Weapon (Foundation)</div>
-                <p>When you have a Melee or Very Close weapon equipped, it can fly from your hand to attack an adversary within Close range and return. Mark a Stress to target an additional adversary within range with the same roll.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Sparing Touch (Foundation)</div>
-                <p>Once per long rest, touch a creature and clear 2 Hit Points or 2 Stress from them.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Devout (Specialization)</div>
-                <p>When you roll your Prayer Dice, roll an additional die and discard the lowest. Sparing Touch can be used twice per long rest.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Sacred Resonance (Mastery)</div>
-                <p>When rolling damage for Spirit Weapon, if any die results match, double the value of each matching die. (Two 5s become two 10s.)</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Winged Sentinel</div>
-            <div class="subclass-tagline">Take flight and strike crushing blows from the sky.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Wings of Light (Foundation)</div>
-                <p>You can fly. While flying: mark a Stress to pick up and carry a willing creature approximately your size or smaller; spend a Hope to deal an extra 1d8 damage on a successful attack.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Ethereal Visage (Specialization)</div>
-                <p>While flying, you have advantage on Presence Rolls. When you succeed with Hope on a Presence Roll, remove a Fear from the GM's pool instead of gaining Hope.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- SORCERER -->
-<div id="modal-sorcerer" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-sorcerer')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-sorcerer')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Sorcerer</div>
-        <div class="modal-subtitle">Raw Magic Caster · Arcana &amp; Midnight</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Sorcerers were born with magic in their blood. They don't learn spells so much as wrestle them into shape. High risk, high reward — volatile and powerful in equal measure.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Volatile Magic</div>
-            <p>Spend 3 Hope to reroll any number of damage dice on an attack that deals magic damage.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">Elemental Origin</div>
-            <div class="subclass-tagline">Channel raw magic shaped into a particular element.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Elementalist (Foundation)</div>
-                <p>Choose one element (air, earth, fire, lightning, water) at character creation. You can shape it into harmless effects. Spend a Hope and describe how your element helps a roll — gain either a +2 bonus to the roll or a +3 to the roll's damage.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Natural Evasion (Specialization)</div>
-                <p>When an attack roll against you succeeds, mark a Stress and describe how your element defends you. Roll a d6 and add it to your Evasion against that attack.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Transcendence (Mastery)</div>
-                <p>Once per long rest, transform into a physical manifestation of your element. Choose two benefits until your next rest: +4 to Severe threshold, +1 to a character trait, +1 to Proficiency, or +2 to Evasion.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">Primal Origin</div>
-            <div class="subclass-tagline">Extend and twist the essence of your spells.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Manipulate Magic (Foundation)</div>
-                <p>After casting a spell or making an attack with a magic weapon, mark a Stress to do one of: extend reach by one range; gain +2 to the roll result; double a damage die of your choice; or hit an additional target within range.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Enchanted Aid (Specialization)</div>
-                <p>Enhance the magic of others using your Duality Dice results.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- WIZARD -->
-<div id="modal-wizard" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-wizard')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-wizard')">×</button>
-        <div class="modal-tag">Class</div>
-        <div class="modal-title">Wizard</div>
-        <div class="modal-subtitle">Scholarly Mage · Arcana &amp; Codex</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Wizards earn their power through study. They carry a deeper library of domain cards than most, and their Experiences let them apply specialized knowledge at critical moments. Prepared, methodical, and formidable.</p>
-        <div class="modal-section-head">Hope Feature</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Not This Time</div>
-            <p>Spend 3 Hope to force an adversary within Far range to reroll an attack or damage roll.</p>
-        </div>
-        <div class="modal-section-head">Subclasses</div>
-        <div class="subclass-block">
-            <div class="subclass-name">School of Knowledge</div>
-            <div class="subclass-tagline">A keen understanding of the world around you.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Prepared + Adept (Foundation)</div>
-                <p>Take an additional domain card of your level or lower. When you Utilize an Experience, you can mark a Stress instead of spending a Hope — and if you do, double your Experience modifier for that roll.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Accomplished + Perfect Recall (Specialization)</div>
-                <p>Take another additional domain card. Once per rest, when you recall a card from your vault, you can reduce its Recall Cost by 1.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Brilliant + Honed Expertise (Mastery)</div>
-                <p>Take yet another additional domain card. When you use an Experience, roll a d6. On a 5+, use it without spending Hope.</p>
-            </div>
-        </div>
-        <div class="subclass-block">
-            <div class="subclass-name">School of War</div>
-            <div class="subclass-tagline">Trained magic focused entirely on violence.</div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Battlemage + Face Your Fear (Foundation)</div>
-                <p>Gain an additional Hit Point slot. When you succeed with Fear on an attack roll, deal an extra 1d10 magic damage.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Conjure Shield + Fueled by Fear (Specialization)</div>
-                <p>While you have at least 2 Hope, add your Proficiency to your Evasion. The extra magic damage from Face Your Fear increases to 2d10.</p>
-            </div>
-            <div class="modal-feature">
-                <div class="modal-feature-name">Thrive in Chaos + Have No Fear (Mastery)</div>
-                <p>When you succeed on an attack, mark a Stress after rolling damage to force the target to mark an additional Hit Point. Face Your Fear magic damage increases further.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     ANCESTRY MODALS
-════════════════════════════════════════════════════════════ -->
-
-<div id="modal-clank" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-clank')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-clank')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Clank</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Sentient mechanical beings built from metal, wood, stone, and stranger materials. They can resemble humanoids, animals, or inanimate objects. No two Clanks are built the same. Many embrace body modifications for style and function, and other ancestries often turn to Clank artisans for customized aids and adornments. A Clank's lifespan extends as long as they can acquire or craft new parts — effectively immortal in body, but their minds deteriorate as the magic powering them loses potency.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Purposeful Design</div>
-            <p>Decide who made you and for what purpose. At character creation, choose one of your Experiences that best aligns with this purpose and gain a permanent +1 bonus to it.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Efficient</div>
-            <p>When you take a short rest, you can choose a long rest move instead of a short rest move.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-drakona" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-drakona')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-drakona')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Drakona</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Wingless dragons in humanoid form, 5 to 7 feet tall, with thick scales providing excellent natural armor and long sharp teeth. They possess a powerful elemental breath inherited from draconic lineage — an element passed through generations, though it can differ from family in rare cases. Unlike their dragon ancestors, Drakona lack wings and can't fly without magical aid. They live approximately 350 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Scales</div>
-            <p>Your scales act as natural protection. When you would take Severe damage, you can mark a Stress to mark 1 fewer Hit Point.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Elemental Breath</div>
-            <p>Choose an element for your breath (such as electricity, fire, or ice). Use it against a target or group within Very Close range, treating it as an Instinct weapon that deals d8 magic damage using your Proficiency.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-dwarf" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dwarf')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dwarf')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Dwarf</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Short humanoids (4 to 5½ feet) with square frames, dense musculature, and thick hair. Their skin and nails contain a high amount of keratin, making them naturally resilient — allowing them to embed gemstones or wear elaborate tattoos and piercings. All genders can grow thick facial hair, often styled elaborately. Dwarves live up to 250 years and maintain their muscle mass well into later life.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Thick Skin</div>
-            <p>When you take Minor damage, you can mark 2 Stress instead of marking a Hit Point.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Increased Fortitude</div>
-            <p>Spend 3 Hope to halve incoming physical damage.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-elf" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-elf')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-elf')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Elf</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Tall humanoids (about 6 to 6½ feet) with pointed ears and acutely attuned senses. As they age, the ear tips begin to droop. Elves rest through a celestial trance rather than sleep, recovering effectively in less time. Some develop a "mystic form" from deep dedication to the natural world — celestial freckles, leaves or vines in the hair, eyes that flicker like flame. These traits can shift across their approximately 350-year lifespan.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Quick Reactions</div>
-            <p>Mark a Stress to gain advantage on a reaction roll.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Celestial Trance</div>
-            <p>During a rest, you can drop into a trance to choose an additional downtime move.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-faerie" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-faerie')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-faerie')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Faerie</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Winged humanoids with insectile features ranging from subtle to unmistakable — some with compound eyes, extra arms, chitinous exoskeletons, or stingers. Heights range from 2 to 7 feet. All Faeries have membranous wings and go through a metamorphosis during which they manifest their unique permanent appearance. They live approximately 50 years — short lives, but vivid ones.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Luckbender</div>
-            <p>Once per session, after you or a willing ally within Close range makes an action roll, spend 3 Hope to reroll the Duality Dice.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Wings</div>
-            <p>You can fly. While flying, mark a Stress after an adversary makes an attack against you to gain a +2 bonus to your Evasion against that attack.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-faun" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-faun')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-faun')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Faun</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Humanoid from the torso up, goat-like below — with curving horns, square pupils, and cloven hooves. Height ranges from 4 to 6½ feet but can change dramatically based on stance. Most Fauns have proportionally long limbs and are known for their powerful hooves. They live roughly 225 years, and as they age, their appearance grows increasingly caprine.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Caprine Leap</div>
-            <p>You can leap anywhere within Close range as though using normal movement — vaulting obstacles, jumping gaps, or scaling barriers with ease.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Kick</div>
-            <p>When you succeed on an attack against a target within Melee range, mark a Stress to kick off them — dealing an extra 2d6 damage and knocking either yourself or the target to Very Close range.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-firbolg" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-firbolg')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-firbolg')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Firbolg</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Bovine humanoids (5 to 7 feet) recognized by broad noses and long drooping ears. Some have faces blending human and bison, others ("minotaurs") have fully bovine heads. All are covered in fur — muted earth tones or soft pastels. Known for remarkable strength at any age and, in many cases, for charging adversaries with their horns. They live approximately 150 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Charge</div>
-            <p>When you succeed on an Agility Roll to move from Far or Very Far range into Melee with one or more targets, mark a Stress to deal 1d12 physical damage to all targets within Melee range.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Unshakable</div>
-            <p>When you would mark a Stress, roll a d6. On a result of 6, don't mark it.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-fungril" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-fungril')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-fungril')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Fungril</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Humanoid mushrooms in an extraordinary range of shapes, sizes (2 to 7 feet), and colors — from earthy browns to vivid reds, yellows, and purples. No single common form exists among them. Fungrils communicate nonverbally and use a mycelial array to exchange information chemically with other Fungrils across long distances. Lifespan about 300 years, possibly longer.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Fungril Network</div>
-            <p>Make an Instinct Roll (12) to use your mycelial array to speak with others of your ancestry. On a success, you can communicate across any distance.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Death Connection</div>
-            <p>While touching a corpse that died recently, mark a Stress to extract one memory from it related to a specific emotion or sensation of your choice.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-galapa" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-galapa')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-galapa')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Galapa</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Anthropomorphic turtles (4 to 6 feet) with large domed shells they can fully retract into. Head and body shapes reflect the full range of turtle types. Mostly earth tones with unique shell patterns. Members can draw head, arms, and legs into the shell for protection. Some reinforce or decorate their shells with armor or carvings — a painful process. Most move slowly and live approximately 150 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Shell</div>
-            <p>Gain a bonus to your damage thresholds equal to your Proficiency.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Retract</div>
-            <p>Mark a Stress to retract into your shell. While inside: you have resistance to physical damage, you have disadvantage on action rolls, and you can't move.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-giant" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-giant')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-giant')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Giant</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Towering humanoids (6½ to 8½ feet) with broad shoulders, long arms, and one to three eyes. All Giants are born without eyes and develop them over their first ten years — those with a single eye are commonly called cyclops. Naturally muscular regardless of body type. Average lifespan about 75 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Endurance</div>
-            <p>Gain an additional Hit Point slot at character creation.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Reach</div>
-            <p>Treat any weapon, ability, spell, or feature with Melee range as though it has Very Close range instead.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-goblin" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-goblin')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-goblin')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Goblin</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Small humanoids (3 to 4 feet) with large eyes and massive membranous ears roughly the size of their head. Keen hearing and sharp vision let them move through darkness and poor conditions with ease. Ear position is used for nonverbal communication. Skin and eye colors are incredibly varied. Lifespan roughly 100 years, with hearing and sight maintained well into old age.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Surefooted</div>
-            <p>You ignore disadvantage on Agility Rolls.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Danger Sense</div>
-            <p>Once per rest, mark a Stress to force an adversary to reroll an attack against you or an ally within Very Close range.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-halfling" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-halfling')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-halfling')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Halfling</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Small humanoids (3 to 4 feet) with large hairy feet and prominent rounded ears. Their appearance tends to remain youthful even into old age. Naturally attuned to the magnetic fields of the Mortal Realm, they have a strong internal compass. Acute hearing and smell means they can often recognize familiar people by sound and scent alone. They live around 150 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Luckbringer</div>
-            <p>At the start of each session, everyone in your party gains a Hope.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Internal Compass</div>
-            <p>When you roll a 1 on your Hope Die, you can reroll it.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-human" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-human')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-human')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Human</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Dexterous, round-eared, and built for endurance. Heights range from just under 5 feet to about 6½ feet with a wide variety of builds. Physically adaptable — humans adjust to harsh climates with relative ease. Not the best at any single thing, but refusing to stop trying to get better at everything. They live to about 100 years, with dramatic change between youth and old age.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">High Stamina</div>
-            <p>Gain an additional Stress slot at character creation.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Adaptability</div>
-            <p>When you fail a roll that utilized one of your Experiences, you can mark a Stress to reroll.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-infernis" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-infernis')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-infernis')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Infernis</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Descendants of demons from the Circles Below. Humanoids with sharp canine teeth, pointed ears, and horns — usually two or four, sometimes a crown of many, often curving asymmetrically. Heights range 5 to 7 feet, with long fingers and pointed nails. Many have long, thin tails ending in points or forks. They possess a "dread visage" — a supernatural shift in appearance triggered by strong emotion or intent. They live up to 350 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Fearless</div>
-            <p>When you roll with Fear, you can mark 2 Stress to change it into a roll with Hope instead.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Dread Visage</div>
-            <p>You have advantage on rolls to intimidate hostile creatures.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-katari" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-katari')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-katari')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Katari</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Feline humanoids with retractable claws, vertically slit pupils, and high triangular ears that swivel nearly 180 degrees. May have soft fur, whiskers, or a muzzle depending on how feline their appearance runs. About half have tails. Skin and fur come in solid colors, calico, tabby stripes, spots, marbling, or banding. Heights from 3 to 6½ feet. They live to around 150 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Feline Instincts</div>
-            <p>When you make an Agility Roll, you can spend a Hope to gain advantage on it.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Retracting Claws</div>
-            <p>Make an Agility Roll to scratch a target within Melee range. On a success, they become temporarily Vulnerable.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-orc" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-orc')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-orc')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Orc</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Humanoids most recognized by square features and boar-like tusks protruding from the lower jaw. Tusks grow continuously throughout a roughly 125-year lifespan and are often decorated with significant ornamentation. Pointed ears and hair and skin in green, blue, pink, or gray tones. Tend toward a muscular build with heights from 5 to 6½ feet.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Sturdy</div>
-            <p>When you have 1 Hit Point remaining, attacks against you have disadvantage.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Tusks</div>
-            <p>When you succeed on an attack against a target within Melee range, spend a Hope to gore the target with your tusks, dealing an extra 1d6 damage.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-ribbet" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-ribbet')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-ribbet')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Ribbet</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Anthropomorphic frogs (3 to 4½ feet) with protruding eyes and webbed hands and feet. Smooth or warty moist skin. Some have hind legs more than twice their torso length; others have short limbs. Move primarily by hopping. All have webbed appendages for swimming. Some have green-brown camouflage; others are vibrantly patterned. Born from eggs, hatching into tadpoles that develop over 6–7 years. Lifespan approximately 100 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Amphibious</div>
-            <p>You can breathe and move naturally underwater.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Long Tongue</div>
-            <p>Mark a Stress to use your tongue as a Finesse Close weapon that deals d12 physical damage using your Proficiency.</p>
-        </div>
-    </div>
-</div>
-
-<div id="modal-simiah" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-simiah')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-simiah')">×</button>
-        <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">Simiah</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Anthropomorphic monkeys and apes (2 to 6 feet) with long limbs and prehensile feet. Their appearance reflects the full range of simian creatures — size does not match their animal counterparts. All can use their dexterous feet for communication, work, and combat. Some have prehensile tails for grasping or balance. Skilled natural climbers who transition easily between bipedal movement, knuckle-walking, and climbing. Lifespan about 100 years.</p>
-        <div class="modal-section-head">Ancestry Features</div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Natural Climber</div>
-            <p>You have advantage on Agility Rolls that involve balancing and climbing.</p>
-        </div>
-        <div class="modal-feature">
-            <div class="modal-feature-name">Nimble</div>
-            <p>Gain a permanent +1 bonus to your Evasion at character creation.</p>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     DOMAIN MODALS
-════════════════════════════════════════════════════════════ -->
-
-<div id="modal-dom-arcana" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-arcana')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-arcana')">×</button>
-        <div class="modal-tag">Domain · 14 Cards</div>
-        <div class="modal-title">Arcana</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Arcana is the domain of innate and instinctual magic. Those who choose this path tap into the raw, enigmatic forces of the realms to manipulate both their own energy and the elements. Arcana offers wielders a volatile power — incredibly potent when correctly channeled.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Druid, Sorcerer, Wizard</p>
-    </div>
-</div>
-
-<div id="modal-dom-blade" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-blade')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-blade')">×</button>
-        <div class="modal-tag">Domain · 25 Cards</div>
-        <div class="modal-title">Blade</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Blade is the domain of weapon mastery. Whether by steel, bow, or a more specialized arm, those who follow this path have the skill to cut short the lives of others. Wielders of Blade dedicate themselves to achieving inexorable power over death.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Warrior, Ranger</p>
-    </div>
-</div>
-
-<div id="modal-dom-bone" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-bone')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-bone')">×</button>
-        <div class="modal-tag">Domain · 19 Cards</div>
-        <div class="modal-title">Bone</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Bone is the domain of tactics and the body. Practitioners have an uncanny control over their own physical abilities and an eye for predicting the behaviors of others in combat. Adherents gain an unparalleled understanding of bodies and their movements.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Warrior, Ranger, Guardian</p>
-    </div>
-</div>
-
-<div id="modal-dom-codex" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-codex')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-codex')">×</button>
-        <div class="modal-tag">Domain · 19 Cards</div>
-        <div class="modal-title">Codex</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Codex is the domain of intensive magical study. Those who seek magical knowledge turn to equations recorded in books, scrolls, walls, or tattooed on bodies. Codex offers a commanding and versatile understanding of magic to devotees who pursue knowledge beyond the boundaries of common wisdom.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Wizard, Seraph</p>
-    </div>
-</div>
-
-<div id="modal-dom-grace" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-grace')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-grace')">×</button>
-        <div class="modal-tag">Domain · 25 Cards</div>
-        <div class="modal-title">Grace</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Grace is the domain of charisma. Through rapturous storytelling, charming spells, or a shroud of lies, those who channel this power define the realities of their adversaries — bending perception to their will. Grace offers raw magnetism and mastery over language.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Bard, Rogue</p>
-    </div>
-</div>
-
-<div id="modal-dom-midnight" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-midnight')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-midnight')">×</button>
-        <div class="modal-tag">Domain · 20 Cards</div>
-        <div class="modal-title">Midnight</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Midnight is the domain of shadows and secrecy. Whether by clever tricks, deft magic, or the cloak of night, those who channel these forces practice the art of obscurity and can uncover sequestered treasures. Midnight offers practitioners the power to control and create enigmas.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Rogue, Sorcerer</p>
-    </div>
-</div>
-
-<div id="modal-dom-sage" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-sage')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-sage')">×</button>
-        <div class="modal-tag">Domain · 20 Cards</div>
-        <div class="modal-title">Sage</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Sage is the domain of the natural world. Those who walk this path tap into the unfettered power of the earth and its creatures to unleash raw magic. Sage grants its adherents the vitality of a blooming flower and the ferocity of a ravenous predator.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Druid, Ranger</p>
-    </div>
-</div>
-
-<div id="modal-dom-splendor" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-splendor')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-splendor')">×</button>
-        <div class="modal-tag">Domain · 17 Cards</div>
-        <div class="modal-title">Splendor</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Splendor is the domain of life. Through this magic, followers gain the ability to heal and, to an extent, control death. Splendor offers its disciples the magnificent ability to both give and end life.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Bard, Seraph</p>
-    </div>
-</div>
-
-<div id="modal-dom-valor" class="modal-overlay" onclick="if(event.target===this)closeModal('modal-dom-valor')">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('modal-dom-valor')">×</button>
-        <div class="modal-tag">Domain · 25 Cards</div>
-        <div class="modal-title">Valor</div>
-        <hr class="modal-divider">
-        <p class="modal-desc">Valor is the domain of protection. Whether through attack or defense, those who choose this discipline channel formidable strength to protect their allies in battle. Valor offers great power to those who raise their shields in defense of others.</p>
-        <div class="modal-section-head">Primary Classes</div>
-        <p class="modal-desc" style="margin-bottom:0;">Guardian, Seraph</p>
-    </div>
+<!-- ── SHARED MODAL ─────────────────────────────────────────────────────── -->
+<div id="modal-shared" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box" id="modal-content"></div>
 </div>
 
 <footer>
-    <p>The Verdant Curse · Player Resources · 2026</p>
+    <p>Brackenroll &middot; Daggerheart Resources &middot; 2026</p>
 </footer>
 
 <script>
-    function switchTab(id, btn) {
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + id).classList.add('active');
-        btn.classList.add('active');
-    }
+const CLASS_DOMAINS = {
+    warrior:  ['Blade','Bone'],
+    guardian: ['Blade','Valor'],
+    ranger:   ['Bone','Sage'],
+    druid:    ['Arcana','Sage'],
+    bard:     ['Grace','Splendor'],
+    rogue:    ['Grace','Midnight'],
+    seraph:   ['Splendor','Valor'],
+    sorcerer: ['Arcana','Midnight'],
+    wizard:   ['Codex','Arcana']
+};
 
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+const CLASS_ROLES = {
+    warrior:'Melee Fighter', guardian:'Protector & Tank', ranger:'Hunter & Tracker',
+    druid:'Nature Mage & Shapeshifter', bard:'Performer & Support', rogue:'Trickster & Operative',
+    seraph:'Divine Warrior', sorcerer:'Raw Magic Caster', wizard:'Scholarly Mage'
+};
 
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-        document.body.style.overflow = '';
-    }
+let CLASSES = [], ANCESTRIES = [];
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
-                m.classList.remove('active');
-            });
-            document.body.style.overflow = '';
-        }
-    });
+async function loadData() {
+    const [classData, ancestryData] = await Promise.all([
+        fetch('/data/base/classes.json').then(r => r.json()),
+        fetch('/data/base/ancestries.json').then(r => r.json())
+    ]);
+    CLASSES    = Object.values(classData);
+    ANCESTRIES = Object.values(ancestryData);
+    renderClasses();
+    renderAncestries();
+}
+
+function renderClasses() {
+    const grid = document.getElementById('class-grid');
+    grid.innerHTML = CLASSES.map(cls => {
+        const domains = CLASS_DOMAINS[cls.id] || [];
+        const role    = CLASS_ROLES[cls.id]   || '';
+        return `<div class="click-card" onclick="openClassModal('${cls.id}')">
+            <div class="click-card-name">${cls.name}</div>
+            <div class="click-card-role">${role}</div>
+            <p class="click-card-desc">${domains.join(' &amp; ')} &middot; HP ${cls.startingHp} &middot; Evasion ${cls.startingEvasion}</p>
+            <div class="click-card-hint">Tap to view subclasses &rarr;</div>
+        </div>`;
+    }).join('');
+}
+
+function renderAncestries() {
+    const grid = document.getElementById('ancestry-grid');
+    grid.innerHTML = ANCESTRIES.map(anc => {
+        const short = anc.lore ? anc.lore.slice(0, 80) + '&hellip;' : '';
+        return `<div class="anc-card" onclick="openAncestryModal('${anc.id}')">
+            <div class="anc-card-name">${anc.name}</div>
+            <div class="anc-card-desc">${short}</div>
+        </div>`;
+    }).join('');
+}
+
+function openClassModal(id) {
+    const cls     = CLASSES.find(c => c.id === id);
+    if (!cls) return;
+    const domains = CLASS_DOMAINS[cls.id] || [];
+    const role    = CLASS_ROLES[cls.id]   || '';
+    document.getElementById('modal-content').innerHTML = `
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-tag">Class</div>
+        <div class="modal-title">${cls.name}</div>
+        <div class="modal-subtitle">${role} &middot; ${domains.join(' &amp; ')}</div>
+        <hr class="modal-divider">
+        <div class="modal-stat-row" style="display:flex;gap:24px;margin-bottom:20px;font-size:0.9em;color:var(--ink-muted);">
+            <span><strong>Starting HP:</strong> ${cls.startingHp}</span>
+            <span><strong>Starting Evasion:</strong> ${cls.startingEvasion}</span>
+            ${cls.spellcastTrait ? `<span><strong>Spellcast Trait:</strong> ${cls.spellcastTrait}</span>` : ''}
+        </div>
+        ${cls.hopeFeature ? `
+        <div class="modal-section-head">Hope Feature</div>
+        <div class="modal-feature">
+            <div class="modal-feature-name">${cls.hopeFeature.name}</div>
+            <p>${cls.hopeFeature.description}</p>
+        </div>` : ''}
+        <div class="modal-section-head">Subclasses</div>
+        ${(cls.subclasses || []).map(sub => `
+        <div class="subclass-block">
+            <div class="subclass-name">${sub.name}</div>
+            <p class="modal-desc">${sub.description || ''}</p>
+        </div>`).join('')}
+    `;
+    document.getElementById('modal-shared').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function openAncestryModal(id) {
+    const anc = ANCESTRIES.find(a => a.id === id);
+    if (!anc) return;
+    document.getElementById('modal-content').innerHTML = `
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-tag">Ancestry</div>
+        <div class="modal-title">${anc.name}</div>
+        <hr class="modal-divider">
+        <p class="modal-desc">${anc.lore || ''}</p>
+        ${(anc.features || []).length ? `
+        <div class="modal-section-head">Ancestry Features</div>
+        ${anc.features.map(f => `
+        <div class="modal-feature">
+            <div class="modal-feature-name">${f.name}</div>
+            <p>${f.description}</p>
+        </div>`).join('')}` : ''}
+    `;
+    document.getElementById('modal-shared').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('modal-shared').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+loadData();
 </script>
 
     <script src="nav.js"></script>

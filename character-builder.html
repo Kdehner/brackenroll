@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character Builder — The Verdant Curse</title>
+    <title>Character Builder — Brackenroll</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -542,7 +542,7 @@
 <body>
 
     <nav class="site-nav">
-        <a href="index.html" class="nav-logo">verdant curse</a>
+        <a href="index.html" class="nav-logo">brackenroll</a>
         <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
         <ul class="nav-links">
             <li><a href="primer.html">The World</a></li>
@@ -558,7 +558,7 @@
         <div class="page-hero-inner">
             <div class="page-hero-tag">Player Tool</div>
             <h1>Character Builder</h1>
-            <p class="subtitle">Build and save heroes for The Verdant Curse</p>
+            <p class="subtitle">Build and save your Daggerheart character</p>
         </div>
     </div>
 
@@ -762,7 +762,65 @@
 <script>
 // ─── GAME DATA ────────────────────────────────────────────────────────────────
 
-const CLASSES = [
+// Class domains are meta-game data not stored in JSON
+const CLASS_DOMAINS = {
+    warrior:  ['Blade','Bone'],
+    guardian: ['Blade','Valor'],
+    ranger:   ['Bone','Sage'],
+    druid:    ['Arcana','Sage'],
+    bard:     ['Grace','Splendor'],
+    rogue:    ['Grace','Midnight'],
+    seraph:   ['Splendor','Valor'],
+    sorcerer: ['Arcana','Midnight'],
+    wizard:   ['Codex','Arcana']
+};
+
+let CLASSES = [], ANCESTRIES = [], COMMUNITIES = [], DOMAIN_CARDS = {};
+
+async function loadData() {
+    const [classArr, ancestryArr, communityArr, cardArr] = await Promise.all([
+        fetch('/data/base/classes.json').then(r => r.json()),
+        fetch('/data/base/ancestries.json').then(r => r.json()),
+        fetch('/data/base/communities.json').then(r => r.json()),
+        fetch('/data/base/domain-cards.json').then(r => r.json())
+    ]);
+
+    CLASSES = Object.values(classArr).map(c => ({
+        id:         c.id,
+        name:       c.name,
+        domains:    CLASS_DOMAINS[c.id] || [],
+        desc:       `HP ${c.startingHp} · Evasion ${c.startingEvasion}${c.spellcastTrait ? ' · Spellcast: ' + c.spellcastTrait : ''}`,
+        startingHp: c.startingHp,
+        hopeFeature: c.hopeFeature,
+        subclasses: (c.subclasses || []).map(s => ({ name: s.name, desc: s.description || '' }))
+    }));
+
+    ANCESTRIES = Object.values(ancestryArr).map(a => ({
+        name: a.name,
+        desc: a.lore ? a.lore.slice(0, 100) + '…' : '',
+        features: a.features || []
+    }));
+
+    COMMUNITIES = Object.values(communityArr).map(c => ({
+        name:    c.name,
+        desc:    c.lore ? c.lore.slice(0, 100) + '…' : '',
+        feature: (c.features && c.features[0]) ? c.features[0].name : c.name
+    }));
+
+    // Group domain cards by domain name (capitalized)
+    Object.values(cardArr).forEach(card => {
+        const domain = card.domain.charAt(0).toUpperCase() + card.domain.slice(1);
+        if (!DOMAIN_CARDS[domain]) DOMAIN_CARDS[domain] = [];
+        DOMAIN_CARDS[domain].push({ name: card.name, desc: card.description || '', level: card.level, type: card.type });
+    });
+
+    init();
+}
+
+// ─── PLACEHOLDER (replaced by loadData above) ─────────────────────────────────
+// Legacy hardcoded CLASSES array removed — see loadData()
+// These placeholders prevent render errors before async load completes
+const _CLASSES_PLACEHOLDER = [
     { id:'warrior',  name:'Warrior',  domains:['Blade','Bone'],      desc:'A fierce combatant who strikes hard and endures punishment.',            subclasses:[
         { name:'Call of the Brave',      desc:'Draw on raw courage to push past your limits when allies need you most.' },
         { name:'Call of the Slaughter',  desc:'Embrace the fury of battle, becoming a whirlwind of unstoppable destruction.' }
@@ -848,39 +906,7 @@ const DOMAIN_CARDS = {
         { name:'I Am Your Shield', desc:'Take a hit intended for an adjacent ally, reducing the damage by your Presence.' }
     ]
 };
-
-const ANCESTRIES = [
-    { name:'Clank',    desc:'Mechanical constructs animated by arcane artifice. Tireless and precise.' },
-    { name:'Drakona',  desc:'Dragon-blooded humanoids with scaled skin and elemental breath.' },
-    { name:'Dwarf',    desc:'Stout mountain-kin renowned for endurance and craftsmanship.' },
-    { name:'Elf',      desc:'Long-lived forest people with keen senses and deep magic.' },
-    { name:'Faerie',   desc:'Fey-touched tricksters from the borderlands of the mortal world.' },
-    { name:'Firbolg',  desc:'Giant-kin with a deep bond to the natural world and its rhythms.' },
-    { name:'Fungril',  desc:'Fungal beings with a collective memory and spore-based senses.' },
-    { name:'Galapa',   desc:'Tortoise-folk whose shells carry their history carved in bone.' },
-    { name:'Giant',    desc:'Towering humanoids whose size is matched only by their will.' },
-    { name:'Goblin',   desc:'Quick, clever, and underestimated — goblins survive where others don\'t.' },
-    { name:'Halfling', desc:'Small-statured folk known for luck, resilience, and community.' },
-    { name:'Human',    desc:'Adaptable and driven, humans shape the world by sheer persistence.' },
-    { name:'Katari',   desc:'Cat-like hunters with retractable claws and nocturnal instincts.' },
-    { name:'Orc',      desc:'Powerful warriors with a strong oral tradition and tribal pride.' },
-    { name:'Ribbet',   desc:'Amphibious frog-folk who breathe water and leap extraordinary distances.' },
-    { name:'Simiah',   desc:'Primate ancestry — nimble climbers with prehensile tails and sharp minds.' },
-    { name:'Sylvan',   desc:'Living wood — tree-touched beings who grow leaves in spring and shed in autumn.' },
-    { name:'Vokar',    desc:'Deep-sea kin who glow in darkness and speak in resonant harmonic tones.' }
-];
-
-const COMMUNITIES = [
-    { name:'Highborne',   feature:'Privilege',       desc:'You were raised among the elite. Doors open for you — for now.' },
-    { name:'Loreborne',   feature:'Well-Read',        desc:'Your upbringing was steeped in books, archives, and ancient knowledge.' },
-    { name:'Orderborne',  feature:'Dedicated',        desc:'You were raised within a strict institution — military, religious, or guild.' },
-    { name:'Ridgeborne',  feature:'Steady',           desc:'Mountain or highland folk who learn young that patience outlasts any storm.' },
-    { name:'Seaborne',    feature:'Know the Tide',    desc:'Born to the water — reading currents, weather, and people.' },
-    { name:'Slyborne',    feature:'Scoundrel',        desc:'You grew up in the margins: thieves\' guilds, back alleys, grey markets.' },
-    { name:'Underborne',  feature:'Low-Light Living', desc:'Your home was underground. You see in darkness and move without sound.' },
-    { name:'Wanderborne', feature:'Nomadic Pack',     desc:'Your community was always moving. Home is whoever travels with you.' },
-    { name:'Wildborne',   feature:'Lightfoot',        desc:'Raised in deep wilderness — you leave no trail, read any terrain.' }
-];
+// End of _CLASSES_PLACEHOLDER — real data loaded async via loadData()
 
 const WEAPONS = [
     { name:'Shortsword',    tag:'Finesse',   desc:'d6+3 — A quick, one-handed blade suited to fast fighters.' },
@@ -1491,16 +1517,20 @@ function buildSummary() {
         </div>
 
         <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-            <span style="font-family:'Cinzel',serif;font-size:0.6em;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);">The Verdant Curse · Level 1 Character</span>
+            <span style="font-family:'Cinzel',serif;font-size:0.6em;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);">Brackenroll · Level 1 Character</span>
         </div>
     `;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
-renderAllGrids();
-renderTraits();
-showRoster();
+function init() {
+    renderAllGrids();
+    renderTraits();
+    showRoster();
+}
+
+loadData();
 </script>
     <script src="nav.js"></script>
 </body>
