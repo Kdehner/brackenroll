@@ -3,18 +3,18 @@ version: '3.8'
 services:
   web:
     image: nginx:alpine
-    container_name: daggerheart-player
+    container_name: brackenroll-dev
     volumes:
       - ./:/usr/share/nginx/html:ro
     networks:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.daggerheart-player.rule=Host(`daggerheart.fwbgaming.win`)"
-      - "traefik.http.routers.daggerheart-player.entrypoints=websecure"
-      - "traefik.http.routers.daggerheart-player.tls=true"
-      - "traefik.http.routers.daggerheart-player.tls.certresolver=letsencrypt"
-      - "traefik.http.services.daggerheart-player.loadbalancer.server.port=80"
+      - "traefik.http.routers.brackenroll-dev.rule=Host(`devverheart.fwbgaming.win`)"
+      - "traefik.http.routers.brackenroll-dev.entrypoints=websecure"
+      - "traefik.http.routers.brackenroll-dev.tls=true"
+      - "traefik.http.routers.brackenroll-dev.tls.certresolver=letsencrypt"
+      - "traefik.http.services.brackenroll-dev.loadbalancer.server.port=80"
     restart: unless-stopped
 
 networks:
