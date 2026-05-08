@@ -849,6 +849,21 @@ function renderAncestries() {
     }).join('');
 }
 
+function renderSubclassFeatures(features) {
+    if (!features) return '';
+    const tiers = [
+        { key: 'foundation',     label: 'Foundation' },
+        { key: 'specialization', label: 'Specialization' },
+        { key: 'mastery',        label: 'Mastery' }
+    ];
+    return tiers.filter(t => features[t.key]?.length).map(t =>
+        `<div style="margin-bottom:10px;">
+            <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">${t.label}</div>
+            ${features[t.key].map(f => `<div class="modal-feature"><p>${f}</p></div>`).join('')}
+        </div>`
+    ).join('');
+}
+
 function openClassModal(id) {
     const cls     = CLASSES.find(c => c.id === id);
     if (!cls) return;
@@ -860,11 +875,14 @@ function openClassModal(id) {
         <div class="modal-title">${cls.name}</div>
         <div class="modal-subtitle">${role} &middot; ${domains.join(' &amp; ')}</div>
         <hr class="modal-divider">
-        <div class="modal-stat-row" style="display:flex;gap:24px;margin-bottom:20px;font-size:0.9em;color:var(--ink-muted);">
+        <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;font-size:0.9em;color:var(--ink-muted);">
             <span><strong>Starting HP:</strong> ${cls.startingHp}</span>
             <span><strong>Starting Evasion:</strong> ${cls.startingEvasion}</span>
             ${cls.spellcastTrait ? `<span><strong>Spellcast Trait:</strong> ${cls.spellcastTrait}</span>` : ''}
         </div>
+        ${cls.classItems ? `
+        <div class="modal-section-head">Class Item</div>
+        <p class="modal-desc">${cls.classItems}</p>` : ''}
         ${cls.hopeFeature ? `
         <div class="modal-section-head">Hope Feature</div>
         <div class="modal-feature">
@@ -875,8 +893,19 @@ function openClassModal(id) {
         ${(cls.subclasses || []).map(sub => `
         <div class="subclass-block">
             <div class="subclass-name">${sub.name}</div>
-            <p class="modal-desc">${sub.description || ''}</p>
+            <div class="subclass-tagline">${sub.description || ''}</div>
+            ${renderSubclassFeatures(sub.features)}
         </div>`).join('')}
+        ${cls.backgroundQuestions?.length ? `
+        <div class="modal-section-head">Background Questions</div>
+        <ul style="padding-left:18px;margin:0;">
+            ${cls.backgroundQuestions.map(q => `<li class="modal-desc" style="margin-bottom:6px;">${q}</li>`).join('')}
+        </ul>` : ''}
+        ${cls.connections?.length ? `
+        <div class="modal-section-head">Connections</div>
+        <ul style="padding-left:18px;margin:0;">
+            ${cls.connections.map(c => `<li class="modal-desc" style="margin-bottom:6px;">${c}</li>`).join('')}
+        </ul>` : ''}
     `;
     document.getElementById('modal-shared').classList.add('active');
     document.body.style.overflow = 'hidden';
