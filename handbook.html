@@ -859,7 +859,12 @@ function renderSubclassFeatures(features) {
     return tiers.filter(t => features[t.key]?.length).map(t =>
         `<div style="margin-bottom:10px;">
             <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">${t.label}</div>
-            ${features[t.key].map(f => `<div class="modal-feature"><p>${f}</p></div>`).join('')}
+            ${features[t.key].map(f => {
+                if (typeof f === 'object' && f.name) {
+                    return `<div class="modal-feature"><div class="modal-feature-name">${f.name}</div>${f.description}</div>`;
+                }
+                return `<div class="modal-feature"><p>${f}</p></div>`;
+            }).join('')}
         </div>`
     ).join('');
 }
@@ -875,6 +880,7 @@ function openClassModal(id) {
         <div class="modal-title">${cls.name}</div>
         <div class="modal-subtitle">${role} &middot; ${domains.join(' &amp; ')}</div>
         <hr class="modal-divider">
+        ${cls.description ? `<p class="modal-desc" style="margin-bottom:16px;">${cls.description}</p>` : ''}
         <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;font-size:0.9em;color:var(--ink-muted);">
             <span><strong>Starting HP:</strong> ${cls.startingHp}</span>
             <span><strong>Starting Evasion:</strong> ${cls.startingEvasion}</span>
@@ -889,6 +895,13 @@ function openClassModal(id) {
             <div class="modal-feature-name">${cls.hopeFeature.name}</div>
             <p>${cls.hopeFeature.description}</p>
         </div>` : ''}
+        ${cls.classFeatures?.length ? `
+        <div class="modal-section-head">Class Features</div>
+        ${cls.classFeatures.map(f => `
+        <div class="modal-feature">
+            <div class="modal-feature-name">${f.name}</div>
+            <p>${f.description}</p>
+        </div>`).join('')}` : ''}
         <div class="modal-section-head">Subclasses</div>
         ${(cls.subclasses || []).map(sub => `
         <div class="subclass-block">
