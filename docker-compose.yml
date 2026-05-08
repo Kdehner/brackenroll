@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: daggerheart-player
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.daggerheart-player.rule=Host(`daggerheart.fwbgaming.win`)"
+      - "traefik.http.routers.daggerheart-player.entrypoints=websecure"
+      - "traefik.http.routers.daggerheart-player.tls=true"
+      - "traefik.http.routers.daggerheart-player.tls.certresolver=letsencrypt"
+      - "traefik.http.services.daggerheart-player.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true

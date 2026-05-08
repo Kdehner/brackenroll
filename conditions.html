@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Conditions — The Verdant Curse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .condition-block {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 32px 36px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+
+        .condition-block.curse { border-left: 4px solid #4a8a5a; }
+        .condition-block.ashlung { border-left: 4px solid #7a6050; }
+
+        .condition-block h2 {
+            margin-top: 0;
+            font-size: 1.6em;
+        }
+
+        .condition-block.curse h2 { color: #2a6a3a; border-color: rgba(74,138,90,0.3); }
+        .condition-block.ashlung h2 { color: #5a4030; border-color: rgba(122,96,80,0.3); }
+
+        .condition-flavor {
+            font-style: italic;
+            color: var(--ink-muted);
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            border-left: 2px solid var(--border-mid);
+        }
+
+        .condition-block p {
+            color: var(--ink-muted);
+            margin-bottom: 14px;
+        }
+
+        .condition-block p:last-child { margin-bottom: 0; }
+
+        @media (max-width: 700px) {
+            .condition-block { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">verdant curse</a>
+        <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+        <ul class="nav-links">
+            <li><a href="primer.html">The World</a></li>
+            <li><a href="conditions.html">The Conditions</a></li>
+            <li><a href="factions.html">Factions</a></li>
+            <li><a href="handbook.html">Handbook</a></li>
+            <li><a href="character-builder.html">Builder</a></li>
+            <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-tag">The World's Dangers</div>
+            <h1>The Conditions</h1>
+            <p class="subtitle">What the World Is Dying Of</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <p style="max-width:680px;margin-bottom:32px;">Two forces are tearing this world apart. This is what a traveler arriving in Verdanya would have heard — rumors, warnings, and the kind of truths people learn the hard way.</p>
+
+        <!-- VERDANT CURSE -->
+        <div class="condition-block curse">
+            <h2>The Verdant Curse</h2>
+            <div class="condition-flavor">"The forest wants you. It wants to know you better. It's very patient."</div>
+
+            <p>The Verdant Curse is what happens when something fundamental about this land broke. The forest grows wrong. Animals change into things they shouldn't be. And people — people who are hurt by those creatures, who spend too long in the deep wilderness — they begin to change too.</p>
+
+            <p>It starts small. A patch of bark on the skin. Moss where a scar used to be. Flowers that bloom from wounds and don't hurt. It gets harder to hide over time. Then it becomes impossible.</p>
+
+            <p>What makes it so unsettling is that it isn't always painful. Some people describe the early stages as almost peaceful. A warmth. A sense of connection to something vast and old. That's what makes it dangerous — it doesn't always feel like something going wrong.</p>
+
+            <p>The fully transformed are called <strong>the Verdant-Born</strong>. Some still have their minds. Some don't. Ironhold has standing orders regarding them. The Resistance has a different view. Everyone else is somewhere in between.</p>
+        </div>
+
+        <!-- ASHLUNG -->
+        <div class="condition-block ashlung">
+            <h2>Ashlung</h2>
+            <div class="condition-flavor">"First the cough. Then the dust. Then the stone."</div>
+
+            <p>Ashlung is a disease of stone. It started in Ironhold — and their desperation to find a cure is the reason Verdanya is occupied at all.</p>
+
+            <p>It begins as a dry cough that produces a faint grey dust. Easy to explain away at first. Harder to ignore as the skin hardens, starting at the fingers and spreading inward. Given enough time, it reaches the heart.</p>
+
+            <p>Unlike the Verdant Curse, Ashlung offers nothing. No strange beauty. No sense of connection. Just a slow, merciless countdown.</p>
+
+            <p>The only treatment anyone knows of is <strong>Mourning Roses</strong> — rare crimson flowers that grow in Verdanya. Ironhold came here to harvest them. They haven't left.</p>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>The Verdant Curse · Player Resources · 2026</p>
+    </footer>
+
+    <script src="nav.js"></script>
+</body>
+</html>

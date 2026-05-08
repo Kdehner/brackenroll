@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The World — The Verdant Curse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Tabs ── */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border-gold);
+            margin-bottom: 36px;
+        }
+        .tab-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 12px 28px;
+            cursor: pointer;
+            margin-bottom: -1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tab-btn:hover { color: var(--gold); }
+        .tab-btn.active { color: var(--gold-mid); border-bottom-color: var(--gold); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Journal (Primer tab) ── */
+        .journal { max-width: 720px; margin: 0 auto; }
+        .journal-entry {
+            background: rgba(248, 242, 228, 0.6);
+            border: 1px solid rgba(120, 80, 30, 0.2);
+            padding: 36px 40px;
+            margin-bottom: 32px;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+        .journal-entry::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(138,92,16,0.3), transparent);
+        }
+        .journal-entry h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2em;
+            color: var(--gold-mid);
+            border-bottom: 1px solid var(--border-gold);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        .journal-entry p { color: var(--ink-muted); font-size: 1.05em; margin-bottom: 14px; }
+        .journal-entry p:last-child { margin-bottom: 0; }
+        .journal-entry ul { color: var(--ink-muted); padding-left: 22px; margin-bottom: 14px; }
+        .journal-entry ul li { margin-bottom: 6px; }
+        .journal-entry strong { color: var(--ink); }
+        .journal-stain {
+            font-style: italic;
+            color: var(--ink-dim);
+            font-size: 0.9em;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .faction-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+        .faction-item { background: rgba(240, 230, 210, 0.5); border: 1px solid var(--border); padding: 14px 16px; }
+        .faction-name { font-family: 'Cinzel', serif; font-size: 0.85em; font-weight: 600; color: var(--ink); margin-bottom: 4px; letter-spacing: 0.05em; }
+        .faction-desc { font-size: 0.88em; color: var(--ink-muted); line-height: 1.5; }
+        .small-gods { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+        .god-card { background: rgba(240, 230, 210, 0.5); border: 1px solid var(--border); border-left: 3px solid rgba(138,92,16,0.3); padding: 12px 14px; }
+        .god-name { font-family: 'Cinzel', serif; font-size: 0.82em; font-weight: 600; color: var(--gold-mid); margin-bottom: 4px; }
+        .god-desc { font-size: 0.88em; color: var(--ink-muted); line-height: 1.5; }
+        .rumors-list { list-style: none; padding: 0; }
+        .rumors-list li { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--ink-muted); font-style: italic; font-size: 1.0em; display: flex; gap: 10px; }
+        .rumors-list li:last-child { border-bottom: none; }
+        .rumors-list li::before { content: '"'; color: var(--gold); font-size: 1.4em; line-height: 1; flex-shrink: 0; }
+        .final-warning { background: rgba(30, 16, 8, 0.06); border: 1px solid var(--border-gold); padding: 28px 32px; text-align: center; margin-top: 8px; }
+        .final-warning p { font-size: 1.1em; color: var(--ink-muted); margin-bottom: 10px; }
+        .final-warning .sign { font-style: italic; color: var(--ink-dim); font-size: 0.9em; }
+
+        /* ── Characters tab ── */
+        .things-to-consider {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(4px);
+        }
+        .things-to-consider h2 { margin-top: 0; }
+        .consider-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .consider-item h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 10px;
+        }
+        .consider-item p { font-size: 0.92em; color: var(--ink-muted); margin: 0; line-height: 1.6; }
+        .question-block {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--border-gold);
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .question-block h3 { margin-top: 0; font-size: 1.05em; }
+        .question-block p { color: var(--ink-muted); font-size: 0.95em; margin-bottom: 8px; }
+        .question-block p:last-child { margin-bottom: 0; }
+
+        /* ── Hooks tab ── */
+        .hooks-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin: 40px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .hooks-section-title:first-of-type { margin-top: 0; }
+
+        .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .hook-card {
+            background: rgba(248, 242, 228, 0.6);
+            border: 1px solid var(--border);
+            padding: 22px 24px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+        .hook-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+        }
+        .hook-card h3 { font-family: 'Cinzel', serif; font-size: 0.95em; color: var(--gold-mid); margin: 0 0 14px; }
+        .hook-card ul { list-style: none; padding: 0; margin: 0; }
+        .hook-card li {
+            display: flex;
+            gap: 8px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9em;
+            color: var(--ink-muted);
+            line-height: 1.5;
+        }
+        .hook-card li:last-child { border-bottom: none; }
+        .hook-card li::before { content: '—'; color: var(--ink-dim); flex-shrink: 0; margin-top: 2px; }
+
+        .ancestry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+        .ancestry-hook-card {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            backdrop-filter: blur(4px);
+        }
+        .ancestry-hook-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--ink);
+            margin: 0 0 10px;
+        }
+        .ancestry-hook-card ul { list-style: none; padding: 0; margin: 0; }
+        .ancestry-hook-card li {
+            font-size: 0.84em;
+            color: var(--ink-muted);
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(120,80,30,0.08);
+            line-height: 1.5;
+            display: flex;
+            gap: 6px;
+        }
+        .ancestry-hook-card li:last-child { border-bottom: none; }
+        .ancestry-hook-card li::before { content: '—'; color: var(--ink-dim); flex-shrink: 0; }
+
+        .hook-callout {
+            background: rgba(30, 16, 8, 0.06);
+            border: 1px solid var(--border-gold);
+            padding: 28px 32px;
+            text-align: center;
+            margin-top: 32px;
+        }
+        .hook-callout h2 { font-family: 'Cinzel', serif; font-size: 1.2em; color: var(--gold-mid); margin-bottom: 14px; }
+        .hook-callout blockquote { font-style: italic; color: var(--ink-muted); font-size: 1.1em; margin: 0 0 16px; }
+        .hook-callout p { color: var(--ink-muted); margin-bottom: 10px; font-size: 1em; }
+        .hook-callout p:last-child { margin-bottom: 0; }
+
+        @media (max-width: 900px) {
+            .consider-grid { grid-template-columns: 1fr 1fr; }
+            .ancestry-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 700px) {
+            .faction-list, .small-gods, .hook-grid { grid-template-columns: 1fr; }
+            .journal-entry { padding: 24px 20px; }
+            .tab-btn { padding: 10px 14px; font-size: 0.68em; }
+            .consider-grid, .ancestry-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">verdant curse</a>
+        <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+        <ul class="nav-links">
+            <li><a href="primer.html">The World</a></li>
+            <li><a href="conditions.html">The Conditions</a></li>
+            <li><a href="factions.html">Factions</a></li>
+            <li><a href="handbook.html">Handbook</a></li>
+            <li><a href="character-builder.html">Builder</a></li>
+            <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-tag">Player Handout</div>
+            <h1>The World</h1>
+            <p class="subtitle">Verdanya, the Occupation, and the People Caught Between</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('primer', this)">World Primer</button>
+            <button class="tab-btn" onclick="switchTab('characters', this)">Characters</button>
+            <button class="tab-btn" onclick="switchTab('hooks', this)">Player Hooks</button>
+        </div>
+
+        <!-- ═══ TAB: WORLD PRIMER ═══ -->
+        <div class="tab-panel active" id="tab-primer">
+        <div class="journal">
+
+            <p class="journal-stain"><em>Scrawled notes found at a border checkpoint. Author unknown. Blood-stained. Date unclear.</em></p>
+
+            <div class="journal-entry">
+                <h2>To Those Who Would Enter Verdanya</h2>
+                <p>Turn back.</p>
+                <p>I mean it. Whatever brought you here — coin, curiosity, duty — it's not worth it. This land is <strong>wrong</strong> now. Beautiful and wrong, like a corpse covered in flowers.</p>
+                <p>But if you won't listen (and you won't, or you wouldn't be reading this), then at least know what you're walking into.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>The Land That Forgot Winter</h2>
+                <p>Six months ago, Verdanya was wild but balanced. Ancient forests, hidden villages, gods walking among the trees. The kind of place where you respected the old rules and the land respected you back.</p>
+                <p>Then <strong>Ironhold</strong> came.</p>
+                <p>They said it was temporary. A "peacekeeping operation" to secure resources during their plague crisis. They said they'd leave once they had what they needed. They lied.</p>
+                <p>Now Ironhold occupies the western territories. Their soldiers patrol roads that were never meant for boots. Their forts scar the landscape like iron stakes through living flesh. And worst of all, they took something from the heart of the forest.</p>
+                <p><strong>Sylora's Winter Eye.</strong></p>
+                <p>I don't know what that means exactly. The locals won't speak of it directly — they get this haunted look and change the subject. But I know this: winter never came. Spring just kept going. And going. And going.</p>
+                <p>At first it seemed like a blessing. Endless growth, eternal bloom. The farmers celebrated. Then the flowers started screaming.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>The Verdant Curse</h2>
+                <p>They call it different names depending on who you ask — The Overgrowth, Sylora's Wrath, The Green Rot. Whatever you call it, here's what it does:</p>
+                <p><strong>Plants grow too fast.</strong> Vines that can strangle a horse in minutes. Trees that weren't there yesterday. Flowers that bloom, wilt, and bloom again in the span of a breath.</p>
+                <p><strong>Animals change.</strong> Deer the size of houses. Wolves with moss for fur and eyes like lanterns. Rabbits that scream with human voices.</p>
+                <p><strong>People transform.</strong> Get hurt by corrupted creatures? You might sprout thorns from your wounds. Bark-skin. Roots instead of veins. Eventually, you stop being you and become part of the forest.</p>
+                <p>They call those ones <strong>the Verdant-Born.</strong> Some keep their minds for a while. Most don't.</p>
+                <p>I saw a child yesterday. Antlers growing from her skull. Flowers blooming from her eyes. Still begging her mother for help. Her mother couldn't look at her.</p>
+                <p>That's Verdanya now.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>Ironhold's Plague</h2>
+                <p>Don't think Ironhold escaped consequences.</p>
+                <p>Back in their walled city, <strong>Ashlung</strong> spreads like wildfire. Victims cough up grey dust. Their skin hardens. Their organs turn to stone. The streets are filled with statues — people frozen mid-scream.</p>
+                <p>The only cure? <strong>Mourning Roses.</strong> Rare crimson flowers that grow in Verdanya. For every ten thousand white blooms, one red. Ironhold invaded to harvest them.</p>
+                <p>Ironic, isn't it? They came to cure their plague and unleashed something worse. Now both nations are dying. Ironhold turns to stone. Verdanya drowns in green.</p>
+                <p>And us? We're caught in the middle.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>The Day That Won't End</h2>
+                <p>One more thing that'll drive you mad if you're not prepared:</p>
+                <p><strong>The sun rises for a week straight.</strong> Then sets for a week straight.</p>
+                <p>Week-long days. Week-long nights. Your sleep schedule will be wrecked. Time feels wrong. People go a little crazy during the transitions — those eight-hour sunrises mess with your head.</p>
+                <p>The locals say it's always been this way. But it feels connected to the Curse somehow. Like the land forgot how to keep time.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>Factions — Pick Your Poison</h2>
+                <div class="faction-list">
+                    <div class="faction-item">
+                        <div class="faction-name">Ironhold</div>
+                        <div class="faction-desc">The Occupiers. Walled city-state to the west. Desperate, dying of Ashlung. Soldiers are tired, scared, far from home. Some still believe they're the good guys. Most just want to survive.</div>
+                    </div>
+                    <div class="faction-item">
+                        <div class="faction-name">Verdanya</div>
+                        <div class="faction-desc">The Occupied. Forest nation, fiercely independent. Some collaborate to survive. Some resist in secret. Some have been transformed beyond recognition.</div>
+                    </div>
+                    <div class="faction-item">
+                        <div class="faction-name">The Resistance</div>
+                        <div class="faction-desc">The Shadows. Guerrilla fighters led by someone called The Thornwraith. Wear thorn-and-rose badges. Ironhold calls them terrorists. Verdanya calls them heroes. The truth is somewhere in between.</div>
+                    </div>
+                    <div class="faction-item">
+                        <div class="faction-name">Briarcrest Villagers</div>
+                        <div class="faction-desc">The Desperate. Border village, occupied but surviving. Half Verdanya, half Ironhold presence. Tense but functional — barely. If you're looking for work or answers, start here.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="journal-entry">
+                <h2>The Small Gods</h2>
+                <p>Verdanya doesn't have distant, abstract deities. Their gods <strong>live here.</strong> In the trees, the streams, the stones. They're called <strong>Faint Divinities</strong> — small gods with limited power and very large personalities.</p>
+                <div class="small-gods">
+                    <div class="god-card">
+                        <div class="god-name">Briartongue</div>
+                        <div class="god-desc">Entity of thorns. Speaks in riddles. Protects Briarcrest. Demands tribute — stories of deaths-in-thorns.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Mellifer</div>
+                        <div class="god-desc">Lazy bee god. Controls flower blooms. Loves the Verdant Curse (more flowers!). Inconvenient and whimsical.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Moonpetal</div>
+                        <div class="god-desc">Watcher of night-blooming flowers. Only appears during week-long nights. Helpful if you respect the dark.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Sylora</div>
+                        <div class="god-desc">The big one. Goddess of seasons. Ironhold stole something from her. Now she's silent. Or watching. Or waiting.</div>
+                    </div>
+                </div>
+                <p style="margin-top:16px;">The Faint Divinities can help you. Or test you. Or kill you on a whim. Respect costs nothing. Disrespect costs everything.</p>
+            </div>
+
+            <div class="journal-entry">
+                <h2>Rumors — What People Are Whispering</h2>
+                <ul class="rumors-list">
+                    <li>Ironhold's spymaster is dying of Ashlung. Desperate men make dangerous choices.</li>
+                    <li>The Thornwraith is planning something big. Something that could end the war — or make it worse.</li>
+                    <li>There's a way to reverse the Verdant Curse, but it involves Sylora's stolen Eye.</li>
+                    <li>Some of the "collaborators" in occupied villages are actually Resistance spies.</li>
+                    <li>The Verdant-Born can still be saved. Maybe. If you're fast enough. And brave enough.</li>
+                    <li>Briarcrest's thorn wall will fail within weeks. When it does, the village dies.</li>
+                    <li>There's a treetop village deep in the forest where the Resistance hides. Ironhold has never found it.</li>
+                    <li>Some Ironhold soldiers are defecting. Not many. But enough to worry command.</li>
+                </ul>
+            </div>
+
+            <div class="final-warning">
+                <p>Verdanya will change you.</p>
+                <p>Maybe literally. Maybe just in your head. This is a place where forests whisper your name and gods judge your choices. Where your enemies might be right and your allies might be wrong.</p>
+                <p>Where beauty and horror grow from the same root.</p>
+                <p><strong>The forest is listening. And it remembers.</strong></p>
+                <p class="sign"><em>— A Concerned Traveler. Or what's left of one.</em></p>
+            </div>
+
+        </div>
+        </div><!-- /#tab-primer -->
+
+        <!-- ═══ TAB: CHARACTERS ═══ -->
+        <div class="tab-panel" id="tab-characters">
+
+            <p style="max-width:680px;margin-bottom:36px;color:var(--ink-muted);">This campaign rewards characters with roots in the world — people who have something to lose, a reason to care about the outcome, and a genuine conflict between their loyalties. The questions below are worth thinking through before Session Zero.</p>
+
+            <div class="things-to-consider">
+                <h2>What Kind of Campaign This Is</h2>
+                <div class="consider-grid">
+                    <div class="consider-item">
+                        <h4>Moral Complexity</h4>
+                        <p>There are no pure heroes or villains here. Ironhold is wrong and understandable. Verdanya is right and complicated. Your character will be asked to choose — probably more than once — between two things they care about.</p>
+                    </div>
+                    <div class="consider-item">
+                        <h4>Faction Identity</h4>
+                        <p>Who your character is from matters. An Ironhold soldier and a Verdanya native in the same party create natural tension — and that tension is a feature, not a bug. Lean into it.</p>
+                    </div>
+                    <div class="consider-item">
+                        <h4>The Verdant Curse</h4>
+                        <p>Corruption is a real mechanic. Your character might transform. The campaign is built so that has meaningful consequences — social, mechanical, and narrative. Think about how your character would respond before it happens to them.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Session Zero Questions</h2>
+            <p style="margin-bottom:20px;color:var(--ink-muted);">Your GM will ask these (or something like them). Worth sitting with them before you arrive.</p>
+
+            <div class="question-block">
+                <h3>Where were you when Ironhold invaded?</h3>
+                <p>Were you there? Did you flee? Did you fight? Were you on the wrong side? The right side? Does your answer still sit right with you?</p>
+            </div>
+
+            <div class="question-block">
+                <h3>What did you lose?</h3>
+                <p>To the occupation, the Verdant Curse, Ashlung, or just the way the world used to be. Loss is a good engine for character motivation — know what yours is.</p>
+            </div>
+
+            <div class="question-block">
+                <h3>Why did you take this job?</h3>
+                <p>Coin? Coercion? Belief? Desperation? The answer shapes how your character behaves when the job stops making sense.</p>
+            </div>
+
+            <div class="question-block">
+                <h3>Do you have family on the other side of this conflict?</h3>
+                <p>Someone in Ironhold dying of Ashlung. Someone in Verdanya who joined the Resistance. Someone transforming in the wilderness. You don't need one — but if you do, it adds stakes.</p>
+            </div>
+
+            <div class="question-block">
+                <h3>Have you seen someone transform?</h3>
+                <p>What did it look like? What did you feel watching it? How does your character think about the Verdant-Born — as monsters, as victims, as something else?</p>
+            </div>
+
+            <div class="question-block">
+                <h3>What would you do if you started showing signs of the Curse?</h3>
+                <p>Tell the party? Hide it? Lean in? This is worth knowing before it becomes a live question at the table.</p>
+            </div>
+
+            <div class="question-block">
+                <h3>What's the one thing you will not do, no matter the consequences?</h3>
+                <p>Every good character has a line. Know yours. The campaign will find it.</p>
+            </div>
+
+        </div><!-- /#tab-characters -->
+
+        <!-- ═══ TAB: PLAYER HOOKS ═══ -->
+        <div class="tab-panel" id="tab-hooks">
+
+            <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);font-style:italic;">Starting points for your character — not requirements. Take what works, leave what doesn't.</p>
+
+            <p class="hooks-section-title">By Faction Background</p>
+            <div class="hook-grid">
+                <div class="hook-card">
+                    <h3>Ironhold Characters</h3>
+                    <ul>
+                        <li>Why did you join or stay with the invasion — belief, orders, or no choice?</li>
+                        <li>Do you have Ashlung, or does someone you love?</li>
+                        <li>Do you still believe Ironhold is the good guy here?</li>
+                        <li>Have you ever looked a Verdanya local in the eye and thought: we're the problem?</li>
+                        <li>What would make you defect?</li>
+                    </ul>
+                </div>
+                <div class="hook-card">
+                    <h3>Verdanya Characters</h3>
+                    <ul>
+                        <li>Are you Resistance, collaborator, or just trying to survive?</li>
+                        <li>Who did you lose to the occupation — or to the Curse?</li>
+                        <li>Do you hate Ironhold, or can you see why they did what they did?</li>
+                        <li>Have you been touched by the Verdant Curse at all?</li>
+                        <li>What does it mean to you if the Curse can't be cured?</li>
+                    </ul>
+                </div>
+                <div class="hook-card">
+                    <h3>Outsiders</h3>
+                    <ul>
+                        <li>What dragged you into this — coin, accident, or something you can't explain?</li>
+                        <li>You have no side. Is that freedom or just a longer road to picking one?</li>
+                        <li>What did you know about this conflict before you arrived?</li>
+                        <li>Has anything you've seen here changed your mind about anything?</li>
+                    </ul>
+                </div>
+                <div class="hook-card">
+                    <h3>Anyone</h3>
+                    <ul>
+                        <li>What does your character want the party to think of them?</li>
+                        <li>What are they hiding — or haven't admitted even to themselves?</li>
+                        <li>Who in this group do you have a reason to trust? To distrust?</li>
+                        <li>What would it take to change your mind about the side you're on?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="hooks-section-title">By Ancestry</p>
+            <div class="ancestry-grid">
+                <div class="ancestry-hook-card">
+                    <h3>Clank</h3>
+                    <ul>
+                        <li>Does the Curse affect you — or pass through you like you're not there?</li>
+                        <li>Who built you, and did they send you here for a reason?</li>
+                        <li>What do you make of a world where flesh becomes bark and wood becomes flesh?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Drakona</h3>
+                    <ul>
+                        <li>Does your elemental blood harmonize with the Curse — or fight it?</li>
+                        <li>Both sides want a dragon-blooded warrior. Which do you owe, if either?</li>
+                        <li>Have you felt the wild magic here pulling at something inside you?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Dwarf</h3>
+                    <ul>
+                        <li>Ironhold shares your people's industrial values. Does that make this complicated?</li>
+                        <li>Did you build or supply something that helped the occupation — even indirectly?</li>
+                        <li>What do you make of a forest that refuses to stay still or be measured?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Elf</h3>
+                    <ul>
+                        <li>The forest speaks to you. What is it saying now, and do you want to hear it?</li>
+                        <li>Did you know Verdanya before? What did you lose when it changed?</li>
+                        <li>The Curse is ancient power gone wrong. Does part of you understand it?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Faerie</h3>
+                    <ul>
+                        <li>Your fey nature and the Curse share something. Are you drawn to it or repelled?</li>
+                        <li>Can you feel Sylora's absence where her power used to be?</li>
+                        <li>The Verdant-Born are transforming into something. Does it look familiar to you?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Firbolg</h3>
+                    <ul>
+                        <li>The land's grief is yours. What does it physically feel like to be near the corruption?</li>
+                        <li>Did the forest call you here, or did you come because no one else would?</li>
+                        <li>Where does your duty to the land end and your duty to people begin?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Fungril</h3>
+                    <ul>
+                        <li>You feed on decay and growth alike. Does the Curse feel like home — and does that worry you?</li>
+                        <li>Does your collective memory hold anything about Verdanya before the occupation?</li>
+                        <li>The Verdant-Born are becoming part of something larger. Can you hear it?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Galapa</h3>
+                    <ul>
+                        <li>Your shell carries your history. Does it hold anything about this land?</li>
+                        <li>You've outlasted empires. Does Ironhold's occupation look different through that lens?</li>
+                        <li>Have you seen a place consumed by something like this before?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Giant</h3>
+                    <ul>
+                        <li>Ironhold fears what it can't control. Do you have history with them — or a price on your head?</li>
+                        <li>The corrupted creatures are big. Are you bigger? Does that matter?</li>
+                        <li>Small people keep underestimating you. Has that ever been useful here?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Goblin</h3>
+                    <ul>
+                        <li>Briarcrest's back alleys know your type. Who do you owe — and who owes you?</li>
+                        <li>You've survived things that killed bigger people. What's your read on this situation?</li>
+                        <li>Everyone else sees a crisis. Do you see an opportunity? Is that a problem?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Halfling</h3>
+                    <ul>
+                        <li>Community is everything to your kind. Briarcrest is a community dying. Did you come to help?</li>
+                        <li>What does loyalty mean when the community is compromised from the inside?</li>
+                        <li>You're easy to underestimate. When has that saved you — or cost you?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Human</h3>
+                    <ul>
+                        <li>You could be from either side, which means neither fully trusts you. How do you use that?</li>
+                        <li>Humans built Ironhold. Humans live in Verdanya. Which part of that history is yours?</li>
+                        <li>What does it mean to you that humans caused this — and humans have to fix it?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Katari</h3>
+                    <ul>
+                        <li>You hunt. The forest hunts back now. Have you faced one of the changed animals?</li>
+                        <li>Did you see something in a corrupted creature's eyes — recognition, pain, something else?</li>
+                        <li>Your instincts say something is wrong here on a level words don't reach. What is it?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Orc</h3>
+                    <ul>
+                        <li>Ironhold respects strength it can direct. Verdanya respects strength that defends. Where do you stand?</li>
+                        <li>Your ancestors had a relationship with this land. What did they know that you don't?</li>
+                        <li>There's a version of you that could lead either side. Why haven't you?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Ribbet</h3>
+                    <ul>
+                        <li>Water doesn't lie. The streams here taste wrong. What exactly do you taste in them?</li>
+                        <li>Can you read the difference between what this land was and what it's becoming?</li>
+                        <li>You can go where land-locked people can't. What have you seen that others haven't?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Simiah</h3>
+                    <ul>
+                        <li>The canopy used to be safe. Is it still? What do you see from up there that others miss?</li>
+                        <li>You watch before you act. What have you observed about this conflict that no one else has said out loud?</li>
+                        <li>Has the Curse changed the treetops — and does that feel like a personal violation?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Sylvan</h3>
+                    <ul>
+                        <li>You are living wood. The Verdant Curse is your nightmare and your temptation. Can you feel the pull?</li>
+                        <li>Have other Sylvan you knew already been consumed by the corruption?</li>
+                        <li>If you were fully taken by the Curse, would you still be you — or something better?</li>
+                    </ul>
+                </div>
+                <div class="ancestry-hook-card">
+                    <h3>Vokar</h3>
+                    <ul>
+                        <li>You glow in darkness. The week-long nights here are long. What finds you?</li>
+                        <li>Are you drawn to what stirs in the deep forest after dark — or do you know better?</li>
+                        <li>You resonate with things that pulse and sing. What is the Curse singing?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="hook-callout">
+                <h2>Come Prepared to Be Wrong</h2>
+                <blockquote>"The hardest choices aren't between good and evil. They're between two things you actually care about."</blockquote>
+                <p>This campaign will put your character in situations where every option costs something. There are no clean hands here — only people doing what they think they have to do.</p>
+                <p>The best character isn't the one with the right answers. It's the one who keeps showing up after the wrong ones.</p>
+            </div>
+
+        </div><!-- /#tab-hooks -->
+
+    </div>
+
+    <script>
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+
+    <footer>
+        <p>The Verdant Curse · Player Resources · 2026</p>
+    </footer>
+
+    <script src="nav.js"></script>
+</body>
+</html>

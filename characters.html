@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Your Character — The Verdant Curse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .question-block {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--border-gold);
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .question-block h3 { margin-top: 0; font-size: 1.05em; }
+
+        .question-block p {
+            color: var(--ink-muted);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        .question-block p:last-child { margin-bottom: 0; }
+
+        .hook-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .hook-card {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 22px 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hook-card h3 {
+            margin-top: 0;
+            font-size: 0.95em;
+            color: var(--gold-mid);
+            margin-bottom: 14px;
+        }
+
+        .hook-card ul { list-style: none; padding: 0; margin: 0; }
+        .hook-card li {
+            font-size: 0.92em;
+            color: var(--ink-muted);
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(120,80,30,0.08);
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .hook-card li:last-child { border-bottom: none; }
+        .hook-card li::before { content: '—'; color: var(--ink-dim); flex-shrink: 0; margin-top: 2px; }
+
+        .big-question {
+            background: rgba(30, 16, 8, 0.06);
+            border: 1px solid var(--border-gold);
+            padding: 36px 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .big-question h2 {
+            font-size: 1.3em;
+            margin-top: 0;
+            border: none;
+            color: var(--ink);
+            padding: 0;
+        }
+
+        .big-question .question-text {
+            font-size: 1.3em;
+            font-style: italic;
+            color: var(--ink-muted);
+            margin: 20px 0;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .big-question p {
+            color: var(--ink-dim);
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+
+        .things-to-consider {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(4px);
+        }
+
+        .things-to-consider h2 { margin-top: 0; }
+
+        .consider-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .consider-item h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 10px;
+        }
+
+        .consider-item p {
+            font-size: 0.92em;
+            color: var(--ink-muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .hook-grid { grid-template-columns: 1fr; }
+            .consider-grid { grid-template-columns: 1fr; }
+            .big-question { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">verdant curse</a>
+        <ul class="nav-links">
+            <li><a href="primer.html">World Primer</a></li>
+            <li><a href="conditions.html">The Conditions</a></li>
+            <li><a href="characters.html">Characters</a></li>
+            <li><a href="factions.html">Factions</a></li>
+            <li><a href="handbook.html">Handbook</a></li>
+            <li><a href="character-builder.html">Builder</a></li>
+            <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-tag">Character Creation</div>
+            <h1>Building Your Character</h1>
+            <p class="subtitle">Session Zero Questions & Character Hooks</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <p style="max-width:680px;margin-bottom:36px;">This campaign rewards characters with roots in the world — people who have something to lose, a reason to care about the outcome, and a genuine conflict between their loyalties. The questions below are worth thinking through before Session Zero.</p>
+
+        <!-- Things to Consider -->
+        <div class="things-to-consider">
+            <h2>What Kind of Campaign This Is</h2>
+            <div class="consider-grid">
+                <div class="consider-item">
+                    <h4>Moral Complexity</h4>
+                    <p>There are no pure heroes or villains here. Ironhold is wrong and understandable. Verdanya is right and complicated. Your character will be asked to choose — probably more than once — between two things they care about.</p>
+                </div>
+                <div class="consider-item">
+                    <h4>Faction Identity</h4>
+                    <p>Who your character is from matters. An Ironhold soldier and a Verdanya native in the same party create natural tension — and that tension is a feature, not a bug. Lean into it.</p>
+                </div>
+                <div class="consider-item">
+                    <h4>The Verdant Curse</h4>
+                    <p>Corruption is a real mechanic. Your character might transform. The campaign is built so that has meaningful consequences — social, mechanical, and narrative. Think about how your character would respond before it happens to them.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Zero Questions -->
+        <h2>Session Zero Questions</h2>
+        <p style="margin-bottom:20px;">Your GM will ask these (or something like them). Worth sitting with them before you arrive.</p>
+
+        <div class="question-block">
+            <h3>Where were you when Ironhold invaded?</h3>
+            <p>Were you there? Did you flee? Did you fight? Were you on the wrong side? The right side? Does your answer still sit right with you?</p>
+        </div>
+
+        <div class="question-block">
+            <h3>What did you lose?</h3>
+            <p>To the occupation, the Verdant Curse, Ashlung, or just the way the world used to be. Loss is a good engine for character motivation — know what yours is.</p>
+        </div>
+
+        <div class="question-block">
+            <h3>Why did you take this job?</h3>
+            <p>Coin? Coercion? Belief? Desperation? The answer shapes how your character behaves when the job stops making sense.</p>
+        </div>
+
+        <div class="question-block">
+            <h3>Do you have family on the other side of this conflict?</h3>
+            <p>Someone in Ironhold dying of Ashlung. Someone in Verdanya who joined the Resistance. Someone transforming in the wilderness. You don't need one — but if you do, it adds stakes.</p>
+        </div>
+
+        <div class="question-block">
+            <h3>Have you seen someone transform?</h3>
+            <p>What did it look like? What did you feel watching it? How does your character think about the Verdant-Born — as monsters, as victims, as something else?</p>
+        </div>
+
+        <div class="question-block">
+            <h3>What would you do if you started showing signs of the Curse?</h3>
+            <p>Tell the party? Hide it? Lean in? This is worth knowing before it becomes a live question at the table.</p>
+        </div>
+
+        <div class="question-block">
+            <h3>What's the one thing you will not do, no matter the consequences?</h3>
+            <p>Every good character has a line. Know yours. The campaign will find it.</p>
+        </div>
+
+        <!-- Character hooks by background -->
+        <h2 style="margin-top:48px;">Character Hooks by Background</h2>
+        <p style="margin-bottom:20px;">Starting points — not requirements. Take what works, ignore what doesn't.</p>
+
+        <div class="hook-grid">
+            <div class="hook-card">
+                <h3>Ironhold Characters</h3>
+                <ul>
+                    <li>Why did you join or stay with the invasion — belief, orders, or no choice?</li>
+                    <li>Do you have Ashlung, or does someone you love?</li>
+                    <li>Do you still believe Ironhold is the good guy here?</li>
+                    <li>Have you ever looked a Verdanya local in the eye and thought: we're the problem?</li>
+                    <li>What would make you defect?</li>
+                </ul>
+            </div>
+
+            <div class="hook-card">
+                <h3>Verdanya Characters</h3>
+                <ul>
+                    <li>Are you Resistance, collaborator, or just trying to survive?</li>
+                    <li>Who did you lose to the occupation — or to the Curse?</li>
+                    <li>Do you hate Ironhold, or can you see why they did what they did?</li>
+                    <li>Have you been touched by the Verdant Curse at all?</li>
+                    <li>What does it mean to you if the Curse can't be cured?</li>
+                </ul>
+            </div>
+
+            <div class="hook-card">
+                <h3>Outsiders</h3>
+                <ul>
+                    <li>What dragged you into this — coin, accident, or something you can't explain?</li>
+                    <li>You have no side. Is that freedom or just a longer road to picking one?</li>
+                    <li>What did you know about this conflict before you arrived?</li>
+                    <li>Has anything you've seen here changed your mind about anything?</li>
+                </ul>
+            </div>
+
+            <div class="hook-card">
+                <h3>Anyone</h3>
+                <ul>
+                    <li>What does your character want the party to think of them?</li>
+                    <li>What are they hiding — or haven't admitted even to themselves?</li>
+                    <li>Who in this group do you have a reason to trust? To distrust?</li>
+                    <li>What would it take to change your mind about the side you're on?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- The Big Question -->
+        <div class="big-question">
+            <h2>Come Prepared to Be Wrong</h2>
+            <div class="question-text">"The hardest choices aren't between good and evil. They're between two things you actually care about."</div>
+            <p>This campaign will put your character in situations where every option costs something. There are no clean hands here — only people doing what they think they have to do.</p>
+            <p style="margin-top:10px;">The best character isn't the one with the right answers. It's the one who keeps showing up after the wrong ones.</p>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>The Verdant Curse · Player Resources · 2026</p>
+    </footer>
+
+</body>
+</html>

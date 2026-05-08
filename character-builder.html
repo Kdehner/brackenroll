@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Builder — The Verdant Curse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Roster view ── */
+        #roster-view { display: block; }
+        #builder-view { display: none; }
+
+        .roster-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .roster-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 22px 24px;
+            backdrop-filter: blur(4px);
+            position: relative;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .roster-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+        }
+        .roster-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
+
+        .roster-card-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .roster-card-meta {
+            font-size: 0.82em;
+            color: var(--gold-mid);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        .roster-card-concept {
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .roster-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .roster-card-saved {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-top: 12px;
+        }
+
+        .empty-roster {
+            background: var(--card-bg);
+            border: 1px dashed var(--border-mid);
+            padding: 48px 32px;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+        .empty-roster h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            color: var(--ink-dim);
+            margin-bottom: 8px;
+        }
+        .empty-roster p { font-size: 0.9em; color: var(--ink-dim); font-style: italic; }
+
+        /* ── Draft banner ── */
+        .draft-banner {
+            background: rgba(138, 92, 16, 0.08);
+            border: 1px solid var(--border-gold);
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .draft-banner p {
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+        .draft-banner p strong { color: var(--gold-mid); font-style: normal; }
+        .draft-banner-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+        /* ── Progress bar ── */
+        .progress-bar {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 28px;
+        }
+        .progress-step {
+            flex: 1;
+            height: 3px;
+            background: rgba(120, 80, 30, 0.15);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+        .progress-step.done   { background: var(--border-gold); }
+        .progress-step.active { background: var(--gold); }
+
+        .step-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 28px;
+        }
+        .step-label span { color: var(--gold-mid); }
+
+        /* ── Back to roster link ── */
+        .back-to-roster {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+        .back-to-roster:hover { color: var(--gold); }
+
+        /* ── Steps ── */
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .step-heading {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15em;
+            font-weight: 600;
+            color: var(--ink-mid);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+        .step-desc {
+            color: var(--ink-muted);
+            font-style: italic;
+            margin-bottom: 24px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            max-width: 640px;
+        }
+
+        /* ── Pick grids ── */
+        .pick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .pick-grid.two-col  { grid-template-columns: repeat(2, 1fr); }
+        .pick-grid.four-col { grid-template-columns: repeat(4, 1fr); }
+
+        .pick-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+        .pick-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .pick-card:hover { background: var(--card-hover); border-color: var(--border-gold); transform: translateY(-2px); }
+        .pick-card:hover::before { opacity: 1; }
+        .pick-card.selected { background: var(--card-hover); border-color: var(--gold); }
+        .pick-card.selected::before { opacity: 1; }
+        .pick-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px; right: 14px;
+            color: var(--gold);
+            font-size: 0.85em;
+            font-family: 'Cinzel', serif;
+        }
+        .pick-card .card-cat {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+        .pick-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.92em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+            letter-spacing: 0.03em;
+        }
+        .pick-card p { font-size: 0.85em; color: var(--ink-muted); line-height: 1.55; }
+        .pick-card .feature-line { margin-top: 8px; font-size: 0.82em; color: var(--gold-mid); font-style: italic; }
+
+        /* ── Form fields ── */
+        .field-group { margin-bottom: 18px; }
+        .field-group label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 6px;
+        }
+        .field-group input,
+        .field-group textarea {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            padding: 9px 14px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .field-group input:focus,
+        .field-group textarea:focus { border-color: var(--border-gold); background: var(--card-hover); }
+        .field-group textarea { min-height: 80px; resize: vertical; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        /* ── Traits ── */
+        .trait-hint { font-size: 0.88em; color: var(--ink-muted); font-style: italic; margin-bottom: 16px; }
+        .value-pool { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+        .value-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            color: var(--ink);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            user-select: none;
+            backdrop-filter: blur(4px);
+        }
+        .value-chip:hover { border-color: var(--border-gold); background: var(--card-hover); }
+        .value-chip.selected { border-color: var(--gold); background: var(--card-hover); color: var(--gold-mid); font-weight: 600; }
+        .value-chip.used { opacity: 0.35; pointer-events: none; }
+
+        .trait-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        .trait-table th {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .trait-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        .trait-name { font-family: 'Cinzel', serif; font-size: 0.88em; color: var(--ink); }
+        .trait-val  { font-family: 'Cinzel', serif; font-size: 1.1em; color: var(--gold-mid); min-width: 2rem; }
+        .trait-clear-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--ink-dim);
+            padding: 3px 10px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-family: 'Cinzel', serif;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .trait-clear-btn:hover { border-color: var(--border-gold); color: var(--gold); }
+        .trait-row-clickable { cursor: pointer; }
+        .trait-row-clickable:hover td { background: rgba(248, 242, 228, 0.6); }
+
+        /* ── Domain panels ── */
+        .domain-section { margin-bottom: 28px; }
+        .domain-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        /* ── Experience ── */
+        .exp-inspiration {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--border-gold);
+            padding: 14px 18px;
+            font-size: 0.85em;
+            color: var(--ink-muted);
+            font-style: italic;
+            margin-bottom: 20px;
+            backdrop-filter: blur(4px);
+            line-height: 1.7;
+        }
+
+        /* ── Equipment ── */
+        .equip-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .equip-label:first-of-type { margin-top: 0; }
+
+        /* ── Nav buttons ── */
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+        .btn-back {
+            background: transparent;
+            color: var(--ink-dim);
+            border: 1px solid var(--border);
+            padding: 10px 24px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { border-color: var(--border-gold); color: var(--gold); }
+
+        .btn-next {
+            background: var(--gold);
+            color: #f8f2e4;
+            border: 1px solid var(--gold);
+            padding: 10px 28px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-next:hover { background: var(--gold-mid); border-color: var(--gold-mid); }
+
+        .btn-sm {
+            padding: 7px 16px;
+            font-size: 0.68em;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: var(--ink-dim);
+            border: 1px solid var(--border);
+            padding: 10px 24px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-ghost:hover { border-color: var(--border-gold); color: var(--gold); }
+        .btn-danger {
+            background: transparent;
+            color: var(--red);
+            border: 1px solid rgba(138,32,32,0.3);
+            padding: 7px 16px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-danger:hover { border-color: var(--red); background: rgba(138,32,32,0.07); }
+
+        .error-msg { font-size: 0.82em; color: var(--red); font-style: italic; min-height: 1em; }
+
+        /* ── Summary sheet ── */
+        .sheet {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            padding: 36px 40px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+        .sheet::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        .sheet-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--ink);
+            text-align: center;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+        .sheet-sub { text-align: center; color: var(--ink-muted); font-style: italic; margin-bottom: 8px; }
+        .sheet-concept {
+            text-align: center;
+            color: var(--ink-muted);
+            font-style: italic;
+            font-size: 0.95em;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .sheet-section { margin-bottom: 22px; }
+        .sheet-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sheet-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 6px; }
+        .sheet-field { flex: 1; min-width: 120px; }
+        .sheet-field label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .sheet-field span { font-size: 1em; color: var(--ink); }
+
+        .trait-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .trait-summary-box { text-align: center; border: 1px solid var(--border); padding: 8px; background: rgba(248, 242, 228, 0.4); }
+        .trait-summary-box .val { font-family: 'Cinzel', serif; font-size: 1.3em; color: var(--gold-mid); }
+        .trait-summary-box .lbl { font-family: 'Cinzel', serif; font-size: 0.55em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); }
+
+        .domain-card-list { display: flex; flex-direction: column; gap: 8px; }
+        .domain-card-item { background: rgba(248, 242, 228, 0.4); border: 1px solid var(--border); padding: 10px 14px; }
+        .domain-card-item strong { font-family: 'Cinzel', serif; font-size: 0.85em; color: var(--ink); }
+        .domain-card-item .dom-tag { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-left: 6px; }
+        .domain-card-item p { font-size: 0.85em; color: var(--ink-muted); margin-top: 4px; }
+
+        .save-confirm {
+            background: rgba(42, 106, 58, 0.08);
+            border: 1px solid rgba(42, 106, 58, 0.3);
+            padding: 10px 18px;
+            font-size: 0.85em;
+            color: var(--green);
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .summary-btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Print ── */
+        @media print {
+            nav, .page-hero, #roster-view,
+            .progress-bar, .step-label, .back-to-roster,
+            .btn-row, .summary-btn-row,
+            .step:not(#step-summary) { display: none !important; }
+            #builder-view { display: block !important; }
+            #step-summary { display: block !important; }
+            body { background: white; color: #1e1008; }
+            .container { padding: 0; }
+            .sheet { border: 1px solid #aaa; background: white; box-shadow: none; }
+            .sheet::before { display: none; }
+        }
+
+        @media (max-width: 680px) {
+            .pick-grid { grid-template-columns: 1fr 1fr; }
+            .pick-grid.two-col  { grid-template-columns: 1fr; }
+            .pick-grid.four-col { grid-template-columns: 1fr 1fr; }
+            .field-row { grid-template-columns: 1fr; }
+            .trait-summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .roster-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">verdant curse</a>
+        <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+        <ul class="nav-links">
+            <li><a href="primer.html">The World</a></li>
+            <li><a href="conditions.html">The Conditions</a></li>
+            <li><a href="factions.html">Factions</a></li>
+            <li><a href="handbook.html">Handbook</a></li>
+            <li><a href="character-builder.html">Builder</a></li>
+            <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-tag">Player Tool</div>
+            <h1>Character Builder</h1>
+            <p class="subtitle">Build and save heroes for The Verdant Curse</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ═══════════════════════════════════════════════════════ ROSTER VIEW -->
+        <div id="roster-view">
+            <div id="draft-banner-slot"></div>
+
+            <div class="roster-actions">
+                <button class="btn-next" onclick="startNewCharacter()">+ New Character</button>
+            </div>
+
+            <div id="roster-list"></div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ BUILDER VIEW -->
+        <div id="builder-view">
+            <button class="back-to-roster" onclick="goToRoster()">← All Characters</button>
+
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="step-label" id="step-label"></div>
+
+            <!-- STEP 1: Concept -->
+            <div class="step active" id="step-concept">
+                <p class="step-heading">Who Are You?</p>
+                <p class="step-desc">Give your character a name, pronouns, and a brief concept.</p>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Character Name</label>
+                        <input type="text" id="char-name" placeholder="e.g. Maren of the Hollow">
+                    </div>
+                    <div class="field-group">
+                        <label>Pronouns</label>
+                        <input type="text" id="char-pronouns" placeholder="e.g. she/her">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Character Concept</label>
+                    <textarea id="char-concept" placeholder="e.g. A disgraced court herbalist who can no longer ignore what the Ashlung is doing to her village."></textarea>
+                </div>
+                <div class="btn-row">
+                    <span></span>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-concept"></span>
+                        <button class="btn-next" onclick="nextStep(1)">Choose Class →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Class -->
+            <div class="step" id="step-class">
+                <p class="step-heading">Choose Your Class</p>
+                <p class="step-desc">Your class defines your role, domains, and primary abilities.</p>
+                <div class="pick-grid" id="class-grid"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(2)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-class"></span>
+                        <button class="btn-next" onclick="nextStep(2)">Choose Subclass →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Subclass -->
+            <div class="step" id="step-subclass">
+                <p class="step-heading">Choose Your Subclass</p>
+                <p class="step-desc">Each class has two subclasses that specialize your abilities.</p>
+                <div class="pick-grid two-col" id="subclass-grid"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(3)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-subclass"></span>
+                        <button class="btn-next" onclick="nextStep(3)">Choose Ancestry →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Ancestry -->
+            <div class="step" id="step-ancestry">
+                <p class="step-heading">Choose Your Ancestry</p>
+                <p class="step-desc">Your ancestry shapes your physical and cultural heritage.</p>
+                <div class="pick-grid" id="ancestry-grid"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(4)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-ancestry"></span>
+                        <button class="btn-next" onclick="nextStep(4)">Choose Community →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Community -->
+            <div class="step" id="step-community">
+                <p class="step-heading">Choose Your Community</p>
+                <p class="step-desc">Your community is how you were raised and how you move through the world.</p>
+                <div class="pick-grid" id="community-grid"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(5)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-community"></span>
+                        <button class="btn-next" onclick="nextStep(5)">Assign Traits →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: Traits -->
+            <div class="step" id="step-traits">
+                <p class="step-heading">Assign Your Traits</p>
+                <p class="step-desc">Distribute the six values. Click a value chip, then click a trait row to assign it.</p>
+                <p class="trait-hint">Pool: +2, +1, +1, 0, 0, −1</p>
+                <div class="value-pool" id="value-pool"></div>
+                <table class="trait-table">
+                    <thead><tr><th>Trait</th><th>Value</th><th></th></tr></thead>
+                    <tbody id="trait-tbody"></tbody>
+                </table>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(6)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-traits"></span>
+                        <button class="btn-next" onclick="nextStep(6)">Pick Domain Cards →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: Domain Cards -->
+            <div class="step" id="step-domains">
+                <p class="step-heading">Choose Your Domain Cards</p>
+                <p class="step-desc">Pick one card from each of your class's two domains — your starting abilities.</p>
+                <div id="domain-panels"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(7)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-domains"></span>
+                        <button class="btn-next" onclick="nextStep(7)">Experiences →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8: Experiences -->
+            <div class="step" id="step-experiences">
+                <p class="step-heading">Your Experiences</p>
+                <p class="step-desc">Name two experiences that shaped your character before the story begins.</p>
+                <div class="exp-inspiration">Inspiration: Farmer · Sailor · Soldier · Herbalist · Scholar · Blacksmith · Hunter · Merchant · Priest · Thief · Scout · Healer · Noble · Wanderer · Outcast · Apprentice</div>
+                <div class="field-group">
+                    <label>Experience 1</label>
+                    <input type="text" id="exp-1" placeholder="e.g. Disgraced Court Herbalist">
+                </div>
+                <div class="field-group">
+                    <label>Experience 2</label>
+                    <input type="text" id="exp-2" placeholder="e.g. Survivor of the Ashlung Outbreak">
+                </div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(8)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-experiences"></span>
+                        <button class="btn-next" onclick="nextStep(8)">Choose Equipment →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 9: Equipment -->
+            <div class="step" id="step-equipment">
+                <p class="step-heading">Starting Equipment</p>
+                <p class="step-desc">Choose your primary weapon and armor. A secondary weapon is optional.</p>
+                <p class="equip-label">Primary Weapon</p>
+                <div class="pick-grid" id="weapon-grid"></div>
+                <p class="equip-label">Armor</p>
+                <div class="pick-grid four-col" id="armor-grid"></div>
+                <p class="equip-label">Secondary Weapon <span style="color:var(--ink-dim);font-size:0.85em;font-style:italic;">(optional)</span></p>
+                <div class="pick-grid" id="secondary-grid"></div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(9)">← Back</button>
+                    <div class="btn-row-right">
+                        <span class="error-msg" id="err-equipment"></span>
+                        <button class="btn-next" onclick="nextStep(9)">Review Character →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 10: Summary -->
+            <div class="step" id="step-summary">
+                <p class="step-heading">Your Character</p>
+                <p class="step-desc">Your character has been saved. Print or share it with your GM.</p>
+                <div id="save-confirm-slot"></div>
+                <div class="sheet" id="character-sheet"></div>
+                <div class="summary-btn-row">
+                    <button class="btn-next" onclick="window.print()">Print / Save PDF</button>
+                    <button class="btn-ghost" onclick="goToRoster()">All Characters</button>
+                    <button class="btn-back" onclick="deleteCurrentAndRoster()">Delete This Character</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn-back" onclick="prevStep(10)">← Back to Equipment</button>
+                    <span></span>
+                </div>
+            </div>
+
+        </div><!-- /#builder-view -->
+    </div><!-- /.container -->
+
+<script>
+// ─── GAME DATA ────────────────────────────────────────────────────────────────
+
+const CLASSES = [
+    { id:'warrior',  name:'Warrior',  domains:['Blade','Bone'],      desc:'A fierce combatant who strikes hard and endures punishment.',            subclasses:[
+        { name:'Call of the Brave',      desc:'Draw on raw courage to push past your limits when allies need you most.' },
+        { name:'Call of the Slaughter',  desc:'Embrace the fury of battle, becoming a whirlwind of unstoppable destruction.' }
+    ]},
+    { id:'guardian', name:'Guardian', domains:['Blade','Valor'],     desc:'A steadfast defender who protects allies through skill and sacrifice.',  subclasses:[
+        { name:'Call of the Devoted',    desc:'Bond deeply with a ward, granting them supernatural protection.' },
+        { name:'Call of the Protector',  desc:'Place yourself between danger and those who cannot protect themselves.' }
+    ]},
+    { id:'ranger',   name:'Ranger',   domains:['Bone','Sage'],       desc:'A skilled tracker who thrives in the wild, hunting with precision.',     subclasses:[
+        { name:'Call of the Wildblood',  desc:'Your bond with nature grants you animalistic instincts and primal power.' },
+        { name:'Call of the Strider',    desc:'No terrain or enemy can outpace you — you move and strike without equal.' }
+    ]},
+    { id:'druid',    name:'Druid',    domains:['Arcana','Sage'],     desc:'A shapeshifter and nature-speaker who draws on primordial forces.',     subclasses:[
+        { name:'Call of the Earthen',    desc:'Your magic is rooted in stone and soil — patient, immovable, enduring.' },
+        { name:'Call of the Feral',      desc:'You shed your mortal form to become something wilder and more dangerous.' }
+    ]},
+    { id:'bard',     name:'Bard',     domains:['Grace','Splendor'],  desc:'A performer and charmer who weaves magic through words and music.',     subclasses:[
+        { name:'Call of the Muse',       desc:'Inspire others to heights they couldn\'t reach alone.' },
+        { name:'Call of the Trickster',  desc:'Deceive, distract, and control the battlefield through misdirection.' }
+    ]},
+    { id:'rogue',    name:'Rogue',    domains:['Grace','Midnight'],  desc:'A swift shadow who strikes from hiding and vanishes without a trace.',  subclasses:[
+        { name:'Call of the Nightwalker',desc:'Darkness is your element — you see what others miss and slip where others can\'t.' },
+        { name:'Call of the Venomous',   desc:'Poison, traps, and dirty tricks are your preferred instruments.' }
+    ]},
+    { id:'seraph',   name:'Seraph',   domains:['Splendor','Valor'],  desc:'A divine warrior who channels sacred power to heal and destroy.',       subclasses:[
+        { name:'Call of the Winged',     desc:'Celestial grace and aerial mobility set you apart from earthbound warriors.' },
+        { name:'Call of the Sanctified', desc:'Sacred fire burns within you — your strikes carry divine judgment.' }
+    ]},
+    { id:'sorcerer', name:'Sorcerer', domains:['Arcana','Midnight'], desc:'A channeler of wild magic whose power comes from within, not from study.', subclasses:[
+        { name:'Call of the Rift',       desc:'Your magic tears holes in reality, conjuring forces from elsewhere.' },
+        { name:'Call of the Elemental',  desc:'Raw elemental power courses through your blood, demanding release.' }
+    ]},
+    { id:'wizard',   name:'Wizard',   domains:['Codex','Arcana'],    desc:'A learned arcanist who bends reality through study and precision.',    subclasses:[
+        { name:'Call of the Runesmith',   desc:'You inscribe power into objects and environments, shaping the world itself.' },
+        { name:'Call of the Astromancer', desc:'The stars guide your spellcraft, granting foresight and cosmic power.' }
+    ]}
+];
+
+const DOMAIN_CARDS = {
+    Arcana:   [
+        { name:'Rune Ward',       desc:'Inscribe a protective rune on yourself or an ally that absorbs the next hit.' },
+        { name:'Unleash Chaos',   desc:'Unleash unstable arcane energy in a burst — roll with Fear, but the damage is immense.' },
+        { name:'Wall Walk',       desc:'Move along vertical surfaces or ceilings until the end of your next turn.' }
+    ],
+    Blade:    [
+        { name:'Get Back Up',     desc:'When you would be taken out, make a last-ditch attack first.' },
+        { name:'Not Good Enough', desc:'Reroll one die on your attack — take the new result.' },
+        { name:'Whirlwind',       desc:'Strike every enemy within melee reach in a single spinning attack.' }
+    ],
+    Bone:     [
+        { name:'Deft Maneuvers',  desc:'Move through enemy spaces without triggering reactions.' },
+        { name:'I See It Coming', desc:'When an enemy attacks you, spend Fear to reduce the damage by your Instinct.' },
+        { name:'Untouchable',     desc:'Add your Agility to your Evasion until the end of the scene.' }
+    ],
+    Codex:    [
+        { name:'Book of Ava',     desc:'Inscribe a memory of a fallen ally — call on it once to act with their remembered skill.' },
+        { name:'Book of Illiat',  desc:'Transcribe an enemy\'s weakness — your next attack against them deals maximum damage.' },
+        { name:'Book of Tyfar',   desc:'Record a location you\'ve visited — teleport back to it once when in danger.' }
+    ],
+    Grace:    [
+        { name:'Deft Deceiver',       desc:'Lie convincingly enough to make an NPC believe almost anything — once per scene.' },
+        { name:'Enrapture',           desc:'Hold a target\'s attention completely; they can\'t act against you until you act first.' },
+        { name:'Inspirational Words', desc:'Give an ally a Hope die they can spend on their next roll.' }
+    ],
+    Midnight: [
+        { name:'Pick and Pull',    desc:'Interact with a distant object — pick a pocket, open a lock, or snag an item from range.' },
+        { name:'Rain of Blades',   desc:'Throw a volley of small weapons, hitting up to three targets in a cluster.' },
+        { name:'Uncanny Disguise', desc:'Spend ten minutes to convincingly impersonate any humanoid you\'ve observed.' }
+    ],
+    Sage:     [
+        { name:'Gifted Tracker',   desc:'Read a trail up to a week old with perfect clarity — know exactly who passed and when.' },
+        { name:'Nature\'s Tongue', desc:'Speak with plants and animals for the rest of the scene.' },
+        { name:'Vicious Entangle', desc:'Animate local vegetation to restrain a target until they break free.' }
+    ],
+    Splendor: [
+        { name:'Bolt Beacon',   desc:'Mark a target with radiant light — allies have advantage attacking them this scene.' },
+        { name:'Mending Touch', desc:'Clear one Stress from yourself or an ally within reach.' },
+        { name:'Reassurance',   desc:'Speak calm words to remove a Fear condition from a willing ally.' }
+    ],
+    Valor:    [
+        { name:'Bare Bones',       desc:'Ignore armor damage penalties until the end of your next turn.' },
+        { name:'Forceful Push',    desc:'Knock a target back and prone with a powerful shove.' },
+        { name:'I Am Your Shield', desc:'Take a hit intended for an adjacent ally, reducing the damage by your Presence.' }
+    ]
+};
+
+const ANCESTRIES = [
+    { name:'Clank',    desc:'Mechanical constructs animated by arcane artifice. Tireless and precise.' },
+    { name:'Drakona',  desc:'Dragon-blooded humanoids with scaled skin and elemental breath.' },
+    { name:'Dwarf',    desc:'Stout mountain-kin renowned for endurance and craftsmanship.' },
+    { name:'Elf',      desc:'Long-lived forest people with keen senses and deep magic.' },
+    { name:'Faerie',   desc:'Fey-touched tricksters from the borderlands of the mortal world.' },
+    { name:'Firbolg',  desc:'Giant-kin with a deep bond to the natural world and its rhythms.' },
+    { name:'Fungril',  desc:'Fungal beings with a collective memory and spore-based senses.' },
+    { name:'Galapa',   desc:'Tortoise-folk whose shells carry their history carved in bone.' },
+    { name:'Giant',    desc:'Towering humanoids whose size is matched only by their will.' },
+    { name:'Goblin',   desc:'Quick, clever, and underestimated — goblins survive where others don\'t.' },
+    { name:'Halfling', desc:'Small-statured folk known for luck, resilience, and community.' },
+    { name:'Human',    desc:'Adaptable and driven, humans shape the world by sheer persistence.' },
+    { name:'Katari',   desc:'Cat-like hunters with retractable claws and nocturnal instincts.' },
+    { name:'Orc',      desc:'Powerful warriors with a strong oral tradition and tribal pride.' },
+    { name:'Ribbet',   desc:'Amphibious frog-folk who breathe water and leap extraordinary distances.' },
+    { name:'Simiah',   desc:'Primate ancestry — nimble climbers with prehensile tails and sharp minds.' },
+    { name:'Sylvan',   desc:'Living wood — tree-touched beings who grow leaves in spring and shed in autumn.' },
+    { name:'Vokar',    desc:'Deep-sea kin who glow in darkness and speak in resonant harmonic tones.' }
+];
+
+const COMMUNITIES = [
+    { name:'Highborne',   feature:'Privilege',       desc:'You were raised among the elite. Doors open for you — for now.' },
+    { name:'Loreborne',   feature:'Well-Read',        desc:'Your upbringing was steeped in books, archives, and ancient knowledge.' },
+    { name:'Orderborne',  feature:'Dedicated',        desc:'You were raised within a strict institution — military, religious, or guild.' },
+    { name:'Ridgeborne',  feature:'Steady',           desc:'Mountain or highland folk who learn young that patience outlasts any storm.' },
+    { name:'Seaborne',    feature:'Know the Tide',    desc:'Born to the water — reading currents, weather, and people.' },
+    { name:'Slyborne',    feature:'Scoundrel',        desc:'You grew up in the margins: thieves\' guilds, back alleys, grey markets.' },
+    { name:'Underborne',  feature:'Low-Light Living', desc:'Your home was underground. You see in darkness and move without sound.' },
+    { name:'Wanderborne', feature:'Nomadic Pack',     desc:'Your community was always moving. Home is whoever travels with you.' },
+    { name:'Wildborne',   feature:'Lightfoot',        desc:'Raised in deep wilderness — you leave no trail, read any terrain.' }
+];
+
+const WEAPONS = [
+    { name:'Shortsword',    tag:'Finesse',   desc:'d6+3 — A quick, one-handed blade suited to fast fighters.' },
+    { name:'Longsword',     tag:'Strength',  desc:'d8+3 — A balanced weapon with reach and stopping power.' },
+    { name:'Greataxe',      tag:'Strength',  desc:'d10+3 — Massive and slow, but devastating on a hit.' },
+    { name:'Dagger',        tag:'Finesse',   desc:'d4+2 — Light and concealable. Doubles as a thrown weapon.' },
+    { name:'Shortbow',      tag:'Agility',   desc:'d6+2 — A reliable ranged weapon for any engagement.' },
+    { name:'Longbow',       tag:'Agility',   desc:'d8+2 — Superior range at the cost of mobility.' },
+    { name:'Spear',         tag:'Strength',  desc:'d8+2 — Versatile: melee or thrown, with excellent reach.' },
+    { name:'Staff',         tag:'Knowledge', desc:'d6+2 — A scholar\'s weapon that channels magical focus.' },
+    { name:'Hand Crossbow', tag:'Finesse',   desc:'d6+2 — Compact and reloadable with one hand.' }
+];
+
+const ARMOR = [
+    { name:'No Armor',      tag:'Unarmored', desc:'Evasion +1 — Freedom of movement over protection.' },
+    { name:'Leather Armor', tag:'Light',     desc:'Evasion +2, Armor 1 — Flexible protection for scouts and rogues.' },
+    { name:'Chain Mail',    tag:'Medium',    desc:'Evasion +1, Armor 3 — Balanced protection. Slightly noisy.' },
+    { name:'Plate Armor',   tag:'Heavy',     desc:'Evasion 0, Armor 5 — Maximum protection. Restrictive movement.' }
+];
+
+// ─── LOCAL STORAGE ────────────────────────────────────────────────────────────
+
+const LS_CHARACTERS = 'dh_characters';
+const LS_DRAFT      = 'dh_draft';
+
+function loadCharacters() {
+    try { return JSON.parse(localStorage.getItem(LS_CHARACTERS)) || []; }
+    catch { return []; }
+}
+
+function saveCharacters(list) {
+    localStorage.setItem(LS_CHARACTERS, JSON.stringify(list));
+}
+
+function loadDraft() {
+    try { return JSON.parse(localStorage.getItem(LS_DRAFT)); }
+    catch { return null; }
+}
+
+function saveDraft() {
+    localStorage.setItem(LS_DRAFT, JSON.stringify({ state, currentStep, traitAssigned }));
+}
+
+function clearDraft() {
+    localStorage.removeItem(LS_DRAFT);
+}
+
+function saveCurrentCharacter() {
+    const chars = loadCharacters();
+    const existing = chars.findIndex(c => c.id === state.id);
+    const record = { ...state, savedAt: new Date().toISOString() };
+    if (existing >= 0) chars[existing] = record;
+    else chars.push(record);
+    saveCharacters(chars);
+}
+
+function deleteCharacter(id) {
+    const chars = loadCharacters().filter(c => c.id !== id);
+    saveCharacters(chars);
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+
+const TOTAL_STEPS  = 10;
+const STEP_NAMES   = ['Concept','Class','Subclass','Ancestry','Community','Traits','Domains','Experiences','Equipment','Summary'];
+const STEP_IDS     = ['concept','class','subclass','ancestry','community','traits','domains','experiences','equipment','summary'];
+
+let currentStep = 1;
+
+function freshState() {
+    return {
+        id:          Date.now().toString(36) + Math.random().toString(36).slice(2),
+        name:        '', pronouns: '', concept: '',
+        classId:     null, subclassName: null,
+        ancestry:    null, community:    null,
+        traits:      { Agility:null, Strength:null, Finesse:null, Instinct:null, Presence:null, Knowledge:null },
+        domainCards: {},
+        exp1: '', exp2: '',
+        weapon: null, armor: null, secondary: null
+    };
+}
+
+let state = freshState();
+const traitAssigned = {};  // trait → poolIndex
+let selectedChip = null;
+const traitPool = ['+2', '+1', '+1', '0', '0', '−1'];
+
+// ─── VIEWS ────────────────────────────────────────────────────────────────────
+
+function showRoster() {
+    document.getElementById('roster-view').style.display  = 'block';
+    document.getElementById('builder-view').style.display = 'none';
+    renderRoster();
+}
+
+function showBuilder() {
+    document.getElementById('roster-view').style.display  = 'none';
+    document.getElementById('builder-view').style.display = 'block';
+}
+
+function goToRoster() {
+    saveDraft();
+    showRoster();
+}
+
+function startNewCharacter() {
+    clearDraft();
+    state = freshState();
+    Object.keys(traitAssigned).forEach(k => delete traitAssigned[k]);
+    selectedChip = null;
+    resetFormFields();
+    renderAllGrids();
+    renderTraits();
+    showBuilder();
+    showStep(1);
+}
+
+function loadCharacterForEdit(id) {
+    const chars = loadCharacters();
+    const char  = chars.find(c => c.id === id);
+    if (!char) return;
+
+    clearDraft();
+    state = { ...freshState(), ...char };
+    Object.keys(traitAssigned).forEach(k => delete traitAssigned[k]);
+    selectedChip = null;
+
+    // Restore trait assignments from saved trait values
+    const TRAITS = ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'];
+    const poolCopy = [...traitPool];
+    TRAITS.forEach(t => {
+        const val = state.traits[t];
+        if (val !== null) {
+            const idx = poolCopy.indexOf(val);
+            if (idx !== -1) { traitAssigned[t] = idx; poolCopy[idx] = null; }
+        }
+    });
+
+    resetFormFields();
+    renderAllGrids();
+    renderSubclasses();
+    renderDomainPanels();
+    renderTraits();
+
+    document.getElementById('char-name').value     = state.name     || '';
+    document.getElementById('char-pronouns').value = state.pronouns || '';
+    document.getElementById('char-concept').value  = state.concept  || '';
+    document.getElementById('exp-1').value          = state.exp1     || '';
+    document.getElementById('exp-2').value          = state.exp2     || '';
+
+    buildSummary();
+    showBuilder();
+    showStep(10);
+}
+
+// ─── ROSTER RENDER ────────────────────────────────────────────────────────────
+
+function renderRoster() {
+    // Draft banner
+    const draftSlot = document.getElementById('draft-banner-slot');
+    const draft = loadDraft();
+    if (draft && draft.state && draft.state.name) {
+        const cls = CLASSES.find(c => c.id === draft.state.classId);
+        draftSlot.innerHTML = `
+            <div class="draft-banner">
+                <p>You have an unfinished character: <strong>${draft.state.name || 'Unnamed'}</strong>${cls ? ' · ' + cls.name : ''} — step ${draft.currentStep} of ${TOTAL_STEPS}.</p>
+                <div class="draft-banner-btns">
+                    <button class="btn-next btn-sm" onclick="resumeDraft()">Resume</button>
+                    <button class="btn-back btn-sm" onclick="discardDraft()">Discard</button>
+                </div>
+            </div>`;
+    } else {
+        draftSlot.innerHTML = '';
+    }
+
+    // Character list
+    const chars = loadCharacters();
+    const list  = document.getElementById('roster-list');
+
+    if (chars.length === 0) {
+        list.innerHTML = `
+            <div class="empty-roster">
+                <h3>No characters yet</h3>
+                <p>Create your first hero to get started.</p>
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = `<div class="roster-grid">${chars.map(c => rosterCardHTML(c)).join('')}</div>`;
+
+    list.querySelectorAll('[data-load]').forEach(btn =>
+        btn.addEventListener('click', () => loadCharacterForEdit(btn.dataset.load))
+    );
+    list.querySelectorAll('[data-delete]').forEach(btn =>
+        btn.addEventListener('click', () => {
+            if (confirm(`Delete "${btn.dataset.name}"? This cannot be undone.`)) {
+                deleteCharacter(btn.dataset.delete);
+                renderRoster();
+            }
+        })
+    );
+}
+
+function rosterCardHTML(c) {
+    const cls  = CLASSES.find(cl => cl.id === c.classId);
+    const meta = [cls?.name, c.subclassName, c.ancestry, c.community].filter(Boolean).join(' · ');
+    const saved = c.savedAt ? new Date(c.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    return `
+        <div class="roster-card">
+            <div class="roster-card-name">${c.name || 'Unnamed Character'}</div>
+            ${c.pronouns ? `<div style="font-size:0.8em;color:var(--ink-dim);margin-bottom:4px;font-style:italic;">${c.pronouns}</div>` : ''}
+            <div class="roster-card-meta">${meta || '—'}</div>
+            ${c.concept ? `<div class="roster-card-concept">"${c.concept}"</div>` : ''}
+            <div class="roster-card-actions">
+                <button class="btn-next btn-sm" data-load="${c.id}">View / Edit</button>
+                <button class="btn-danger" data-delete="${c.id}" data-name="${c.name || 'Unnamed'}">Delete</button>
+            </div>
+            ${saved ? `<div class="roster-card-saved">Saved ${saved}</div>` : ''}
+        </div>`;
+}
+
+// ─── DRAFT ────────────────────────────────────────────────────────────────────
+
+function resumeDraft() {
+    const draft = loadDraft();
+    if (!draft) return;
+
+    state = { ...freshState(), ...draft.state };
+    Object.keys(traitAssigned).forEach(k => delete traitAssigned[k]);
+    if (draft.traitAssigned) Object.assign(traitAssigned, draft.traitAssigned);
+    selectedChip = null;
+
+    resetFormFields();
+    renderAllGrids();
+    renderSubclasses();
+    renderDomainPanels();
+    renderTraits();
+
+    document.getElementById('char-name').value     = state.name     || '';
+    document.getElementById('char-pronouns').value = state.pronouns || '';
+    document.getElementById('char-concept').value  = state.concept  || '';
+    document.getElementById('exp-1').value          = state.exp1     || '';
+    document.getElementById('exp-2').value          = state.exp2     || '';
+
+    showBuilder();
+    showStep(draft.currentStep || 1);
+}
+
+function discardDraft() {
+    if (confirm('Discard the in-progress character? This cannot be undone.')) {
+        clearDraft();
+        renderRoster();
+    }
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+
+function renderProgress() {
+    const bar = document.getElementById('progress-bar');
+    bar.innerHTML = '';
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const d = document.createElement('div');
+        d.className = 'progress-step' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+        bar.appendChild(d);
+    }
+    document.getElementById('step-label').innerHTML =
+        `Step <span>${currentStep}</span> of ${TOTAL_STEPS} — <span>${STEP_NAMES[currentStep-1]}</span>`;
+}
+
+// ─── STEP NAV ─────────────────────────────────────────────────────────────────
+
+function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + STEP_IDS[n-1]).classList.add('active');
+    currentStep = n;
+    renderProgress();
+    window.scrollTo(0, 0);
+}
+
+function nextStep(from) {
+    if (!validate(from)) return;
+    saveFormToState(from);
+    if (from === 2) renderSubclasses();
+    if (from === 6) renderDomainPanels();
+    if (from === 9) { buildSummary(); saveCurrentCharacter(); clearDraft(); showSaveConfirm(); }
+    else saveDraft();
+    showStep(from + 1);
+}
+
+function prevStep(from) {
+    saveFormToState(from);
+    saveDraft();
+    showStep(from - 1);
+}
+
+function deleteCurrentAndRoster() {
+    if (confirm(`Delete "${state.name || 'this character'}"? This cannot be undone.`)) {
+        deleteCharacter(state.id);
+        clearDraft();
+        state = freshState();
+        showRoster();
+    }
+}
+
+function showSaveConfirm() {
+    const slot = document.getElementById('save-confirm-slot');
+    slot.innerHTML = '<div class="save-confirm">Character saved to your browser — it will be here when you return.</div>';
+}
+
+// ─── VALIDATION ───────────────────────────────────────────────────────────────
+
+const ERR_IDS = ['err-concept','err-class','err-subclass','err-ancestry','err-community','err-traits','err-domains','err-experiences','err-equipment'];
+
+function validate(n) {
+    const el = document.getElementById(ERR_IDS[n-1]);
+    if (el) el.textContent = '';
+    const err = msg => { if (el) el.textContent = msg; return false; };
+    switch(n) {
+        case 1: return document.getElementById('char-name').value.trim() ? true : err('Enter a character name.');
+        case 2: return state.classId      ? true : err('Select a class.');
+        case 3: return state.subclassName ? true : err('Select a subclass.');
+        case 4: return state.ancestry     ? true : err('Select an ancestry.');
+        case 5: return state.community    ? true : err('Select a community.');
+        case 6: return Object.values(state.traits).every(v => v !== null) ? true : err('Assign all six trait values.');
+        case 7: {
+            const cls = CLASSES.find(c => c.id === state.classId);
+            if (cls) for (const d of cls.domains) if (!state.domainCards[d]) return err(`Pick a card from ${d}.`);
+            return true;
+        }
+        case 8: return document.getElementById('exp-1').value.trim() ? true : err('Enter at least one experience.');
+        case 9: {
+            if (!state.weapon) return err('Choose a primary weapon.');
+            if (!state.armor)  return err('Choose armor (including No Armor).');
+            return true;
+        }
+    }
+    return true;
+}
+
+// ─── SAVE FORM → STATE ────────────────────────────────────────────────────────
+
+function saveFormToState(n) {
+    if (n === 1) {
+        state.name     = document.getElementById('char-name').value.trim();
+        state.pronouns = document.getElementById('char-pronouns').value.trim();
+        state.concept  = document.getElementById('char-concept').value.trim();
+    }
+    if (n === 8) {
+        state.exp1 = document.getElementById('exp-1').value.trim();
+        state.exp2 = document.getElementById('exp-2').value.trim();
+    }
+}
+
+// ─── GRID HELPER ──────────────────────────────────────────────────────────────
+
+function buildGrid(containerId, items, getSelected, onSelect, buildHTML) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'pick-card' + (getSelected(item) ? ' selected' : '');
+        card.innerHTML = buildHTML(item);
+        card.addEventListener('click', () => {
+            el.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            onSelect(item);
+        });
+        el.appendChild(card);
+    });
+}
+
+function resetFormFields() {
+    document.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+}
+
+function renderAllGrids() {
+    renderClasses();
+    renderAncestries();
+    renderCommunities();
+    renderEquipment();
+}
+
+// ─── CLASSES ──────────────────────────────────────────────────────────────────
+
+function renderClasses() {
+    buildGrid('class-grid', CLASSES,
+        item => state.classId === item.id,
+        item => { if (state.classId !== item.id) { state.subclassName = null; state.domainCards = {}; } state.classId = item.id; },
+        item => `<div class="card-cat">${item.domains.join(' · ')}</div><h3>${item.name}</h3><p>${item.desc}</p>`
+    );
+}
+
+// ─── SUBCLASSES ───────────────────────────────────────────────────────────────
+
+function renderSubclasses() {
+    const cls = CLASSES.find(c => c.id === state.classId);
+    if (!cls) return;
+    const grid = document.getElementById('subclass-grid');
+    grid.innerHTML = '';
+    cls.subclasses.forEach(sub => {
+        const card = document.createElement('div');
+        card.className = 'pick-card' + (state.subclassName === sub.name ? ' selected' : '');
+        card.innerHTML = `<div class="card-cat">${cls.name}</div><h3>${sub.name}</h3><p>${sub.desc}</p>`;
+        card.addEventListener('click', () => {
+            grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            state.subclassName = sub.name;
+        });
+        grid.appendChild(card);
+    });
+}
+
+// ─── ANCESTRY / COMMUNITY ─────────────────────────────────────────────────────
+
+function renderAncestries() {
+    buildGrid('ancestry-grid', ANCESTRIES,
+        item => state.ancestry === item.name,
+        item => { state.ancestry = item.name; },
+        item => `<h3>${item.name}</h3><p>${item.desc}</p>`
+    );
+}
+
+function renderCommunities() {
+    buildGrid('community-grid', COMMUNITIES,
+        item => state.community === item.name,
+        item => { state.community = item.name; },
+        item => `<h3>${item.name}</h3><p>${item.desc}</p><p class="feature-line">${item.feature}</p>`
+    );
+}
+
+// ─── TRAITS ───────────────────────────────────────────────────────────────────
+
+function renderTraits() {
+    const pool = document.getElementById('value-pool');
+    pool.innerHTML = '';
+    traitPool.forEach((val, idx) => {
+        const isUsed = Object.values(traitAssigned).includes(idx);
+        const chip   = document.createElement('div');
+        chip.className = 'value-chip' + (isUsed ? ' used' : '') + (selectedChip === idx ? ' selected' : '');
+        chip.textContent = val;
+        if (!isUsed) chip.addEventListener('click', () => {
+            selectedChip = (selectedChip === idx) ? null : idx;
+            renderTraits();
+        });
+        pool.appendChild(chip);
+    });
+
+    const tbody = document.getElementById('trait-tbody');
+    tbody.innerHTML = '';
+    Object.keys(state.traits).forEach(trait => {
+        const aIdx = traitAssigned[trait];
+        const val  = (aIdx !== undefined) ? traitPool[aIdx] : null;
+        const tr   = document.createElement('tr');
+        if (selectedChip !== null && val === null) tr.className = 'trait-row-clickable';
+        tr.innerHTML = `
+            <td class="trait-name">${trait}</td>
+            <td class="trait-val">${val !== null ? val : '—'}</td>
+            <td>${val !== null ? `<button class="trait-clear-btn" data-trait="${trait}">✕ clear</button>` : ''}</td>
+        `;
+        if (selectedChip !== null && val === null) {
+            tr.addEventListener('click', () => {
+                traitAssigned[trait] = selectedChip;
+                state.traits[trait]  = traitPool[selectedChip];
+                selectedChip = null;
+                renderTraits();
+            });
+        }
+        tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.trait-clear-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            const t = e.target.dataset.trait;
+            delete traitAssigned[t];
+            state.traits[t] = null;
+            renderTraits();
+        });
+    });
+}
+
+// ─── DOMAIN CARDS ─────────────────────────────────────────────────────────────
+
+function renderDomainPanels() {
+    const cls = CLASSES.find(c => c.id === state.classId);
+    if (!cls) return;
+    const container = document.getElementById('domain-panels');
+    container.innerHTML = '';
+    cls.domains.forEach(domain => {
+        const section = document.createElement('div');
+        section.className = 'domain-section';
+        section.innerHTML = `<div class="domain-label">${domain}</div>`;
+        const grid = document.createElement('div');
+        grid.className = 'pick-grid';
+        (DOMAIN_CARDS[domain] || []).forEach(card => {
+            const el = document.createElement('div');
+            el.className = 'pick-card' + (state.domainCards[domain] === card.name ? ' selected' : '');
+            el.innerHTML = `<div class="card-cat">${domain}</div><h3>${card.name}</h3><p>${card.desc}</p>`;
+            el.addEventListener('click', () => {
+                grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                state.domainCards[domain] = card.name;
+            });
+            grid.appendChild(el);
+        });
+        section.appendChild(grid);
+        container.appendChild(section);
+    });
+}
+
+// ─── EQUIPMENT ────────────────────────────────────────────────────────────────
+
+function renderEquipment() {
+    const buildW = item => `<div class="card-cat">${item.tag}</div><h3>${item.name}</h3><p>${item.desc}</p>`;
+    buildGrid('weapon-grid', WEAPONS,
+        item => state.weapon === item.name,
+        item => { state.weapon = item.name; }, buildW
+    );
+    buildGrid('armor-grid', ARMOR,
+        item => state.armor === item.name,
+        item => { state.armor = item.name; }, buildW
+    );
+
+    const sec = document.getElementById('secondary-grid');
+    sec.innerHTML = '';
+    const noneEl = document.createElement('div');
+    noneEl.className = 'pick-card' + (!state.secondary ? ' selected' : '');
+    noneEl.innerHTML = '<h3>None</h3><p>Travel light — no secondary weapon.</p>';
+    noneEl.addEventListener('click', () => {
+        sec.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+        noneEl.classList.add('selected');
+        state.secondary = null;
+    });
+    sec.appendChild(noneEl);
+    WEAPONS.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'pick-card' + (state.secondary === item.name ? ' selected' : '');
+        el.innerHTML = buildW(item);
+        el.addEventListener('click', () => {
+            sec.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            state.secondary = item.name;
+        });
+        sec.appendChild(el);
+    });
+}
+
+// ─── SUMMARY ──────────────────────────────────────────────────────────────────
+
+function buildSummary() {
+    const cls  = CLASSES.find(c => c.id === state.classId);
+    const comm = COMMUNITIES.find(c => c.name === state.community);
+    const sheet = document.getElementById('character-sheet');
+
+    const traitBoxes = Object.entries(state.traits).map(([t, v]) =>
+        `<div class="trait-summary-box"><div class="val">${v ?? '—'}</div><div class="lbl">${t}</div></div>`
+    ).join('');
+
+    const cardItems = cls ? cls.domains.map(dom => {
+        const name = state.domainCards[dom];
+        const data = (DOMAIN_CARDS[dom] || []).find(c => c.name === name);
+        return `<div class="domain-card-item">
+            <strong>${name || '—'}</strong><span class="dom-tag">${dom}</span>
+            ${data ? `<p>${data.desc}</p>` : ''}
+        </div>`;
+    }).join('') : '';
+
+    sheet.innerHTML = `
+        <div class="sheet-name">${state.name || 'Unnamed Character'}</div>
+        <div class="sheet-sub">${[state.pronouns, cls?.name, state.subclassName].filter(Boolean).join(' · ')}</div>
+        ${state.concept ? `<div class="sheet-concept">"${state.concept}"</div>` : '<div class="sheet-concept" style="padding:0;margin-bottom:20px;border:none;"></div>'}
+
+        <div class="sheet-section">
+            <div class="sheet-section-title">Identity</div>
+            <div class="sheet-row">
+                <div class="sheet-field"><label>Class</label><span>${cls?.name ?? '—'}</span></div>
+                <div class="sheet-field"><label>Subclass</label><span>${state.subclassName ?? '—'}</span></div>
+                <div class="sheet-field"><label>Ancestry</label><span>${state.ancestry ?? '—'}</span></div>
+                <div class="sheet-field"><label>Community</label><span>${state.community ?? '—'}</span></div>
+            </div>
+            ${comm ? `<p style="font-size:0.88em;color:var(--ink-muted);margin-top:8px;">Community Feature: <em>${comm.feature}</em> — ${comm.desc}</p>` : ''}
+        </div>
+
+        <div class="sheet-section">
+            <div class="sheet-section-title">Traits</div>
+            <div class="trait-summary-grid">${traitBoxes}</div>
+        </div>
+
+        <div class="sheet-section">
+            <div class="sheet-section-title">Domain Cards</div>
+            <div class="domain-card-list">${cardItems}</div>
+        </div>
+
+        <div class="sheet-section">
+            <div class="sheet-section-title">Experiences</div>
+            <div class="sheet-row">
+                <div class="sheet-field"><label>Experience 1</label><span>${state.exp1 || '—'}</span></div>
+                <div class="sheet-field"><label>Experience 2</label><span>${state.exp2 || '—'}</span></div>
+            </div>
+        </div>
+
+        <div class="sheet-section">
+            <div class="sheet-section-title">Equipment</div>
+            <div class="sheet-row">
+                <div class="sheet-field"><label>Primary Weapon</label><span>${state.weapon ?? '—'}</span></div>
+                <div class="sheet-field"><label>Armor</label><span>${state.armor ?? 'None'}</span></div>
+                <div class="sheet-field"><label>Secondary</label><span>${state.secondary ?? 'None'}</span></div>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+            <span style="font-family:'Cinzel',serif;font-size:0.6em;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-dim);">The Verdant Curse · Level 1 Character</span>
+        </div>
+    `;
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+renderAllGrids();
+renderTraits();
+showRoster();
+</script>
+    <script src="nav.js"></script>
+</body>
+</html>
