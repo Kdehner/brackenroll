@@ -5,14 +5,12 @@
     var page = window.location.pathname.split('/').pop() || 'index.html';
 
     nav.innerHTML =
-        '<a href="index.html" class="nav-logo">The Verdant Curse</a>' +
+        '<a href="index.html" class="nav-logo">Brackenroll</a>' +
         '<button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">' +
         '<span></span><span></span><span></span></button>' +
         '<ul class="nav-links">' +
-        '<li><a href="primer.html">The World</a></li>' +
+        '<li><a href="index.html">Campaigns</a></li>' +
         '<li><a href="handbook.html">Handbook</a></li>' +
-        '<li><a href="character-builder.html">Builder</a></li>' +
-        '<li><span class="nav-disabled">Tabletop</span></li>' +
         '</ul>';
 
     nav.querySelectorAll('.nav-links a').forEach(function (a) {

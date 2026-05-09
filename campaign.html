@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .campaign-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 56px 80px;
+        }
+
+        /* Header */
+        .campaign-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .campaign-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .campaign-back:hover { color: var(--gold); }
+        .campaign-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+        }
+        .campaign-owner-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+        }
+        .campaign-owner-badge span { color: var(--gold-mid); }
+
+        /* Invite block */
+        .invite-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .invite-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 6px;
+        }
+        .invite-link-text {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: var(--ink-muted);
+            word-break: break-all;
+        }
+        .btn-copy {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 8px 18px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-copy:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-copy.copied { color: #5a9e5a; border-color: rgba(90,158,90,0.4); }
+
+        /* Section */
+        .camp-section { margin-bottom: 48px; }
+        .camp-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-mid);
+        }
+        .camp-section-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--gold-mid);
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        /* Member rows */
+        .member-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .member-row:last-child { border-bottom: none; }
+        .member-info { flex: 1; min-width: 0; }
+        .member-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .member-role {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+        .member-role.gm { color: var(--gold); }
+        .member-role.player { color: var(--ink-dim); }
+        .member-chars { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .char-chip {
+            font-size: 0.8em;
+            color: var(--ink-muted);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            padding: 2px 10px;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+        .char-chip:hover { border-color: var(--border-gold); color: var(--gold-mid); }
+
+        /* Link character section */
+        .link-char-wrap { margin-top: 8px; }
+        .link-char-select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-right: 8px;
+        }
+        .link-char-select:focus { border-color: var(--gold); }
+        .btn-link {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-link:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-unlink {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.7);
+            border: 1px solid rgba(180,60,60,0.25);
+            background: transparent;
+            padding: 2px 8px;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-left: 4px;
+        }
+        .btn-unlink:hover { border-color: rgba(180,60,60,0.6); color: rgba(180,60,60,0.9); }
+
+        .empty-note { color: var(--ink-dim); font-style: italic; font-size: 0.88em; padding: 6px 0; }
+
+        /* Table button */
+        .btn-table {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            border: 1px dashed var(--border-mid);
+            background: transparent;
+            padding: 10px 24px;
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        @media (max-width: 700px) {
+            .campaign-wrap { padding: 28px 20px 60px; }
+            .campaign-title { font-size: 1.7em; }
+            .invite-block { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"></nav>
+
+    <div class="campaign-wrap" id="campaignWrap" style="display:none;">
+
+        <div class="campaign-header">
+            <a href="index.html" class="campaign-back">← All Campaigns</a>
+            <div class="campaign-title" id="campaignTitle">Loading…</div>
+            <div class="campaign-owner-badge" id="campaignOwnerBadge"></div>
+        </div>
+
+        <div class="invite-block">
+            <div>
+                <div class="invite-label">Invite Link</div>
+                <div class="invite-link-text" id="inviteLinkText"></div>
+            </div>
+            <button class="btn-copy" id="copyInviteBtn">Copy Link</button>
+        </div>
+
+        <!-- Members -->
+        <div class="camp-section">
+            <div class="camp-section-header">
+                <h2>Members</h2>
+                <button class="btn-table" disabled title="Coming in V3">Open Table</button>
+            </div>
+            <div id="membersList"><p class="empty-note">Loading…</p></div>
+        </div>
+
+        <!-- My characters in this campaign -->
+        <div class="camp-section" id="myCharSection">
+            <div class="camp-section-header">
+                <h2>My Characters</h2>
+            </div>
+            <div id="myCharContent"></div>
+        </div>
+
+    </div>
+
+    <div class="campaign-wrap" id="errorWrap" style="display:none;">
+        <p style="color:var(--ink-dim);font-style:italic;">Campaign not found or you don't have access.</p>
+        <a href="index.html" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.8em;letter-spacing:0.1em;">← Back to Campaigns</a>
+    </div>
+
+    <script src="nav.js"></script>
+    <script type="module">
+        import {
+            onAuthChange,
+            getCampaign, getCampaignMembers,
+            loadCharacters,
+            linkCharacterToCampaign, unlinkCharacterFromCampaign
+        } from './firebase-init.js';
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('id');
+
+        if (!campaignId) {
+            window.location.href = 'index.html';
+        }
+
+        let currentUser  = null;
+        let campaign     = null;
+        let myChars      = [];
+        let members      = [];
+
+        onAuthChange(async user => {
+            if (!user) { window.location.href = 'index.html'; return; }
+            currentUser = user;
+            await loadCampaign();
+        });
+
+        async function loadCampaign() {
+            [campaign, members, myChars] = await Promise.all([
+                getCampaign(campaignId),
+                getCampaignMembers(campaignId),
+                loadCharacters(currentUser.uid)
+            ]);
+
+            if (!campaign || !campaign.memberUids.includes(currentUser.uid)) {
+                document.getElementById('errorWrap').style.display = 'block';
+                return;
+            }
+
+            document.title = `${campaign.name} — Brackenroll`;
+            document.getElementById('campaignWrap').style.display = 'block';
+            renderHeader();
+            renderInvite();
+            renderMembers();
+            renderMyChars();
+        }
+
+        function renderHeader() {
+            document.getElementById('campaignTitle').textContent = campaign.name;
+            const isOwner = campaign.ownerUid === currentUser.uid;
+            document.getElementById('campaignOwnerBadge').innerHTML =
+                `Owned by <span>${isOwner ? 'you' : 'GM'}</span> · ${campaign.memberUids.length} member${campaign.memberUids.length !== 1 ? 's' : ''}`;
+        }
+
+        function renderInvite() {
+            const link = `${window.location.origin}/join.html?code=${campaign.inviteCode}`;
+            document.getElementById('inviteLinkText').textContent = link;
+            const btn = document.getElementById('copyInviteBtn');
+            btn.addEventListener('click', () => {
+                navigator.clipboard.writeText(link).then(() => {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+                });
+            });
+        }
+
+        function renderMembers() {
+            const el = document.getElementById('membersList');
+            el.innerHTML = '';
+            if (members.length === 0) {
+                el.innerHTML = '<p class="empty-note">No members yet.</p>';
+                return;
+            }
+
+            const myMember = members.find(m => m.uid === currentUser.uid);
+            const others   = members.filter(m => m.uid !== currentUser.uid);
+            const sorted   = myMember ? [myMember, ...others] : others;
+
+            sorted.forEach(m => {
+                const isMe    = m.uid === currentUser.uid;
+                const isOwner = campaign.ownerUid === m.uid;
+                const row = document.createElement('div');
+                row.className = 'member-row';
+
+                const info = document.createElement('div');
+                info.className = 'member-info';
+
+                const name = document.createElement('div');
+                name.className = 'member-name';
+                name.textContent = isMe ? 'You' : (m.displayName ?? 'Player');
+
+                const role = document.createElement('div');
+                role.className = `member-role ${isOwner ? 'gm' : 'player'}`;
+                role.textContent = isOwner ? 'Game Master' : 'Player';
+
+                info.append(name, role);
+
+                // Linked characters
+                const charIds = m.characterIds ?? [];
+                if (charIds.length > 0) {
+                    const chips = document.createElement('div');
+                    chips.className = 'member-chars';
+                    charIds.forEach(cid => {
+                        const ch = myChars.find(c => c.id === cid);
+                        if (isMe && ch) {
+                            const chip = document.createElement('a');
+                            chip.className = 'char-chip';
+                            chip.href = `character-sheet.html?id=${cid}`;
+                            chip.textContent = ch.name ?? 'Character';
+
+                            const unlink = document.createElement('button');
+                            unlink.className = 'btn-unlink';
+                            unlink.textContent = '×';
+                            unlink.title = 'Unlink from campaign';
+                            unlink.addEventListener('click', async e => {
+                                e.preventDefault();
+                                await unlinkCharacterFromCampaign(currentUser.uid, campaignId, cid);
+                                await loadCampaign();
+                            });
+                            chips.append(chip, unlink);
+                        } else {
+                            const chip = document.createElement('span');
+                            chip.className = 'char-chip';
+                            chip.textContent = isMe && ch ? ch.name : cid.substring(0, 8) + '…';
+                            chips.appendChild(chip);
+                        }
+                    });
+                    info.appendChild(chips);
+                }
+
+                row.appendChild(info);
+                el.appendChild(row);
+            });
+        }
+
+        function renderMyChars() {
+            const el = document.getElementById('myCharContent');
+            el.innerHTML = '';
+
+            const myMember  = members.find(m => m.uid === currentUser.uid);
+            const linkedIds = myMember?.characterIds ?? [];
+            const unlinked  = myChars.filter(c => !linkedIds.includes(c.id));
+
+            if (myChars.length === 0) {
+                el.innerHTML = `<p class="empty-note">You have no characters. <a href="character-builder.html" style="color:var(--gold);">Create one →</a></p>`;
+                return;
+            }
+
+            if (unlinked.length === 0) {
+                el.innerHTML = '<p class="empty-note">All your characters are linked to this campaign.</p>';
+                return;
+            }
+
+            const wrap = document.createElement('div');
+            wrap.className = 'link-char-wrap';
+
+            const label = document.createElement('div');
+            label.style.cssText = 'font-family:Cinzel,serif;font-size:0.72em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px;';
+            label.textContent = 'Link a character to this campaign';
+
+            const select = document.createElement('select');
+            select.className = 'link-char-select';
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = 'Choose a character…';
+            select.appendChild(defaultOpt);
+            unlinked.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name ?? 'Unnamed'} (${c.className ?? 'Unknown'}, Lv ${c.sheetState?.level ?? 1})`;
+                select.appendChild(opt);
+            });
+
+            const btn = document.createElement('button');
+            btn.className = 'btn-link';
+            btn.textContent = 'Link';
+            btn.addEventListener('click', async () => {
+                const charId = select.value;
+                if (!charId) return;
+                btn.disabled = true;
+                btn.textContent = 'Linking…';
+                await linkCharacterToCampaign(currentUser.uid, campaignId, charId);
+                await loadCampaign();
+            });
+
+            wrap.append(label, select, btn);
+            el.appendChild(wrap);
+        }
+    </script>
+</body>
+</html>

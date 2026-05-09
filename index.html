@@ -3,390 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Verdant Curse — Campaign Hub</title>
+    <title>Brackenroll</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Hero */
-        .hero {
-            position: relative;
-            min-height: 500px;
-            display: flex;
-            align-items: flex-end;
-            overflow: hidden;
-            background:
-                linear-gradient(to right, rgba(8, 6, 3, 0.82) 0%, rgba(8, 6, 3, 0.4) 60%, rgba(8, 6, 3, 0.15) 100%),
-                radial-gradient(ellipse 60% 80% at 35% 60%, rgba(20, 40, 15, 0.65) 0%, transparent 70%),
-                url('hero.png') center center / cover no-repeat;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-            pointer-events: none;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 20%; right: 28%;
-            width: 260px; height: 260px;
-            background: radial-gradient(circle, rgba(100,160,60,0.07) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 2;
+        .hub-wrap {
             max-width: 1100px;
             margin: 0 auto;
-            width: 100%;
-            padding: 72px 56px 60px;
+            padding: 48px 56px 80px;
         }
 
-        .hero-tag {
-            font-family: 'Cinzel', serif;
-            font-size: 0.7em;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: rgba(201, 168, 76, 0.9);
-            margin-bottom: 16px;
+        /* Auth gate */
+        .auth-gate {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 12px;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+            justify-content: center;
+            min-height: 60vh;
+            gap: 24px;
+            text-align: center;
         }
-        .hero-tag::before { content: ''; display: block; width: 28px; height: 1px; background: rgba(201,168,76,0.6); }
-
-        .hero h1 {
+        .auth-gate h1 {
             font-family: 'Cinzel', serif;
-            font-size: 3.8em;
+            font-size: 2.4em;
             font-weight: 700;
             color: var(--h-gold-b);
-            line-height: 1.05;
-            letter-spacing: 0.03em;
-            text-shadow: 0 0 60px rgba(232,201,106,0.3), 0 2px 12px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,1);
-            margin-bottom: 16px;
-            max-width: 600px;
+            letter-spacing: 0.04em;
         }
-
-        .hero-sub {
-            font-size: 1.2em;
+        .auth-gate p {
+            color: var(--ink-muted);
             font-style: italic;
-            color: #c8bfa8;
-            margin-bottom: 36px;
-            max-width: 480px;
-            line-height: 1.5;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.95), 0 2px 4px rgba(0,0,0,0.8);
+            font-size: 1.05em;
         }
 
-        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-
-        .btn-primary {
-            background: var(--h-gold);
-            color: #0c0a07;
-            border: 1px solid var(--h-gold);
-            padding: 12px 30px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8em;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover { background: var(--h-gold-b); border-color: var(--h-gold-b); color: #0c0a07; }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--h-gold);
-            border: 1px solid rgba(201,168,76,0.35);
-            padding: 12px 30px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8em;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover { border-color: var(--h-gold); background: rgba(201,168,76,0.08); color: var(--h-gold-b); }
-
-        /* Content */
-        .site-section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 56px 56px;
-        }
-
-        .section-header {
+        /* Section header */
+        .hub-section { margin-bottom: 56px; }
+        .hub-section-header {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border-gold);
         }
-
-        .section-header h2 {
+        .hub-section-header h2 {
             font-family: 'Cinzel', serif;
-            font-size: 1.05em;
+            font-size: 1em;
             font-weight: 600;
             color: var(--gold-mid);
-            letter-spacing: 0.15em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
         }
 
-        .section-tag {
+        /* Create button */
+        .btn-create {
             font-family: 'Cinzel', serif;
-            font-size: 0.68em;
-            letter-spacing: 0.1em;
-            color: var(--ink-dim);
+            font-size: 0.7em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 7px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn-create:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
 
-        /* Resource cards */
-        .resource-grid {
+        /* Cards grid */
+        .hub-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2px;
         }
 
-        .resource-card {
+        /* Campaign card */
+        .hub-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 28px 28px 24px;
+            padding: 24px 24px 20px;
             display: flex;
             flex-direction: column;
             text-decoration: none;
             color: inherit;
             position: relative;
             overflow: hidden;
-            transition: all 0.25s;
-            backdrop-filter: blur(4px);
+            transition: all 0.22s;
+            cursor: pointer;
         }
-
-        .resource-card::after {
+        .hub-card::after {
             content: '';
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--gold), transparent);
             opacity: 0;
-            transition: opacity 0.25s;
+            transition: opacity 0.22s;
         }
+        .hub-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
+        .hub-card:hover::after { opacity: 1; }
 
-        .resource-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
-        .resource-card:hover::after { opacity: 1; }
-
-        .card-category {
+        .hub-card-role {
             font-family: 'Cinzel', serif;
-            font-size: 0.65em;
+            font-size: 0.62em;
             letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--gold);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-
-        .card-title {
+        .hub-card-name {
             font-family: 'Cinzel', serif;
             font-size: 1.05em;
             font-weight: 600;
             color: var(--ink);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             line-height: 1.3;
         }
-
-        .card-desc {
-            font-size: 0.92em;
-            color: var(--ink-muted);
-            line-height: 1.6;
+        .hub-card-meta {
+            font-size: 0.85em;
+            color: var(--ink-dim);
             flex: 1;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-
-        .card-link {
+        .hub-card-link {
             font-family: 'Cinzel', serif;
-            font-size: 0.7em;
-            letter-spacing: 0.15em;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--ink-dim);
             transition: color 0.2s;
         }
-        .resource-card:hover .card-link { color: var(--gold); }
+        .hub-card:hover .hub-card-link { color: var(--gold); }
 
-        /* VTT card — muted, coming soon feel */
-        .resource-card.vtt {
-            opacity: 0.7;
-            border-style: dashed;
+        .role-gm { color: var(--gold); }
+        .role-player { color: var(--ink-muted); }
+
+        /* Empty state */
+        .hub-empty {
+            color: var(--ink-dim);
+            font-style: italic;
+            font-size: 0.9em;
+            padding: 8px 0;
         }
-        .resource-card.vtt:hover { opacity: 0.9; }
-        .card-coming {
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.72);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--bg-card, #14110d);
+            border: 1px solid var(--border-gold);
+            padding: 36px 40px;
+            max-width: 440px;
+            width: 90%;
+        }
+        .modal-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.62em;
-            letter-spacing: 0.15em;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--gold-mid);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .modal-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--ink-dim);
-            border: 1px solid var(--border);
-            padding: 3px 8px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        /* Divider */
-        .divider {
-            text-align: center;
-            color: var(--border-gold);
-            font-size: 1.1em;
-            letter-spacing: 0.6em;
-            padding: 32px 0;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        /* About / intro */
-        .about-section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 60px 56px;
-        }
-
-        .about-section h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 2em;
-            font-weight: 400;
-            color: var(--ink);
-            text-align: center;
-            letter-spacing: 0.06em;
+            display: block;
             margin-bottom: 8px;
         }
-
-        .ornament {
-            text-align: center;
+        .modal-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            padding: 10px 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 24px;
+        }
+        .modal-input:focus { border-color: var(--gold); }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+        .btn-cancel {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
             color: var(--ink-dim);
-            font-size: 1.1em;
-            letter-spacing: 0.6em;
-            display: block;
-            margin: 12px 0 28px;
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            padding: 9px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-
-        .about-section > p {
-            max-width: 640px;
-            margin: 0 auto 14px;
-            text-align: center;
-            color: var(--ink-muted);
-            font-size: 1.05em;
+        .btn-cancel:hover { border-color: var(--ink-muted); color: var(--ink-muted); }
+        .btn-submit {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 9px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
         }
+        .btn-submit:hover { background: var(--h-gold-b); }
+        .btn-submit:disabled { opacity: 0.5; cursor: default; }
+        .modal-error { color: #c04040; font-size: 0.85em; margin-bottom: 16px; display: none; }
 
-        /* Footer */
-        .site-footer {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 28px 56px;
-            border-top: 1px solid var(--border-mid);
+        /* Sign in button */
+        .btn-google {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            background: #fff;
+            color: #333;
+            border: none;
+            padding: 12px 28px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
         }
+        .btn-google:hover { background: #f0f0f0; }
+        .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-        .footer-logo { font-family: 'Cinzel', serif; font-size: 0.85em; font-weight: 700; color: var(--ink-dim); letter-spacing: 0.1em; }
-
-        .footer-right { font-family: 'Cinzel', serif; font-size: 0.68em; letter-spacing: 0.08em; color: var(--ink-dim); }
-
-        @media (max-width: 900px) {
-            .hero-inner { padding: 48px 24px 44px; }
-            .hero h1 { font-size: 2.6em; }
-            .site-section, .about-section { padding: 40px 24px; }
-            .resource-grid { grid-template-columns: 1fr; }
-            .site-footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
-        }
-
-        @media (max-width: 680px) {
-            .hero { min-height: 380px; }
-            .hero-inner { padding: 40px 20px 36px; }
-            .hero h1 { font-size: 2.0em; }
-            .hero-sub { font-size: 0.95em; }
-            .hero-actions { flex-direction: column; gap: 10px; align-items: flex-start; }
+        @media (max-width: 700px) {
+            .hub-wrap { padding: 32px 20px 60px; }
+            .hub-grid { grid-template-columns: 1fr; }
+            .modal-box { padding: 28px 24px; }
         }
     </style>
 </head>
 <body>
-
     <nav class="site-nav"></nav>
 
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="hero-tag">Player Resources</div>
-            <h1>The Verdant Curse</h1>
-            <p class="hero-sub">A forest that never sleeps. A plague that turns you to stone. Two dying nations and no easy answers.</p>
-            <div class="hero-actions">
-                <a href="primer.html" class="btn-primary">Read the Primer</a>
-                <a href="character-builder.html" class="btn-secondary">Build Your Character</a>
+    <div class="hub-wrap">
+        <!-- Auth gate (shown when not logged in) -->
+        <div class="auth-gate" id="authGate">
+            <h1>Brackenroll</h1>
+            <p>A Daggerheart virtual tabletop.<br>Sign in to access your campaigns and characters.</p>
+            <button class="btn-google" id="googleSignIn">
+                <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                Sign in with Google
+            </button>
+        </div>
+
+        <!-- Main hub (shown when logged in) -->
+        <div id="hubContent" style="display:none;">
+
+            <!-- Campaigns -->
+            <div class="hub-section">
+                <div class="hub-section-header">
+                    <h2>My Campaigns</h2>
+                    <button class="btn-create" id="createCampaignBtn">+ New Campaign</button>
+                </div>
+                <div class="hub-grid" id="campaignGrid">
+                    <p class="hub-empty">Loading campaigns…</p>
+                </div>
+            </div>
+
+            <!-- Characters -->
+            <div class="hub-section">
+                <div class="hub-section-header">
+                    <h2>My Characters</h2>
+                    <a href="character-builder.html" class="btn-create">+ New Character</a>
+                </div>
+                <div class="hub-grid" id="characterGrid">
+                    <p class="hub-empty">Loading characters…</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Create campaign modal -->
+    <div class="modal-overlay" id="campaignModal">
+        <div class="modal-box">
+            <div class="modal-title">New Campaign</div>
+            <p class="modal-error" id="campaignModalError"></p>
+            <label class="modal-label" for="campaignNameInput">Campaign Name</label>
+            <input class="modal-input" id="campaignNameInput" type="text" placeholder="e.g. The Verdant Curse" maxlength="80" autocomplete="off">
+            <div class="modal-actions">
+                <button class="btn-cancel" id="campaignModalCancel">Cancel</button>
+                <button class="btn-submit" id="campaignModalSubmit">Create</button>
             </div>
         </div>
-    </section>
-
-    <section class="site-section">
-        <div class="section-header">
-            <h2>Player Resources</h2>
-            <span class="section-tag">The Verdant Curse Campaign</span>
-        </div>
-
-        <div class="resource-grid">
-            <a href="primer.html" class="resource-card">
-                <div class="card-category">World Primer</div>
-                <div class="card-title">The Traveler's Warning</div>
-                <p class="card-desc">A blood-stained journal found at a border checkpoint. Everything you need to know before stepping foot in Verdanya — from someone who wishes they'd turned back.</p>
-                <span class="card-link">Read the Primer →</span>
-            </a>
-
-            <a href="conditions.html" class="resource-card">
-                <div class="card-category">The World's Dangers</div>
-                <div class="card-title">The Verdant Curse & Ashlung</div>
-                <p class="card-desc">The two forces tearing this world apart. What they look like, what they do to people, and what your character would know walking in.</p>
-                <span class="card-link">Learn the Dangers →</span>
-            </a>
-
-            <a href="characters.html" class="resource-card">
-                <div class="card-category">Character Creation</div>
-                <div class="card-title">Building Your Character</div>
-                <p class="card-desc">Session Zero questions, character hooks for different backgrounds, and the questions this campaign will ask you — repeatedly, in different ways.</p>
-                <span class="card-link">View Character Guide →</span>
-            </a>
-
-            <a href="factions.html" class="resource-card">
-                <div class="card-category">The World</div>
-                <div class="card-title">Factions & Powers</div>
-                <p class="card-desc">Ironhold, Verdanya, the Resistance, the Faint Divinities. Who's fighting, who's surviving, and why none of them are simply wrong.</p>
-                <span class="card-link">View Factions →</span>
-            </a>
-
-            <a href="vtt.fwbgaming.win" target="_blank" class="resource-card vtt">
-                <span class="card-coming">Coming Soon</span>
-                <div class="card-category">Virtual Tabletop</div>
-                <div class="card-title">Tabletop</div>
-                <p class="card-desc">Online tabletop for maps, character sheets, and shared scenes. May be used for this campaign — check with your GM.</p>
-                <span class="card-link">Open Tabletop ↗</span>
-            </a>
-        </div>
-    </section>
-
-    <div class="divider">✦</div>
-
-    <section class="about-section">
-        <h2>Before You Begin</h2>
-        <span class="ornament">— ✦ —</span>
-        <p>This campaign is built around moral complexity and genuine choice. There are no pure heroes or pure villains here — just people doing desperate things in desperate circumstances.</p>
-        <p>You will be asked to choose sides. You will find reasons to doubt your choice. The world will not reward you for playing it safe.</p>
-        <p style="font-style:italic;color:var(--ink-dim);font-size:0.95em;">The forest is listening. And it remembers.</p>
-    </section>
-
-    <footer class="site-footer">
-        <span class="footer-logo">The Verdant Curse</span>
-        <span class="footer-right">Daggerheart · Darrington Press · 2026</span>
-    </footer>
+    </div>
 
     <script src="nav.js"></script>
+    <script type="module">
+        import {
+            onAuthChange, signInWithGoogle,
+            getCampaigns, createCampaign,
+            loadCharacters
+        } from './firebase-init.js';
+
+        const authGate   = document.getElementById('authGate');
+        const hubContent = document.getElementById('hubContent');
+        const campaignGrid   = document.getElementById('campaignGrid');
+        const characterGrid  = document.getElementById('characterGrid');
+        const modal      = document.getElementById('campaignModal');
+        const modalInput = document.getElementById('campaignNameInput');
+        const modalError = document.getElementById('campaignModalError');
+        const modalSubmit = document.getElementById('campaignModalSubmit');
+
+        document.getElementById('googleSignIn').addEventListener('click', () => signInWithGoogle());
+
+        document.getElementById('createCampaignBtn').addEventListener('click', () => {
+            modalInput.value = '';
+            modalError.style.display = 'none';
+            modal.classList.add('open');
+            modalInput.focus();
+        });
+
+        document.getElementById('campaignModalCancel').addEventListener('click', () => modal.classList.remove('open'));
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+        modalSubmit.addEventListener('click', async () => {
+            const name = modalInput.value.trim();
+            if (!name) { showModalError('Please enter a campaign name.'); return; }
+            modalSubmit.disabled = true;
+            modalSubmit.textContent = 'Creating…';
+            try {
+                const id = await createCampaign(currentUser.uid, name);
+                modal.classList.remove('open');
+                window.location.href = `campaign.html?id=${id}`;
+            } catch (e) {
+                showModalError('Something went wrong. Try again.');
+                modalSubmit.disabled = false;
+                modalSubmit.textContent = 'Create';
+            }
+        });
+
+        modalInput.addEventListener('keydown', e => { if (e.key === 'Enter') modalSubmit.click(); });
+
+        function showModalError(msg) {
+            modalError.textContent = msg;
+            modalError.style.display = 'block';
+        }
+
+        let currentUser = null;
+
+        onAuthChange(async user => {
+            if (!user) {
+                authGate.style.display = 'flex';
+                hubContent.style.display = 'none';
+                return;
+            }
+            currentUser = user;
+            authGate.style.display = 'none';
+            hubContent.style.display = 'block';
+            loadHub(user);
+        });
+
+        async function loadHub(user) {
+            const [campaigns, characters] = await Promise.all([
+                getCampaigns(user.uid),
+                loadCharacters(user.uid)
+            ]);
+            renderCampaigns(campaigns, user.uid);
+            renderCharacters(characters);
+        }
+
+        function renderCampaigns(campaigns, uid) {
+            campaignGrid.innerHTML = '';
+            if (campaigns.length === 0) {
+                campaignGrid.innerHTML = '<p class="hub-empty">No campaigns yet. Create one or join one with an invite link.</p>';
+                return;
+            }
+            campaigns
+                .sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0))
+                .forEach(c => {
+                    const isOwner = c.ownerUid === uid;
+                    const card = document.createElement('a');
+                    card.className = 'hub-card';
+                    card.href = `campaign.html?id=${c.id}`;
+                    card.innerHTML = `
+                        <div class="hub-card-role ${isOwner ? 'role-gm' : 'role-player'}">${isOwner ? 'Game Master' : 'Player'}</div>
+                        <div class="hub-card-name">${escHtml(c.name)}</div>
+                        <div class="hub-card-meta">${c.memberUids.length} member${c.memberUids.length !== 1 ? 's' : ''}</div>
+                        <span class="hub-card-link">View Campaign →</span>`;
+                    campaignGrid.appendChild(card);
+                });
+        }
+
+        function renderCharacters(characters) {
+            characterGrid.innerHTML = '';
+            if (characters.length === 0) {
+                characterGrid.innerHTML = '<p class="hub-empty">No characters yet. Create your first one above.</p>';
+                return;
+            }
+            characters.forEach(ch => {
+                const card = document.createElement('a');
+                card.className = 'hub-card';
+                card.href = `character-sheet.html?id=${ch.id}`;
+                card.innerHTML = `
+                    <div class="hub-card-role">${escHtml(ch.className ?? '')}</div>
+                    <div class="hub-card-name">${escHtml(ch.name ?? 'Unnamed')}</div>
+                    <div class="hub-card-meta">Level ${ch.sheetState?.level ?? 1}</div>
+                    <span class="hub-card-link">Open Sheet →</span>`;
+                characterGrid.appendChild(card);
+            });
+        }
+
+        function escHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+    </script>
 </body>
 </html>
