@@ -3,77 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brackenroll — Daggerheart Campaign Tools</title>
+    <title>The Verdant Curse — Campaign Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --ink:         #1e1008;
-            --ink-mid:     #3a2010;
-            --ink-muted:   #6a5030;
-            --ink-dim:     #9a8060;
-            --gold:        #8a5c10;
-            --gold-mid:    #6a4008;
-            --gold-light:  #c9a84c;
-            --card-bg:     rgba(248, 242, 228, 0.55);
-            --card-hover:  rgba(248, 242, 228, 0.82);
-            --border:      rgba(120, 80, 30, 0.18);
-            --border-mid:  rgba(120, 80, 30, 0.32);
-            --border-gold: rgba(138, 92, 16, 0.42);
-            --h-gold:      #c9a84c;
-            --h-gold-b:    #e8c96a;
-            --h-muted:     #8a7860;
-            --h-dim:       #4a3e30;
-        }
-
-        body {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 17px;
-            background: url('parchment.jpg') center top / cover fixed;
-            color: var(--ink);
-            line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Nav */
-        nav {
-            background: rgba(10, 7, 3, 0.94);
-            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
-            padding: 0 48px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 56px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-logo {
-            font-family: 'Cinzel', serif;
-            font-size: 1.0em;
-            font-weight: 700;
-            color: var(--h-gold-b);
-            letter-spacing: 0.1em;
-            text-decoration: none;
-        }
-
-        .nav-links { display: flex; gap: 28px; list-style: none; }
-
-        .nav-links a {
-            font-family: 'Cinzel', serif;
-            font-size: 0.72em;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--h-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--h-gold); }
-
         /* Hero */
         .hero {
             position: relative;
@@ -361,8 +295,6 @@
         .footer-right { font-family: 'Cinzel', serif; font-size: 0.68em; letter-spacing: 0.08em; color: var(--ink-dim); }
 
         @media (max-width: 900px) {
-            nav { padding: 0 20px; }
-            .nav-links { gap: 16px; }
             .hero-inner { padding: 48px 24px 44px; }
             .hero h1 { font-size: 2.6em; }
             .site-section, .about-section { padding: 40px 24px; }
@@ -370,54 +302,7 @@
             .site-footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
         }
 
-        /* Hamburger */
-        .nav-hamburger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px 4px;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5px;
-            height: 40px;
-            width: 36px;
-            flex-shrink: 0;
-        }
-        .nav-hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--h-muted);
-            transition: transform 0.25s, opacity 0.2s, background 0.2s;
-            transform-origin: center;
-        }
-        .nav-hamburger:hover span { background: var(--h-gold); }
-
         @media (max-width: 680px) {
-            nav { padding: 0 16px; overflow: visible; }
-            .nav-hamburger { display: flex; }
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 56px;
-                left: 0; right: 0;
-                background: rgba(8, 6, 3, 0.97);
-                border-bottom: 1px solid rgba(201, 168, 76, 0.22);
-                flex-direction: column;
-                padding: 6px 0 14px;
-                gap: 0;
-                z-index: 99;
-                backdrop-filter: blur(12px);
-                box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            }
-            nav.nav-open .nav-links { display: flex; }
-            .nav-links li { border-bottom: 1px solid rgba(201,168,76,0.07); }
-            .nav-links li:last-child { border-bottom: none; }
-            .nav-links a { display: block; padding: 13px 20px; font-size: 0.8em; }
-            nav.nav-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--h-gold); }
-            nav.nav-open .nav-hamburger span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-            nav.nav-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--h-gold); }
             .hero { min-height: 380px; }
             .hero-inner { padding: 40px 20px 36px; }
             .hero h1 { font-size: 2.0em; }
@@ -428,18 +313,7 @@
 </head>
 <body>
 
-    <nav class="site-nav">
-        <a href="index.html" class="nav-logo">brackenroll</a>
-        <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
-        <ul class="nav-links">
-            <li><a href="primer.html">The World</a></li>
-            <li><a href="conditions.html">The Conditions</a></li>
-            <li><a href="factions.html">Factions</a></li>
-            <li><a href="handbook.html">Handbook</a></li>
-            <li><a href="character-builder.html">Builder</a></li>
-            <li><a href="vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
-        </ul>
-    </nav>
+    <nav class="site-nav"></nav>
 
     <section class="hero">
         <div class="hero-inner">
@@ -509,7 +383,7 @@
     </section>
 
     <footer class="site-footer">
-        <span class="footer-logo">brackenroll</span>
+        <span class="footer-logo">The Verdant Curse</span>
         <span class="footer-right">Daggerheart · Darrington Press · 2026</span>
     </footer>
 

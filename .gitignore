@@ -1,0 +1,3 @@
+# Environment-specific — each deployment keeps its own copy
+firebase-init.js
+docker-compose.yml

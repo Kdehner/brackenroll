@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Handbook — Brackenroll</title>
+    <title>Player Handbook — The Verdant Curse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -28,7 +28,7 @@
             font-size: 0.72em;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            padding: 12px 22px;
+            padding: 12px 18px;
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
@@ -282,6 +282,85 @@
         .ref-label { color: var(--ink-muted); }
         .ref-value { color: var(--ink-dim); font-family: 'Cinzel', serif; font-size: 0.9em; letter-spacing: 0.05em; }
 
+        /* ── CONDITION CARDS ─────────────────────────────── */
+        .condition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .condition-card {
+            background: rgba(248,242,228,0.55);
+            border: 1px solid var(--border);
+            border-left: 4px solid rgba(150,80,40,0.4);
+            padding: 16px 18px;
+        }
+        .condition-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .condition-desc { font-size: 0.87em; color: var(--ink-muted); line-height: 1.6; margin: 0; }
+
+        /* ── DOWNTIME / REST ─────────────────────────────── */
+        .rest-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .rest-block {
+            background: rgba(248,242,228,0.55);
+            border: 1px solid var(--border);
+            padding: 22px 24px;
+        }
+        .rest-block h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 700;
+            color: var(--gold-mid);
+            margin: 0 0 6px 0;
+        }
+        .rest-block .rest-note {
+            font-size: 0.8em;
+            color: var(--ink-dim);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+        .rest-move {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(120,80,30,0.1);
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            line-height: 1.5;
+        }
+        .rest-move:last-child { border-bottom: none; }
+        .rest-move strong { color: var(--ink); font-family: 'Cinzel', serif; font-size: 0.95em; }
+
+        /* ── DEATH MOVES ─────────────────────────────────── */
+        .death-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .death-card {
+            background: rgba(248,242,228,0.55);
+            border: 1px solid var(--border);
+            border-top: 3px solid rgba(150,40,40,0.5);
+            padding: 18px 20px;
+        }
+        .death-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 0 0 8px 0;
+        }
+        .death-card p { font-size: 0.87em; color: var(--ink-muted); line-height: 1.6; margin: 0; }
+
         /* ── CLICKABLE CLASS / ANCESTRY CARDS ───────────── */
         .card-grid-3 {
             display: grid;
@@ -345,7 +424,7 @@
             color: var(--ink-dim);
         }
 
-        /* compact ancestry card */
+        /* compact ancestry / community card */
         .anc-card {
             background: rgba(248,242,228,0.55);
             border: 1px solid var(--border);
@@ -361,6 +440,14 @@
             font-weight: 600;
             color: var(--gold-mid);
             margin-bottom: 4px;
+        }
+        .anc-card-feat {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            font-weight: 600;
+            color: var(--ink-dim);
+            margin-bottom: 4px;
+            letter-spacing: 0.04em;
         }
         .anc-card-desc { font-size: 0.83em; color: var(--ink-muted); line-height: 1.55; }
 
@@ -478,6 +565,63 @@
         @media (max-width: 700px) { .dc-card-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 480px) { .dc-card-grid { grid-template-columns: 1fr; } }
 
+        /* ── EQUIPMENT TABLE ─────────────────────────────── */
+        .equip-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .equip-filter-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            background: rgba(248,242,228,0.45);
+            color: var(--ink-muted);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .equip-filter-btn:hover { border-color: var(--border-gold); color: var(--ink); }
+        .equip-filter-btn.active { background: var(--gold-mid); border-color: var(--gold-mid); color: #f5edd8; }
+        .equip-table-wrap { overflow-x: auto; margin-bottom: 40px; }
+        .equip-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86em;
+        }
+        .equip-table th {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 2px solid var(--border-gold);
+            white-space: nowrap;
+        }
+        .equip-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(120,80,30,0.1);
+            color: var(--ink-muted);
+            vertical-align: top;
+        }
+        .equip-table tr:hover td { background: rgba(248,242,228,0.6); }
+        .equip-table td:first-child { font-family: 'Cinzel', serif; font-size: 0.88em; color: var(--ink); font-weight: 600; }
+        .equip-section-head {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin: 32px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
         /* ── ADVANCEMENT ─────────────────────────────────── */
         .tier-grid {
             display: grid;
@@ -537,6 +681,9 @@
             .domain-grid { grid-template-columns: 1fr 1fr; }
             .tier-grid { grid-template-columns: 1fr 1fr; }
             .ref-grid { grid-template-columns: 1fr; }
+            .condition-grid { grid-template-columns: 1fr; }
+            .rest-grid { grid-template-columns: 1fr; }
+            .death-grid { grid-template-columns: 1fr; }
             .modal-box { padding: 28px 24px; }
         }
         @media (max-width: 520px) {
@@ -550,18 +697,7 @@
 </head>
 <body>
 
-<nav class="site-nav">
-    <a href="index.html" class="nav-logo">brackenroll</a>
-    <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
-        <ul class="nav-links">
-        <li><a href="primer.html">The World</a></li>
-        <li><a href="conditions.html">The Conditions</a></li>
-        <li><a href="factions.html">Factions</a></li>
-        <li><a href="handbook.html">Handbook</a></li>
-        <li><a href="character-builder.html">Builder</a></li>
-        <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
-    </ul>
-</nav>
+<nav class="site-nav"></nav>
 
 <div class="page-hero">
     <div class="page-hero-inner">
@@ -577,7 +713,9 @@
         <button class="tab-btn active" onclick="switchTab('play',this)">How to Play</button>
         <button class="tab-btn" onclick="switchTab('classes',this)">Classes</button>
         <button class="tab-btn" onclick="switchTab('ancestries',this)">Ancestries</button>
+        <button class="tab-btn" onclick="switchTab('communities',this)">Communities</button>
         <button class="tab-btn" onclick="switchTab('domains',this)">Domains</button>
+        <button class="tab-btn" onclick="switchTab('equipment',this)">Equipment</button>
         <button class="tab-btn" onclick="switchTab('advancement',this)">Advancement</button>
     </div>
 
@@ -588,10 +726,26 @@
     ════════════════════════════════════════════════════════ -->
     <div id="tab-play" class="tab-panel active">
 
-        <p style="max-width:680px;margin-bottom:32px;color:var(--ink-muted);">Daggerheart runs on a simple loop: your character tries something uncertain, you roll to find out what happens. The twist is that every roll produces two things at once — an outcome for you, and an outcome for the world.</p>
+        <p style="max-width:680px;margin-bottom:32px;color:var(--ink-muted);">Daggerheart runs on a conversation loop: describe what you do, roll when the outcome is uncertain and interesting, find out what happens. Every roll produces two things at once — an outcome for you, and an outcome for the world.</p>
 
+        <!-- WHEN TO ROLL -->
+        <h2>When to Roll</h2>
+        <div class="mechanic-grid" style="margin-bottom:32px;">
+            <div class="mechanic-card">
+                <h3>Roll When…</h3>
+                <p>The outcome is <strong>uncertain</strong> and <strong>interesting to the story</strong>. Your GM calls for a roll when success and failure would both move the fiction forward in meaningfully different ways.</p>
+                <p>Don't roll for things that are trivially easy or truly impossible — the GM already knows the result.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>No Initiative — No Rounds</h3>
+                <p>There is no initiative order or turn structure. The spotlight passes organically. Players act until someone fails a roll or rolls with Fear — then the GM takes a turn to spotlight adversaries. The GM can also spend Fear to interrupt players and spotlight enemies.</p>
+                <p>A spotlighted adversary moves, attacks, or uses an ability. Then play returns to the players.</p>
+            </div>
+        </div>
+
+        <!-- THE SIX TRAITS -->
         <h2>The Six Traits</h2>
-        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">Every action roll uses one of your six traits. Your GM will tell you which one, or it'll be obvious from what you're doing. Your trait score is a modifier you add to your roll.</p>
+        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">Every action roll uses one of your six traits. Your GM tells you which one fits what you're doing. Add your trait modifier to both dice when you roll.</p>
 
         <div class="trait-grid">
             <div class="trait-card">
@@ -620,33 +774,61 @@
             </div>
         </div>
 
+        <!-- THE DUALITY DICE -->
         <h2>The Duality Dice</h2>
         <div class="mechanic-grid">
             <div class="mechanic-card">
-                <h3>Making a Roll</h3>
-                <p>When you attempt something with an uncertain outcome, roll two twelve-sided dice — a <strong>Hope Die</strong> and a <strong>Fear Die</strong> — and add a modifier from one of your six traits.</p>
-                <p>Add both dice and your modifier together. Compare that total to the <strong>Difficulty</strong> set by your GM. Succeed or fail, the comparison between the two dice determines whether you or the GM gains something.</p>
+                <h3>Making an Action Roll</h3>
+                <p>Roll two d12s — a <strong>Hope Die</strong> and a <strong>Fear Die</strong>. Add your trait modifier and any other bonuses. Compare to the <strong>Difficulty</strong> set by your GM.</p>
+                <p><strong>All bonuses must be declared before you roll</strong> — you can't add them after seeing the result.</p>
+                <p>The two dice also determine whether you or the GM gains a resource, regardless of success or failure.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Attack &amp; Spellcast Rolls</h3>
+                <p><strong>Attack rolls</strong> use your weapon's listed trait and compare against the target's <strong>Evasion</strong> as the Difficulty.</p>
+                <p><strong>Spellcast rolls</strong> use your subclass's Spellcast Trait (shown on your subclass card). Only spells that specifically call for a Spellcast Roll use this — it cannot be substituted for other rolls.</p>
+                <p><strong>Unarmed attacks</strong> use Strength or Finesse and deal d4 physical damage using your Proficiency.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Reaction Rolls</h3>
+                <p>Some adversary attacks and spell effects call for a <strong>reaction roll</strong> — you roll to resist or avoid the effect. Use the same duality dice mechanic as an action roll, but reaction rolls don't generate Hope or Fear.</p>
+                <p>On a critical success on a reaction roll, you ignore even the partial effects that normally apply on a success.</p>
+                <p>You can spend Hope to add an applicable Experience modifier to a reaction roll.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Advantage &amp; Disadvantage</h3>
+                <p><strong>Advantage:</strong> add a d6 to your total.<br><strong>Disadvantage:</strong> subtract a d6 from your total.</p>
+                <p>Advantage and disadvantage cancel each other out one-for-one. If you have two sources of advantage and one of disadvantage, the result is one advantage die.</p>
+                <p>You never roll both at the same time — they always cancel before resolving.</p>
             </div>
             <div class="mechanic-card">
                 <h3>Hope</h3>
                 <p>Hope is your resource — earned when your Hope Die rolls higher than your Fear Die. You can hold up to 6 Hope at a time, and it carries between sessions.</p>
                 <p><strong>Spend Hope to:</strong></p>
                 <ul>
-                    <li>Give an ally a d6 advantage die (1 Hope)</li>
-                    <li>Use an Experience (1 Hope)</li>
+                    <li>Give an ally a d6 advantage die (1 Hope) — multiple allies can help simultaneously</li>
+                    <li>Add an Experience modifier to a roll (1 Hope)</li>
                     <li>Initiate a Tag Team Roll with an ally (3 Hope)</li>
                     <li>Activate your class's Hope Feature (usually 3 Hope)</li>
                 </ul>
             </div>
             <div class="mechanic-card">
                 <h3>Fear</h3>
-                <p>When your Fear Die rolls higher than your Hope Die, the GM gains a Fear token — even if you succeeded. Fear isn't failure; it's the world pushing back.</p>
-                <p>The GM spends Fear to spotlight adversaries, trigger complications, introduce new threats, or activate danger moves. A session with a lot of Fear is a tense one.</p>
+                <p>When your Fear Die rolls higher, the GM gains a Fear token — even if you succeeded. Fear isn't failure; it's the world pushing back.</p>
+                <p>The GM spends Fear to spotlight adversaries, trigger complications, introduce new threats, or activate danger moves.</p>
+                <p>On a <strong>short rest</strong> the GM gains 1d4 Fear. On a <strong>long rest</strong> the GM gains 1d4 + number of PCs Fear.</p>
             </div>
             <div class="mechanic-card">
                 <h3>Stress</h3>
-                <p>Stress is mental and physical strain. You have up to 5 Stress slots. Each marked Stress reduces your maximum Hope by 1 — so a stressed-out character can't hold as much good fortune.</p>
-                <p><strong>Mark a Stress to:</strong> add a d6 advantage die to any action roll, or activate certain features. Stress clears on a critical success or during downtime.</p>
+                <p>Stress is mental and physical strain. All characters start with <strong>6 Stress slots</strong>.</p>
+                <p><strong>Mark a Stress to:</strong> add a d6 advantage die to any action roll, or activate certain features.</p>
+                <p>When you mark your <strong>last Stress</strong> slot, you become <strong>Vulnerable</strong> until you clear at least 1 Stress. If you're forced to mark Stress when all slots are full, mark 1 HP instead.</p>
+                <p>Stress clears on a critical success or during downtime.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Critical Success Damage</h3>
+                <p>When both dice show the same number, it's a critical success — automatic success, gain 1 Hope, clear 1 Stress.</p>
+                <p>On a <strong>critical attack</strong>, you deal extra damage: set your damage dice to their <strong>maximum possible value</strong>, then roll them again and <strong>add</strong> the roll to the maximum. For example, a d8 weapon deals 8 + 1d8 damage on a critical.</p>
             </div>
         </div>
 
@@ -654,26 +836,52 @@
             <h3>What Your Roll Means</h3>
             <div class="outcome-row">
                 <span class="outcome-tag crit">Critical</span>
-                <div class="outcome-desc">Both dice show the same number — automatic success, gain 1 Hope, and clear 1 Stress, even if your total was below Difficulty.</div>
+                <div class="outcome-desc">Both dice show the same number — automatic success, gain 1 Hope, clear 1 Stress. On an attack, deal maximum dice value + roll again.</div>
             </div>
             <div class="outcome-row">
                 <span class="outcome-tag hope">Success with Hope</span>
-                <div class="outcome-desc">Total meets Difficulty and Hope Die is higher — you succeed and gain 1 Hope.</div>
+                <div class="outcome-desc">Total meets Difficulty and Hope Die is higher — you succeed and gain 1 Hope. Play stays with the players.</div>
             </div>
             <div class="outcome-row">
                 <span class="outcome-tag fear">Success with Fear</span>
-                <div class="outcome-desc">Total meets Difficulty but Fear Die is higher — you succeed, but the GM gains 1 Fear. Something complicates the moment.</div>
+                <div class="outcome-desc">Total meets Difficulty but Fear Die is higher — you succeed, but the GM gains 1 Fear and play passes to them. Something complicates the moment.</div>
             </div>
             <div class="outcome-row">
                 <span class="outcome-tag fail-h">Failure with Hope</span>
-                <div class="outcome-desc">Total falls short but Hope Die is higher — you fail, but gain 1 Hope. The door didn't open, but you found something useful.</div>
+                <div class="outcome-desc">Total falls short but Hope Die is higher — you fail, but gain 1 Hope. Play stays with the players. The door didn't open, but you found something useful.</div>
             </div>
             <div class="outcome-row">
                 <span class="outcome-tag fail-f">Failure with Fear</span>
-                <div class="outcome-desc">Total falls short and Fear Die is higher — you fail and the GM gains 1 Fear. Never the end of the story, but never easy either.</div>
+                <div class="outcome-desc">Total falls short and Fear Die is higher — you fail and the GM gains 1 Fear. Play passes to the GM. Never the end of the story, but never easy either.</div>
             </div>
         </div>
 
+        <!-- DAMAGE & HP -->
+        <h2>Hit Points &amp; Damage</h2>
+        <div class="mechanic-grid" style="margin-bottom:16px;">
+            <div class="mechanic-card">
+                <h3>Taking Damage</h3>
+                <p>When an adversary succeeds on an attack against your <strong>Evasion</strong>, they roll their damage and compare it to your <strong>damage thresholds</strong>.</p>
+                <ul>
+                    <li>Below Major threshold → <strong>Minor</strong>: mark 1 HP</li>
+                    <li>Meets or exceeds Major → <strong>Major</strong>: mark 2 HP</li>
+                    <li>Meets or exceeds Severe → <strong>Severe</strong>: mark 3 HP</li>
+                </ul>
+                <p style="margin-top:8px;">Your thresholds = armor base + your current level.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Armor Slots</h3>
+                <p>When you take damage, you can <strong>mark an Armor Slot</strong> to reduce the damage severity by one tier:</p>
+                <ul>
+                    <li>Severe → Major (2 HP instead of 3)</li>
+                    <li>Major → Minor (1 HP instead of 2)</li>
+                    <li>Minor → No damage</li>
+                </ul>
+                <p style="margin-top:8px;">You can only mark <strong>one Armor Slot per attack</strong>. Armor Slots are repaired during downtime. <strong>Direct damage</strong> (stated explicitly on some abilities) cannot be reduced by Armor Slots.</p>
+            </div>
+        </div>
+
+        <!-- QUICK REFERENCE -->
         <h2>Quick Reference</h2>
         <div class="ref-grid">
             <div class="ref-table">
@@ -701,37 +909,118 @@
             </div>
             <div class="ref-table">
                 <h3>Key Resources</h3>
-                <div class="ref-row"><span class="ref-label">Hope maximum</span><span class="ref-value">6 (minus Stress)</span></div>
-                <div class="ref-row"><span class="ref-label">Stress slots</span><span class="ref-value">5</span></div>
-                <div class="ref-row"><span class="ref-label">Hope carries over</span><span class="ref-value">Yes, between sessions</span></div>
-                <div class="ref-row"><span class="ref-label">Critical: both dice match</span><span class="ref-value">Always succeeds</span></div>
+                <div class="ref-row"><span class="ref-label">Hope maximum</span><span class="ref-value">6</span></div>
+                <div class="ref-row"><span class="ref-label">Stress slots</span><span class="ref-value">6</span></div>
+                <div class="ref-row"><span class="ref-label">Loadout limit</span><span class="ref-value">5 domain cards</span></div>
+                <div class="ref-row"><span class="ref-label">Always round</span><span class="ref-value">Up</span></div>
             </div>
         </div>
 
+        <!-- CONDITIONS -->
+        <h2 style="margin-top:48px;">Conditions</h2>
+        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">Conditions are temporary states applied by adversary moves, class features, or domain cards. Unless stated otherwise, a condition lasts until the end of the current scene or until the affected creature takes an action to clear it.</p>
+        <div class="condition-grid">
+            <div class="condition-card">
+                <div class="condition-name">Vulnerable</div>
+                <p class="condition-desc">All action and reaction rolls made <em>against</em> you have advantage. You become Vulnerable when you mark your last Stress slot, and clear it when you clear at least 1 Stress.</p>
+            </div>
+            <div class="condition-card">
+                <div class="condition-name">Hidden</div>
+                <p class="condition-desc">You can't be directly targeted by attacks. Attackers must guess your location or use special abilities to find you. Your first attack from Hidden automatically has advantage.</p>
+            </div>
+            <div class="condition-card">
+                <div class="condition-name">Restrained</div>
+                <p class="condition-desc">You can't move. Rolls to attack you have advantage, and your own attack rolls have disadvantage. Clearing Restrained usually requires an action roll or an ally's help.</p>
+            </div>
+            <div class="condition-card">
+                <div class="condition-name">Stunned</div>
+                <p class="condition-desc">You can't take actions or reactions. You can't move. Rolls against you have advantage. Clears when you take an action to pull yourself together or at the end of the scene.</p>
+            </div>
+            <div class="condition-card">
+                <div class="condition-name">On Fire</div>
+                <p class="condition-desc">When a creature acts while On Fire, they must take extra fire damage (amount specified by the effect) if they are still On Fire at the end of their action.</p>
+            </div>
+            <div class="condition-card">
+                <div class="condition-name">Enraptured</div>
+                <p class="condition-desc">Your attention is fixed on the source. Your field of view narrows and you can only hear the voice of the caster. Certain actions force you to mark Stress or end the condition.</p>
+            </div>
+        </div>
+
+        <!-- DOWNTIME -->
+        <h2 style="margin-top:48px;">Downtime &amp; Rests</h2>
+        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">When the party rests, each character makes <strong>2 downtime moves</strong>. A party can take up to <strong>3 short rests</strong> before their next rest must be a long rest. If a short rest is interrupted, no benefits are gained. If a long rest is interrupted, treat it as a short rest instead.</p>
+        <div class="rest-grid">
+            <div class="rest-block">
+                <h3>Short Rest</h3>
+                <div class="rest-note">~1 hour — 2 downtime moves each. GM gains 1d4 Fear.</div>
+                <div class="rest-move"><strong>Tend to Wounds</strong> — Clear a number of HP equal to 1d4 + your tier. You can do this to an ally's HP instead.</div>
+                <div class="rest-move"><strong>Clear Stress</strong> — Describe how you blow off steam, then clear a number of Stress equal to 1d4 + your tier.</div>
+                <div class="rest-move"><strong>Repair Armor</strong> — Clear a number of Armor Slots equal to 1d4 + your tier. You can do this to an ally's armor instead.</div>
+                <div class="rest-move"><strong>Prepare</strong> — Gain 1 Hope. If you Prepare with one or more allies, you each gain 2 Hope instead.</div>
+            </div>
+            <div class="rest-block">
+                <h3>Long Rest</h3>
+                <div class="rest-note">Full camp — 2 downtime moves each. GM gains 1d4 + number of PCs Fear.</div>
+                <div class="rest-move"><strong>Tend to All Wounds</strong> — Clear all marked HP. You can do this to an ally instead.</div>
+                <div class="rest-move"><strong>Clear All Stress</strong> — Clear all marked Stress.</div>
+                <div class="rest-move"><strong>Repair All Armor</strong> — Clear all Armor Slots. You can do this to an ally's armor instead.</div>
+                <div class="rest-move"><strong>Prepare</strong> — Gain 1 Hope, or 2 Hope if preparing with allies.</div>
+                <div class="rest-move"><strong>Work on a Project</strong> — Advance a long-term crafting, research, or personal goal with GM guidance.</div>
+            </div>
+        </div>
+        <div class="mechanic-card" style="margin-bottom:32px;">
+            <h3>Swapping Domain Cards at Rest</h3>
+            <p>At the <strong>start of a rest</strong>, before making any downtime moves, you can freely swap domain cards between your loadout and vault. Features that last "until your next rest" end when you finish resting. Features marked "once per rest" refresh. Features marked "once per session" only refresh at the start of your next session.</p>
+        </div>
+
+        <!-- DEATH MOVE -->
+        <h2 style="margin-top:48px;">Death Move</h2>
+        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">When you mark your last Hit Point, you make a death move. Choose one of the three options below.</p>
+        <div class="death-grid">
+            <div class="death-card">
+                <h3>Blaze of Glory</h3>
+                <p>Embrace death and go out spectacularly. Take one final action at the GM's discretion — it <strong>automatically critically succeeds</strong>. Then your character crosses through the veil of death.</p>
+            </div>
+            <div class="death-card">
+                <h3>Avoid Death</h3>
+                <p>Your character drops unconscious. Work with the GM to describe how the situation worsens. While unconscious you can't move or act, can't be targeted by attacks, and return to consciousness when an ally clears 1 or more of your HP or when the party finishes a long rest.</p>
+                <p style="margin-top:8px;">You may take a <strong>Scar</strong> — cross out one Hope slot permanently. It can't be used anymore.</p>
+            </div>
+            <div class="death-card">
+                <h3>Risk It All</h3>
+                <p>Roll your Duality Dice. If the <strong>Hope Die is higher</strong>: stay on your feet and clear HP or Stress equal to the Hope Die value (divide as you choose). If the <strong>Fear Die is higher</strong>: cross through the veil of death. On a critical, you survive.</p>
+            </div>
+        </div>
+        <div class="mechanic-card" style="margin-bottom:32px;">
+            <h3>Scars</h3>
+            <p>A Scar crosses out a Hope slot permanently. The narrative form is up to you — a physical wound, a painful memory, a deep fear. Scars can be healed as a downtime project or a quest reward at the GM's discretion. If you ever cross out your <strong>last Hope slot</strong>, it's time to end your character's journey — work with your GM to find a fitting farewell.</p>
+        </div>
+
+        <!-- DOMAIN CARDS -->
         <h2 style="margin-top:48px;">Domain Cards</h2>
-        <p style="max-width:680px;margin-bottom:24px;color:var(--ink-muted);">Domain cards are your abilities — spells, techniques, and powers drawn from your class's two domains. Unless a card states otherwise, you can use it as many times as you wish for as long as it remains in your loadout. Your subclass, ancestry, and community cards are always active and <strong>don't count</strong> toward your loadout limit.</p>
+        <p style="max-width:680px;margin-bottom:24px;color:var(--ink-muted);">Domain cards are your abilities — spells, techniques, and powers drawn from your class's two domains. Your subclass, ancestry, and community cards are always active and <strong>don't count</strong> toward your loadout limit.</p>
 
         <div class="mechanic-grid">
             <div class="mechanic-card">
                 <h3>Loadout &amp; Vault</h3>
-                <p>You can have up to <strong>5 domain cards active</strong> in your loadout at one time. Any card in your loadout is available to use — keep them in hand, on the table, or however is easiest.</p>
-                <p style="margin-top:10px;">Your <strong>vault</strong> holds cards you own but haven't equipped. Some features permanently place a card in your vault, removing it from play entirely.</p>
+                <p>You can have up to <strong>5 domain cards active</strong> in your loadout at one time. Any card in your loadout is available to use.</p>
+                <p style="margin-top:10px;">Your <strong>vault</strong> holds cards you own but haven't equipped. Some features permanently place a card in your vault, removing it from play.</p>
             </div>
             <div class="mechanic-card">
                 <h3>Swapping Cards</h3>
-                <p>At the <strong>start of a rest</strong>, you can freely swap cards between your loadout and vault before using any downtime moves.</p>
-                <p style="margin-top:10px;"><strong>Mid-session swaps</strong> are stressful: mark Stress equal to the card's <strong>Recall Cost</strong> (the number next to the lightning bolt ⚡ on the card). Swap it in for a card already in your loadout. If you have fewer than 5 active cards, you can add a vaulted card without trading one out.</p>
+                <p>At the <strong>start of a rest</strong> (before downtime moves), freely swap cards between loadout and vault.</p>
+                <p style="margin-top:10px;"><strong>Mid-session swaps</strong>: mark Stress equal to the card's <strong>Recall Cost</strong> (⚡ number on the card). Swap it in for a card in your loadout.</p>
             </div>
             <div class="mechanic-card">
-                <h3>Usage Limits</h3>
-                <p>Some cards have an <strong>exhaustion limit</strong> — once per long rest, once per session, etc. After using such a card, mark it somehow (flip it face-down, turn it sideways) so you remember it's temporarily unavailable.</p>
-                <p style="margin-top:10px;">Cards can also accumulate <strong>tokens</strong> to track ongoing effects. If you still have tokens at end of session, record the count to restore them next session.</p>
+                <h3>Usage Limits &amp; Tokens</h3>
+                <p>Cards with <strong>once per rest / once per long rest / once per session</strong> limits should be marked when used (exhausted). The sheet tracks this with the "Use" toggle.</p>
+                <p style="margin-top:10px;">Cards that say <strong>"place tokens"</strong> use the token counter on the sheet. Tokens persist between sessions — record them if needed.</p>
             </div>
             <div class="mechanic-card">
                 <h3>Card Types</h3>
-                <p><strong>Spells</strong> are direct magical effects — attacks, buffs, area control. They typically require a Spellcast Roll using your class's Spellcast Trait.</p>
-                <p style="margin-top:8px;"><strong>Abilities</strong> are techniques and passive powers. Some trigger automatically; others require an action, or spending Hope or Stress.</p>
-                <p style="margin-top:8px;"><strong>Grimoires</strong> each contain multiple named powers — you can use any of them while the grimoire is in your loadout.</p>
+                <p><strong>Spells</strong> require a Spellcast Roll using your subclass's Spellcast Trait. They deal magic damage unless stated otherwise.</p>
+                <p style="margin-top:8px;"><strong>Abilities</strong> are techniques or passive powers. Some trigger automatically; others need Hope, Stress, or an action.</p>
+                <p style="margin-top:8px;"><strong>Grimoires</strong> contain multiple named powers — any can be used while the grimoire is in your loadout.</p>
             </div>
         </div>
 
@@ -753,18 +1042,29 @@
     ════════════════════════════════════════════════════════ -->
     <div id="tab-ancestries" class="tab-panel">
 
-        <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Your ancestry is where you come from — the body you inhabit, the instincts that are simply part of who you are. Each ancestry comes with two features that reflect what makes your people distinct. Click any ancestry to see the full description and mechanical features.</p>
+        <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Your ancestry is where you come from — the body you inhabit, the instincts that are simply part of who you are. Each ancestry comes with two features. You can also combine two ancestries — take one feature from each and describe how you identify. Click any ancestry to see full details.</p>
 
         <div class="card-grid-6" id="ancestry-grid"><p style="color:var(--ink-dim);font-style:italic;">Loading ancestries…</p></div>
 
     </div><!-- /tab-ancestries -->
 
     <!-- ═══════════════════════════════════════════════════════
-         TAB 4: DOMAINS
+         TAB 4: COMMUNITIES
+    ════════════════════════════════════════════════════════ -->
+    <div id="tab-communities" class="tab-panel">
+
+        <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Your community is the culture or environment that shaped you most. Each community grants a permanent <strong>community feature</strong> that is always active — it doesn't count toward your domain card loadout. Click any community to read more and see your feature.</p>
+
+        <div class="card-grid-6" id="community-grid"><p style="color:var(--ink-dim);font-style:italic;">Loading communities…</p></div>
+
+    </div><!-- /tab-communities -->
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 5: DOMAINS
     ════════════════════════════════════════════════════════ -->
     <div id="tab-domains" class="tab-panel">
 
-        <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Domains are where your abilities come from. Each class has access to two domains, and as you level up you choose domain cards from those pools — giving you new powers, spells, and techniques. You can have up to 5 domain cards active at a time. Click any domain to read more.</p>
+        <p style="max-width:680px;margin-bottom:28px;color:var(--ink-muted);">Domains are where your abilities come from. Each class has access to two domains, and as you level up you choose domain cards from those pools. You can have up to 5 domain cards active at a time. Click any domain to read more.</p>
 
         <div class="domain-grid">
             <div class="domain-card" onclick="openModal('modal-dom-arcana')">
@@ -808,9 +1108,8 @@
         <div class="advance-block">
             <h3>Domain Cards &amp; Your Loadout</h3>
             <ul>
-                <li>You can have at most <strong>5 domain cards active</strong> at a time. Once you have 6 or more, extras go into your vault.</li>
-                <li>When leveling up, you can <strong>swap one vaulted card</strong> for one in your loadout — or trade a current card for a different one of equal or lower level.</li>
-                <li>Domain cards from a shared domain: if you and another player both use the same domain, coordinate so you're not stepping on each other's choices.</li>
+                <li>You can have at most <strong>5 domain cards active</strong> at a time. Extras go into your vault.</li>
+                <li>At the start of a rest, swap cards freely between loadout and vault before taking downtime moves.</li>
                 <li>When multiclassing, domain cards from your new class are limited to <strong>half your current level (rounded up)</strong>.</li>
             </ul>
         </div>
@@ -823,7 +1122,39 @@
     </div><!-- /tab-domains -->
 
     <!-- ═══════════════════════════════════════════════════════
-         TAB 5: ADVANCEMENT
+         TAB 6: EQUIPMENT
+    ════════════════════════════════════════════════════════ -->
+    <div id="tab-equipment" class="tab-panel">
+
+        <p style="max-width:680px;margin-bottom:24px;color:var(--ink-muted);">Weapons deal physical or magic damage using your Proficiency. Your damage roll uses the listed dice — add modifiers where shown. Armor sets your damage thresholds (Minor/Major/Severe = armor base + your level).</p>
+
+        <div class="mechanic-grid" style="margin-bottom:32px;">
+            <div class="mechanic-card">
+                <h3>Reading a Weapon</h3>
+                <p><strong>Trait</strong> — which trait you roll for attacks.<br>
+                <strong>Range</strong> — how far it reaches.<br>
+                <strong>Damage</strong> — dice rolled on a hit, using your Proficiency dice count.<br>
+                <strong>Burden</strong> — One-Handed or Two-Handed.<br>
+                <strong>Feature</strong> — special rule for this weapon.</p>
+                <p style="margin-top:8px;">You have a <strong>primary</strong> and optional <strong>secondary</strong> weapon slot. Switching weapons mid-combat marks 1 Stress; switching at rest is free.</p>
+            </div>
+            <div class="mechanic-card">
+                <h3>Reading Armor</h3>
+                <p><strong>Minor / Major Threshold</strong> — base values; add your current level to each during play.<br>
+                <strong>Severe Threshold</strong> — always Major × 2.<br>
+                <strong>Armor Score</strong> — number of Armor Slots you have.<br>
+                <strong>Feature</strong> — special rule for this armor.</p>
+                <p style="margin-top:8px;">Wearing no armor: Minor threshold = your level, Severe = Major × 2.</p>
+            </div>
+        </div>
+
+        <div class="equip-filter-bar" id="equip-filter-bar"></div>
+        <div id="equip-panel"></div>
+
+    </div><!-- /tab-equipment -->
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 7: ADVANCEMENT
     ════════════════════════════════════════════════════════ -->
     <div id="tab-advancement" class="tab-panel">
 
@@ -839,72 +1170,73 @@
             <div class="tier-card">
                 <h4>Tier 2</h4>
                 <div class="tier-levels">Levels 2–4</div>
-                <p>Early growth. Proficiency increases, new domain cards, building toward your subclass specialization.</p>
+                <p>Early growth. Proficiency increases at level 2, new domain cards, building toward your subclass specialization.</p>
             </div>
             <div class="tier-card">
                 <h4>Tier 3</h4>
                 <div class="tier-levels">Levels 5–7</div>
-                <p>Mid-tier power. Subclass upgrades, increased Proficiency, and the option to multiclass.</p>
+                <p>Mid-tier power. Subclass upgrades become available. Proficiency increase and multiclassing cost both advancement picks.</p>
             </div>
             <div class="tier-card">
                 <h4>Tier 4</h4>
                 <div class="tier-levels">Levels 8–10</div>
-                <p>High-tier play. Mastery features, unrestricted domain access, peak character potential.</p>
+                <p>High-tier play. Mastery features, subclass mastery upgrade, peak character potential.</p>
             </div>
         </div>
 
         <h2>When You Level Up</h2>
 
         <div class="advance-block">
-            <h3>Step 1 — Take Your Level Achievements</h3>
-            <p>At levels 2, 5, and 8, you automatically receive:</p>
+            <h3>Always — Damage Thresholds +1</h3>
+            <p>Your damage thresholds increase by 1 every level (they always equal armor base + current level). Update your Major and Severe threshold values on your sheet.</p>
+        </div>
+
+        <div class="advance-block">
+            <h3>Always — Take a Domain Card</h3>
+            <p>Take one new domain card at your level or lower from a domain your class has access to. If you're over 5 cards, vault the excess. This is separate from the "Additional Domain Card" advancement option.</p>
+        </div>
+
+        <div class="advance-block">
+            <h3>Level Achievements (Levels 2, 5, and 8 Only) — Automatic</h3>
+            <p>At levels 2, 5, and 8, these bonuses apply automatically — they don't cost advancement picks:</p>
             <ul>
-                <li>A new <strong>Experience</strong> at +2 modifier</li>
-                <li>A permanent <strong>+1 to your Proficiency</strong> (which also increases your weapon damage dice)</li>
-                <li>At levels 5 and 8: <strong>clear all marks</strong> on character traits you've previously increased</li>
+                <li>A new <strong>Experience</strong> at +2 modifier (you name it)</li>
+                <li>A permanent <strong>+1 to your Proficiency</strong> (also increases weapon damage dice count)</li>
+                <li>At levels 5 and 8: <strong>clear all marks</strong> on character traits you've previously increased — those traits can be raised again this tier</li>
             </ul>
         </div>
 
         <div class="advance-block">
-            <h3>Step 2 — Choose Two Advancements</h3>
-            <p>Pick two from the list below (Tier 3+ adds more options). Each option can be chosen up to 3 times across a tier unless noted:</p>
+            <h3>Choose 2 Advancements</h3>
+            <p>Pick two from the list below. Some have a per-tier limit. Tier 3+ adds additional options. Options that cost both picks use up your entire 2-pick budget for that level.</p>
             <ul>
-                <li>+1 bonus to <strong>two unmarked character traits</strong> (mark them — can't increase again until the next tier)</li>
-                <li>Permanently gain <strong>one Hit Point slot</strong></li>
-                <li>Permanently gain <strong>one Stress slot</strong></li>
-                <li>+1 bonus to <strong>two Experiences</strong></li>
-                <li>Take an additional <strong>domain card</strong> (your level or lower)</li>
-                <li>+1 to your <strong>Evasion</strong></li>
+                <li><strong>+1 to Two Character Traits</strong> — choose two unmarked traits, mark them (can't increase again until tier resets at level 5 or 8). Max 3 times per tier.</li>
+                <li><strong>+1 Hit Point Slot</strong> — permanently gain one HP slot. Max 2 times per tier.</li>
+                <li><strong>+1 Stress Slot</strong> — permanently gain one Stress slot. Max 2 times per tier.</li>
+                <li><strong>+1 to Two Experiences</strong> — increase two existing experience modifiers by +1 each. Max 2 times per tier.</li>
+                <li><strong>Additional Domain Card</strong> — take one extra domain card at your level or lower. Max 1 per tier.</li>
+                <li><strong>+1 Evasion</strong> — permanently increase Evasion. Max 1 per tier.</li>
             </ul>
         </div>
 
         <div class="advance-block">
-            <h3>Tier 3 Additional Options (Levels 5–7)</h3>
+            <h3>Tier 3+ Additional Options (Levels 5–10)</h3>
             <ul>
-                <li><strong>Upgrade your subclass card</strong> — take the next tier (Foundation → Specialization → Mastery). Costs one advancement slot.</li>
-                <li><strong>Increase Proficiency by +1</strong> — costs both advancement slots for the level.</li>
-                <li><strong>Multiclass</strong> — choose a second class, gain access to one of its domains and its class feature. Costs both advancement slots, available once.</li>
+                <li><strong>Upgrade Subclass Card</strong> — take the next tier of your subclass (Foundation → Specialization → Mastery). Max 1 per tier. Exclusive with Multiclass that tier.</li>
+                <li><strong>+1 Proficiency</strong> — costs <em>both</em> advancement picks. Max 1 per tier.</li>
+                <li><strong>Multiclass</strong> — choose a second class, gain access to one of its domains (limited to half your level rounded up), and take a Foundation feature from one of its subclasses. Costs <em>both</em> picks. Only once per character total. Exclusive with Subclass Upgrade that tier.</li>
             </ul>
-        </div>
-
-        <div class="advance-block">
-            <h3>Step 3 — Raise Damage Thresholds</h3>
-            <p>After choosing advancements, your damage thresholds go up by +1 (your thresholds always equal your base + current level). Update your Major and Severe threshold values.</p>
-        </div>
-
-        <div class="advance-block">
-            <h3>Step 4 — Take a Domain Card</h3>
-            <p>Take one new domain card at your level or lower from a domain your class has access to. If you're over 5 cards total, decide what goes in your vault. You may also trade one current card for a different one of equal or lower level.</p>
         </div>
 
         <h2 style="margin-top:40px;">Experiences</h2>
-        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">Experiences represent things your character knows from their past — skills, knowledge, or expertise that don't fit neatly into the six traits. You start with two, gain one at each level achievement, and can increase their modifier over time.</p>
+        <p style="max-width:680px;margin-bottom:20px;color:var(--ink-muted);">Experiences represent skills, knowledge, or history your character brings that don't fit neatly into the six traits. You start with two, gain one at each level achievement, and can raise their modifier over time. A good Experience is specific and character-driven — not a mechanical repeat of a trait.</p>
         <div class="advance-block">
             <h3>Using an Experience</h3>
             <ul>
-                <li>Spend 1 Hope to add your Experience modifier to an action or reaction roll where it applies</li>
-                <li>Wizards (School of Knowledge) can mark a Stress instead of spending Hope, and double their Experience modifier for that roll</li>
-                <li>Experiences are defined by you — they should reflect your character's history, not just game mechanics</li>
+                <li>Spend 1 Hope <strong>before you roll</strong> to add your Experience modifier to an action or reaction roll where it applies</li>
+                <li>Multiple Experiences can apply to the same roll if they're each genuinely relevant — spend Hope for each one</li>
+                <li>Wizards (School of Knowledge) can mark a Stress instead of spending Hope and double the modifier for that roll</li>
+                <li>Experiences can be changed when they no longer fit the character — work with your GM</li>
             </ul>
         </div>
 
@@ -942,25 +1274,38 @@ const CLASS_ROLES = {
     seraph:'Divine Warrior', sorcerer:'Raw Magic Caster', wizard:'Scholarly Mage'
 };
 
-let CLASSES = [], ANCESTRIES = [], DOMAIN_CARDS = [];
+let CLASSES = [], ANCESTRIES = [], COMMUNITIES = [], DOMAIN_CARDS = [], WEAPONS = [], ARMORS = [];
 
 const DOMAIN_ORDER = ['arcana','blade','bone','codex','grace','midnight','sage','splendor','valor'];
 
+// Equipment filter state
+let equipSlot = 'primary', equipTier = 'all';
+
 async function loadData() {
-    const [classData, ancestryData, cardData] = await Promise.all([
+    const [classData, ancestryData, communityData, cardData, weaponData, armorData] = await Promise.all([
         fetch('/data/base/classes.json').then(r => r.json()),
         fetch('/data/base/ancestries.json').then(r => r.json()),
+        fetch('/data/base/communities.json').then(r => r.json()),
         fetch('/data/base/domain-cards.json').then(r => r.json()),
+        fetch('/data/base/weapons.json').then(r => r.json()),
+        fetch('/data/base/armor.json?v=3').then(r => r.json()),
     ]);
-    CLASSES      = Array.isArray(classData) ? classData : Object.values(classData);
-    ANCESTRIES   = Array.isArray(ancestryData) ? ancestryData : Object.values(ancestryData);
-    DOMAIN_CARDS = Array.isArray(cardData) ? cardData : Object.values(cardData);
+    CLASSES      = Array.isArray(classData)     ? classData     : Object.values(classData);
+    ANCESTRIES   = Array.isArray(ancestryData)  ? ancestryData  : Object.values(ancestryData);
+    COMMUNITIES  = Array.isArray(communityData) ? communityData : Object.values(communityData);
+    DOMAIN_CARDS = Array.isArray(cardData)      ? cardData      : Object.values(cardData);
+    WEAPONS      = Array.isArray(weaponData)    ? weaponData    : Object.values(weaponData);
+    ARMORS       = Array.isArray(armorData)     ? armorData     : Object.values(armorData);
     renderClasses();
     renderAncestries();
+    renderCommunities();
     renderDomainFilterBar();
     showDomainCards('arcana');
+    renderEquipFilterBar();
+    renderEquipment();
 }
 
+// ── Classes ───────────────────────────────────────────────────────────────
 function renderClasses() {
     const grid = document.getElementById('class-grid');
     grid.innerHTML = CLASSES.map(cls => {
@@ -975,6 +1320,7 @@ function renderClasses() {
     }).join('');
 }
 
+// ── Ancestries ────────────────────────────────────────────────────────────
 function renderAncestries() {
     const grid = document.getElementById('ancestry-grid');
     grid.innerHTML = ANCESTRIES.map(anc => {
@@ -986,6 +1332,94 @@ function renderAncestries() {
     }).join('');
 }
 
+// ── Communities ───────────────────────────────────────────────────────────
+function renderCommunities() {
+    const grid = document.getElementById('community-grid');
+    grid.innerHTML = COMMUNITIES.map(com => {
+        const feat = (com.features || [])[0];
+        const short = com.lore ? com.lore.slice(0, 70) + '&hellip;' : '';
+        return `<div class="anc-card" onclick="openCommunityModal('${com.id}')">
+            <div class="anc-card-name">${com.name}</div>
+            ${feat ? `<div class="anc-card-feat">${feat.name}</div>` : ''}
+            <div class="anc-card-desc">${short}</div>
+        </div>`;
+    }).join('');
+}
+
+// ── Equipment ─────────────────────────────────────────────────────────────
+function renderEquipFilterBar() {
+    const bar = document.getElementById('equip-filter-bar');
+    const slots = [
+        { key: 'primary', label: 'Primary Weapons' },
+        { key: 'secondary', label: 'Secondary Weapons' },
+        { key: 'armor', label: 'Armor' },
+    ];
+    const tiers = [
+        { key: 'all', label: 'All Tiers' },
+        { key: '1', label: 'Tier 1' },
+        { key: '2', label: 'Tier 2' },
+        { key: '3', label: 'Tier 3' },
+        { key: '4', label: 'Tier 4' },
+    ];
+    bar.innerHTML = slots.map(s =>
+        `<button class="equip-filter-btn${equipSlot === s.key ? ' active' : ''}" onclick="setEquipSlot('${s.key}')">${s.label}</button>`
+    ).join('') + '<span style="margin:0 6px;color:var(--border);">|</span>' + tiers.map(t =>
+        `<button class="equip-filter-btn${equipTier === t.key ? ' active' : ''}" onclick="setEquipTier('${t.key}')">${t.label}</button>`
+    ).join('');
+}
+
+function setEquipSlot(slot) { equipSlot = slot; renderEquipFilterBar(); renderEquipment(); }
+function setEquipTier(tier) { equipTier = tier; renderEquipFilterBar(); renderEquipment(); }
+
+function renderEquipment() {
+    const panel = document.getElementById('equip-panel');
+
+    if (equipSlot === 'armor') {
+        const items = ARMORS.filter(a => equipTier === 'all' || String(a.tier) === equipTier);
+        const byTier = {};
+        items.forEach(a => { (byTier[a.tier] = byTier[a.tier] || []).push(a); });
+        panel.innerHTML = Object.keys(byTier).sort((a,b) => a-b).map(t => `
+            <div class="equip-section-head">Tier ${t}</div>
+            <div class="equip-table-wrap">
+            <table class="equip-table">
+                <thead><tr>
+                    <th>Name</th><th>Minor</th><th>Major</th><th>Score</th><th>Feature</th>
+                </tr></thead>
+                <tbody>${byTier[t].map(a => `<tr>
+                    <td>${a.name}</td>
+                    <td>${a.minorThreshold}+lvl</td>
+                    <td>${a.majorThreshold}+lvl</td>
+                    <td>${a.armorScore}</td>
+                    <td>${a.feature || '—'}</td>
+                </tr>`).join('')}</tbody>
+            </table>
+            </div>`).join('') || '<p style="color:var(--ink-dim);font-style:italic;">No items found.</p>';
+        return;
+    }
+
+    const items = WEAPONS.filter(w => w.slot === equipSlot && (equipTier === 'all' || String(w.tier) === equipTier));
+    const byTier = {};
+    items.forEach(w => { (byTier[w.tier] = byTier[w.tier] || []).push(w); });
+    panel.innerHTML = Object.keys(byTier).sort((a,b) => a-b).map(t => `
+        <div class="equip-section-head">Tier ${t}</div>
+        <div class="equip-table-wrap">
+        <table class="equip-table">
+            <thead><tr>
+                <th>Name</th><th>Trait</th><th>Range</th><th>Damage</th><th>Burden</th><th>Feature</th>
+            </tr></thead>
+            <tbody>${byTier[t].map(w => `<tr>
+                <td>${w.name}</td>
+                <td>${w.trait || '—'}</td>
+                <td>${w.range || '—'}</td>
+                <td>${w.damage || '—'}</td>
+                <td>${w.burden || '—'}</td>
+                <td>${w.feature || '—'}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+        </div>`).join('') || '<p style="color:var(--ink-dim);font-style:italic;">No items found.</p>';
+}
+
+// ── Modals ────────────────────────────────────────────────────────────────
 function renderSubclassFeatures(features) {
     if (!features) return '';
     const tiers = [
@@ -1082,11 +1516,33 @@ function openAncestryModal(id) {
     document.body.style.overflow = 'hidden';
 }
 
+function openCommunityModal(id) {
+    const com = COMMUNITIES.find(c => c.id === id);
+    if (!com) return;
+    document.getElementById('modal-content').innerHTML = `
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-tag">Community</div>
+        <div class="modal-title">${com.name}</div>
+        <hr class="modal-divider">
+        <p class="modal-desc">${com.lore || ''}</p>
+        ${(com.features || []).length ? `
+        <div class="modal-section-head">Community Feature</div>
+        ${com.features.map(f => `
+        <div class="modal-feature">
+            <div class="modal-feature-name">${f.name}</div>
+            <p>${f.description}</p>
+        </div>`).join('')}` : ''}
+    `;
+    document.getElementById('modal-shared').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
 function closeModal() {
     document.getElementById('modal-shared').classList.remove('active');
     document.body.style.overflow = '';
 }
 
+// ── Domain Cards ──────────────────────────────────────────────────────────
 function renderDomainFilterBar() {
     const bar = document.getElementById('dc-filter-bar');
     if (!bar) return;
@@ -1098,18 +1554,12 @@ function renderDomainFilterBar() {
 function showDomainCards(domain) {
     const panel = document.getElementById('dc-cards-panel');
     if (!panel) return;
-
-    // Update active button
     document.querySelectorAll('.dc-filter-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.domain === domain);
     });
-
     const cards = DOMAIN_CARDS.filter(c => c.domain === domain);
     const byLevel = {};
-    cards.forEach(c => {
-        (byLevel[c.level] = byLevel[c.level] || []).push(c);
-    });
-
+    cards.forEach(c => { (byLevel[c.level] = byLevel[c.level] || []).push(c); });
     panel.innerHTML = Object.keys(byLevel).sort((a,b) => a-b).map(lvl => `
         <div class="dc-level-group">
             <div class="dc-level-head">Level ${lvl}</div>
@@ -1130,16 +1580,19 @@ function showDomainCards(domain) {
     ).join('');
 }
 
+function openModal(id) { /* legacy domain overview modals no longer used — kept for compatibility */ }
+
 function switchTab(id, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
+    if (id === 'equipment') { renderEquipFilterBar(); renderEquipment(); }
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-loadData();
+loadData().catch(err => console.error('loadData failed:', err));
 </script>
 
     <script src="nav.js"></script>

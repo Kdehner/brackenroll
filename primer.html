@@ -200,32 +200,80 @@
         .hook-callout p { color: var(--ink-muted); margin-bottom: 10px; font-size: 1em; }
         .hook-callout p:last-child { margin-bottom: 0; }
 
+        /* ── Conditions tab ── */
+        .condition-block {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 32px 36px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+        .condition-block.curse { border-left: 4px solid #4a8a5a; }
+        .condition-block.ashlung { border-left: 4px solid #7a6050; }
+        .condition-block h2 { margin-top: 0; font-size: 1.6em; }
+        .condition-block.curse h2 { color: #2a6a3a; }
+        .condition-block.ashlung h2 { color: #5a4030; }
+        .condition-flavor { font-style: italic; color: var(--ink-muted); font-size: 1.1em; margin-bottom: 20px; padding: 10px 16px; border-left: 2px solid var(--border-mid); }
+        .condition-block p { color: var(--ink-muted); margin-bottom: 14px; }
+        .condition-block p:last-child { margin-bottom: 0; }
+
+        /* ── Factions tab ── */
+        .faction-card {
+            background: rgba(248, 242, 228, 0.55);
+            border: 1px solid var(--border);
+            padding: 32px 36px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+        .faction-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .faction-card.ironhold::before   { background: linear-gradient(90deg, transparent, #5a5040, transparent); }
+        .faction-card.verdanya::before   { background: linear-gradient(90deg, transparent, #4a8a5a, transparent); }
+        .faction-card.resistance::before { background: linear-gradient(90deg, transparent, #8a2020, transparent); }
+        .faction-card.briarcrest::before { background: linear-gradient(90deg, transparent, #8a6010, transparent); }
+        .faction-card.divinities::before { background: linear-gradient(90deg, transparent, rgba(138,92,16,0.6), transparent); }
+        .faction-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .faction-card .faction-name { font-size: 1.5em; font-weight: 700; margin-bottom: 0; letter-spacing: normal; }
+        .faction-card.ironhold   .faction-name { color: #3a3020; }
+        .faction-card.verdanya   .faction-name { color: #1a5a2a; }
+        .faction-card.resistance .faction-name { color: #6a1818; }
+        .faction-card.briarcrest .faction-name { color: #6a4008; }
+        .faction-card.divinities .faction-name { color: var(--gold-mid); }
+        .faction-label { font-family: 'Cinzel', serif; font-size: 0.68em; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-dim); padding: 4px 10px; border: 1px solid var(--border); height: fit-content; }
+        .faction-tagline { font-style: italic; color: var(--ink-muted); font-size: 1.05em; margin-bottom: 18px; padding: 8px 14px; border-left: 2px solid var(--border-mid); }
+        .faction-body p { color: var(--ink-muted); margin-bottom: 12px; }
+        .faction-details { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+        .detail-box { background: rgba(240, 230, 210, 0.5); border: 1px solid rgba(120,80,30,0.12); padding: 14px 16px; }
+        .detail-box h4 { font-family: 'Cinzel', serif; font-size: 0.72em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-mid); margin-bottom: 8px; }
+        .detail-box p { font-size: 0.9em; margin: 0; color: var(--ink-muted); }
+        .detail-box ul { list-style: none; padding: 0; margin: 0; }
+        .detail-box li { font-size: 0.88em; color: var(--ink-muted); padding: 3px 0; }
+        .detail-box li::before { content: '— '; color: var(--ink-dim); }
+        .gods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+        #tab-factions .god-card { padding: 16px 18px; }
+        #tab-factions .god-name { font-size: 0.9em; margin-bottom: 6px; }
+        #tab-factions .god-desc { font-size: 0.9em; line-height: 1.6; }
+        .sympathy-bar { display: flex; gap: 8px; align-items: center; margin-top: 16px; }
+        .sympathy-label { font-family: 'Cinzel', serif; font-size: 0.7em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); width: 100px; flex-shrink: 0; }
+        .sympathy-text { font-size: 0.9em; font-style: italic; color: var(--ink-muted); }
+
         @media (max-width: 900px) {
             .consider-grid { grid-template-columns: 1fr 1fr; }
             .ancestry-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 700px) {
-            .faction-list, .small-gods, .hook-grid { grid-template-columns: 1fr; }
-            .journal-entry { padding: 24px 20px; }
+            .faction-list, .small-gods, .hook-grid, .faction-details, .gods-grid { grid-template-columns: 1fr; }
+            .journal-entry, .condition-block, .faction-card { padding: 24px 20px; }
             .tab-btn { padding: 10px 14px; font-size: 0.68em; }
             .consider-grid, .ancestry-grid { grid-template-columns: 1fr; }
         }
+        .tab-bar { overflow-x: auto; }
     </style>
 </head>
 <body>
 
-    <nav class="site-nav">
-        <a href="index.html" class="nav-logo">brackenroll</a>
-        <button class="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
-        <ul class="nav-links">
-            <li><a href="primer.html">The World</a></li>
-            <li><a href="conditions.html">The Conditions</a></li>
-            <li><a href="factions.html">Factions</a></li>
-            <li><a href="handbook.html">Handbook</a></li>
-            <li><a href="character-builder.html">Builder</a></li>
-            <li><a href="https://vtt.fwbgaming.win" target="_blank">Tabletop ↗</a></li>
-        </ul>
-    </nav>
+    <nav class="site-nav"></nav>
 
     <div class="page-hero">
         <div class="page-hero-inner">
@@ -241,6 +289,8 @@
             <button class="tab-btn active" onclick="switchTab('primer', this)">World Primer</button>
             <button class="tab-btn" onclick="switchTab('characters', this)">Characters</button>
             <button class="tab-btn" onclick="switchTab('hooks', this)">Player Hooks</button>
+            <button class="tab-btn" onclick="switchTab('conditions', this)">Conditions</button>
+            <button class="tab-btn" onclick="switchTab('factions', this)">Factions</button>
         </div>
 
         <!-- ═══ TAB: WORLD PRIMER ═══ -->
@@ -632,6 +682,210 @@
             </div>
 
         </div><!-- /#tab-hooks -->
+
+        <!-- ═══ TAB: CONDITIONS ═══ -->
+        <div class="tab-panel" id="tab-conditions">
+
+            <p style="max-width:680px;margin-bottom:32px;">Two forces are tearing this world apart. This is what a traveler arriving in Verdanya would have heard — rumors, warnings, and the kind of truths people learn the hard way.</p>
+
+            <div class="condition-block curse">
+                <h2>The Verdant Curse</h2>
+                <div class="condition-flavor">"The forest wants you. It wants to know you better. It's very patient."</div>
+                <p>The Verdant Curse is what happens when something fundamental about this land broke. The forest grows wrong. Animals change into things they shouldn't be. And people — people who are hurt by those creatures, who spend too long in the deep wilderness — they begin to change too.</p>
+                <p>It starts small. A patch of bark on the skin. Moss where a scar used to be. Flowers that bloom from wounds and don't hurt. It gets harder to hide over time. Then it becomes impossible.</p>
+                <p>What makes it so unsettling is that it isn't always painful. Some people describe the early stages as almost peaceful. A warmth. A sense of connection to something vast and old. That's what makes it dangerous — it doesn't always feel like something going wrong.</p>
+                <p>The fully transformed are called <strong>the Verdant-Born</strong>. Some still have their minds. Some don't. Ironhold has standing orders regarding them. The Resistance has a different view. Everyone else is somewhere in between.</p>
+            </div>
+
+            <div class="condition-block ashlung">
+                <h2>Ashlung</h2>
+                <div class="condition-flavor">"First the cough. Then the dust. Then the stone."</div>
+                <p>Ashlung is a disease of stone. It started in Ironhold — and their desperation to find a cure is the reason Verdanya is occupied at all.</p>
+                <p>It begins as a dry cough that produces a faint grey dust. Easy to explain away at first. Harder to ignore as the skin hardens, starting at the fingers and spreading inward. Given enough time, it reaches the heart.</p>
+                <p>Unlike the Verdant Curse, Ashlung offers nothing. No strange beauty. No sense of connection. Just a slow, merciless countdown.</p>
+                <p>The only treatment anyone knows of is <strong>Mourning Roses</strong> — rare crimson flowers that grow in Verdanya. Ironhold came here to harvest them. They haven't left.</p>
+            </div>
+
+        </div><!-- /#tab-conditions -->
+
+        <!-- ═══ TAB: FACTIONS ═══ -->
+        <div class="tab-panel" id="tab-factions">
+
+            <p style="max-width:680px;margin-bottom:36px;">This campaign is built around the idea that everyone involved has legitimate grievances. Understanding each faction means understanding the world — and understanding why your choices are hard.</p>
+
+            <div class="faction-card ironhold">
+                <div class="faction-header">
+                    <div class="faction-name">Ironhold</div>
+                    <span class="faction-label">The Occupiers</span>
+                </div>
+                <div class="faction-tagline">"We came to survive. We stayed because we had to. We're sorry for what that cost you. We're not leaving."</div>
+                <div class="faction-body">
+                    <p>A walled city-state to the west, militaristic by tradition and desperate by circumstance. Ironhold didn't invade Verdanya out of malice — they invaded because their people were dying and they found a cure that grew beyond their borders.</p>
+                    <p>The soldiers in the field are tired, scared, and far from home. Many of them have family dying of Ashlung. They believe — most of them — that what they're doing is necessary. Some are right about that. None of them are the whole story.</p>
+                    <p>Ironhold's leadership knows the occupation is unraveling. The Resistance bleeds them. The Verdant Curse grows. Their Ashlung supply is rationed to soldiers first, civilians second, and the occupied last. Everyone can do that math.</p>
+                </div>
+                <div class="faction-details">
+                    <div class="detail-box">
+                        <h4>What They Want</h4>
+                        <ul>
+                            <li>Enough Mourning Roses to cure Ashlung</li>
+                            <li>Secure roads and fields to keep harvesting</li>
+                            <li>The Resistance destroyed before it destroys them</li>
+                            <li>To eventually go home</li>
+                        </ul>
+                    </div>
+                    <div class="detail-box">
+                        <h4>What They Fear</h4>
+                        <ul>
+                            <li>Running out of Mourning Roses entirely</li>
+                            <li>The Verdant Curse overrunning the fields</li>
+                            <li>Their own soldiers losing faith</li>
+                            <li>Being remembered as the villains</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sympathy-bar">
+                    <span class="sympathy-label">The truth is:</span>
+                    <span class="sympathy-text">They are the aggressor and they are desperate parents trying to save their children. Both things are true at the same time.</span>
+                </div>
+            </div>
+
+            <div class="faction-card verdanya">
+                <div class="faction-header">
+                    <div class="faction-name">Verdanya</div>
+                    <span class="faction-label">The Occupied</span>
+                </div>
+                <div class="faction-tagline">"This is our land. These are our gods. You are killing something you don't even understand."</div>
+                <div class="faction-body">
+                    <p>A forest nation that has always been fiercely independent — ancient, wild, and governed by customs older than most cities. Verdanya had its problems before the invasion. It has more now.</p>
+                    <p>The people are fractured. Some collaborate with Ironhold to survive — to protect their families, keep their businesses, stay alive. Some resist in secret, feeding the Resistance information and supplies. Some have retreated so deep into the wilderness that the Verdant Curse is more of a neighbor than a threat.</p>
+                    <p>And some have transformed. The Verdant-Born are Verdanya's people too — or were. The community is divided on what that means.</p>
+                </div>
+                <div class="faction-details">
+                    <div class="detail-box">
+                        <h4>What They Want</h4>
+                        <ul>
+                            <li>The occupiers to leave</li>
+                            <li>Their gods returned to their rightful state</li>
+                            <li>Their transformed people to be seen as people</li>
+                            <li>To not have to choose between survival and dignity</li>
+                        </ul>
+                    </div>
+                    <div class="detail-box">
+                        <h4>What They Fear</h4>
+                        <ul>
+                            <li>The Verdant Curse consuming everything they love</li>
+                            <li>The Resistance making things worse</li>
+                            <li>Ironhold never leaving</li>
+                            <li>Forgetting what they were before all this</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sympathy-bar">
+                    <span class="sympathy-label">The truth is:</span>
+                    <span class="sympathy-text">They are unambiguously the victims of the occupation — and their path forward is no cleaner than anyone else's.</span>
+                </div>
+            </div>
+
+            <div class="faction-card resistance">
+                <div class="faction-header">
+                    <div class="faction-name">The Resistance</div>
+                    <span class="faction-label">The Shadows</span>
+                </div>
+                <div class="faction-tagline">"If no one else will act, we will. If history calls us terrorists, at least it will remember we existed."</div>
+                <div class="faction-body">
+                    <p>Guerrilla fighters, saboteurs, and true believers operating throughout occupied Verdanya. They wear thorn-and-rose badges — crimson on black. Their leader is known only as the Thornwraith, and she is planning something significant.</p>
+                    <p>Ironhold calls them terrorists. Verdanya calls them heroes. The occupied villagers call them complicated — the Resistance brings hope and draws reprisals in equal measure.</p>
+                    <p>The Resistance takes the transformed in. The Verdant-Born are welcome here when they are welcome nowhere else. Make of that what you will.</p>
+                </div>
+                <div class="faction-details">
+                    <div class="detail-box">
+                        <h4>What They Want</h4>
+                        <ul>
+                            <li>Ironhold out of Verdanya — by any means</li>
+                            <li>Sylora's stolen Eye returned</li>
+                            <li>The Verdant-Born treated as people</li>
+                            <li>An end to the occupation before nothing is left to save</li>
+                        </ul>
+                    </div>
+                    <div class="detail-box">
+                        <h4>What They Risk</h4>
+                        <ul>
+                            <li>Escalating violence that hurts civilians</li>
+                            <li>The Thornwraith's plan going too far</li>
+                            <li>Fighting so long they forget what they're fighting for</li>
+                            <li>Being right about everything and still losing</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sympathy-bar">
+                    <span class="sympathy-label">The truth is:</span>
+                    <span class="sympathy-text">They are fighting for something real with methods that cause real harm. Whether that math balances depends on where you're standing.</span>
+                </div>
+            </div>
+
+            <div class="faction-card briarcrest">
+                <div class="faction-header">
+                    <div class="faction-name">Briarcrest</div>
+                    <span class="faction-label">The Desperate</span>
+                </div>
+                <div class="faction-tagline">"We're still here. We're not sure that's an achievement."</div>
+                <div class="faction-body">
+                    <p>A border village that should have been abandoned months ago. Briarcrest exists in a permanent state of tense negotiation — half occupied by Ironhold's garrison, half still Verdanya in spirit and custom. The two sides coexist because the alternative is worse.</p>
+                    <p>The village is protected by a living thorn wall. It is failing. Everyone in Briarcrest knows this. No one says it out loud. If you're looking for work, information, or trouble, this is where you start.</p>
+                </div>
+                <div class="faction-details">
+                    <div class="detail-box">
+                        <h4>Key Figures</h4>
+                        <ul>
+                            <li>Elder Rowan Knotwise — village leader, Fungril druid</li>
+                            <li>Sergeant Daven Greymark — garrison commander</li>
+                            <li>Nessa Bramwell — baker. Knows things.</li>
+                        </ul>
+                    </div>
+                    <div class="detail-box">
+                        <h4>The Situation</h4>
+                        <ul>
+                            <li>Thorn wall failing — weeks at most</li>
+                            <li>Ironhold garrison undermanned and demoralized</li>
+                            <li>Verdanya quarter quietly seething</li>
+                            <li>Something is happening in the forest at night</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faction-card divinities">
+                <div class="faction-header">
+                    <div class="faction-name">The Faint Divinities</div>
+                    <span class="faction-label">The Small Gods</span>
+                </div>
+                <div class="faction-tagline">"We have always been here. We will be here when you are not. We are watching."</div>
+                <div class="faction-body">
+                    <p>Verdanya's gods do not live in distant heavens. They live in the streams and the stones and the thorns. They have names, personalities, and very strong opinions about being ignored. They are not all-powerful — but they are real, present, and entirely willing to involve themselves in your problems.</p>
+                    <p>The greatest of them, Sylora, is silent. Something was taken from her. What remains of the other Faint Divinities operates without her guidance, which means they are operating without her restraint.</p>
+                </div>
+                <div class="gods-grid">
+                    <div class="god-card">
+                        <div class="god-name">Briartongue</div>
+                        <div class="god-desc">Entity of thorns. Speaks in riddles. Ancient and watchful. Demands tribute — stories of death, told honestly. Protects Briarcrest in its own way, on its own terms.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Mellifer</div>
+                        <div class="god-desc">Lazy bee god of flower blooms. Loves the Verdant Curse — more flowers means more power. Inconvenient, whimsical, and extremely hard to reason with. Does not consider itself a problem.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Moonpetal</div>
+                        <div class="god-desc">Watcher of night-blooming things. Only appears during the week-long nights. Quiet and observant. Helpful to those who treat the dark with respect. Has seen a great deal and shares little.</div>
+                    </div>
+                    <div class="god-card">
+                        <div class="god-name">Sylora</div>
+                        <div class="god-desc">The Verdant Sovereign. Goddess of seasons. She gave the world its cycles. Ironhold took one of her Eyes. Now it's always spring. She has not spoken since. No one knows if she is angry, grieving, waiting, or gone.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /#tab-factions -->
 
     </div>
 
