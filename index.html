@@ -14,61 +14,6 @@
             padding: 48px 56px 80px;
         }
 
-        /* ── Hero ── */
-        .hero {
-            position: relative;
-            min-height: 420px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background:
-                linear-gradient(to bottom, rgba(8,6,3,0.3) 0%, rgba(8,6,3,0.75) 100%),
-                linear-gradient(to right, rgba(8,6,3,0.6) 0%, rgba(8,6,3,0.2) 60%, rgba(8,6,3,0.1) 100%),
-                url('hero.png') center center / cover no-repeat;
-        }
-        .hero-inner {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 64px 32px 56px;
-        }
-        .hero-eyebrow {
-            font-family: 'Cinzel', serif;
-            font-size: 0.68em;
-            letter-spacing: 0.34em;
-            text-transform: uppercase;
-            color: rgba(201,168,76,0.8);
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-        }
-        .hero-eyebrow::before, .hero-eyebrow::after {
-            content: '';
-            display: block;
-            width: 32px;
-            height: 1px;
-            background: rgba(201,168,76,0.5);
-        }
-        .hero h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 4em;
-            font-weight: 700;
-            color: var(--h-gold-b);
-            letter-spacing: 0.06em;
-            line-height: 1;
-            text-shadow: 0 0 80px rgba(232,201,106,0.25), 0 2px 16px rgba(0,0,0,0.95);
-            margin-bottom: 16px;
-        }
-        .hero-sub {
-            font-size: 1.1em;
-            font-style: italic;
-            color: #c8bfa8;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.9);
-        }
-
         /* ── Auth gate ── */
         .auth-gate {
             display: flex;
@@ -409,14 +354,11 @@
 <body>
     <nav class="site-nav"></nav>
 
-    <!-- Hero (hidden when logged in) -->
-    <div id="heroSection">
-        <div class="hero">
-            <div class="hero-inner">
-                <div class="hero-eyebrow">Virtual Tabletop</div>
-                <h1>Brackenroll</h1>
-                <p class="hero-sub">Play Daggerheart the way it was meant to be played.</p>
-            </div>
+    <div class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-hero-tag">Virtual Tabletop</div>
+            <h1>Brackenroll</h1>
+            <p class="subtitle" id="heroSub">Play Daggerheart the way it was meant to be played.</p>
         </div>
     </div>
 
@@ -686,13 +628,12 @@
             if (!user) {
                 authGate.style.display = 'flex';
                 hubContent.style.display = 'none';
-                document.getElementById('heroSection').style.display = 'block';
                 return;
             }
             currentUser = user;
             authGate.style.display = 'none';
             hubContent.style.display = 'block';
-            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('heroSub').textContent = `Welcome back, ${user.displayName || 'Adventurer'}.`;
 
             if (needsOnboarding) {
                 // Pre-fill display name from Google if available
