@@ -10,6 +10,7 @@
         '<span></span><span></span><span></span></button>' +
         '<ul class="nav-links">' +
         '<li><a href="index.html">Campaigns</a></li>' +
+        '<li><a href="character-builder.html">Characters</a></li>' +
         '<li><a href="handbook.html">Handbook</a></li>' +
         '</ul>';
 
