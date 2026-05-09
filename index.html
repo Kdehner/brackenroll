@@ -14,14 +14,14 @@
             padding: 48px 56px 80px;
         }
 
-        /* Auth gate */
+        /* ── Auth gate ── */
         .auth-gate {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 60vh;
-            gap: 24px;
+            gap: 0;
             text-align: center;
         }
         .auth-gate h1 {
@@ -30,14 +30,138 @@
             font-weight: 700;
             color: var(--h-gold-b);
             letter-spacing: 0.04em;
+            margin-bottom: 10px;
         }
-        .auth-gate p {
+        .auth-gate-sub {
             color: var(--ink-muted);
             font-style: italic;
             font-size: 1.05em;
+            margin-bottom: 36px;
         }
 
-        /* Section header */
+        /* Auth card */
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            padding: 36px 40px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-mid);
+            margin-bottom: 28px;
+            gap: 0;
+        }
+        .auth-tab {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: transparent;
+            border: none;
+            padding: 0 0 12px;
+            margin-right: 24px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.18s;
+        }
+        .auth-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .auth-tab:hover:not(.active) { color: var(--ink-muted); }
+
+        .auth-panel { display: none; }
+        .auth-panel.active { display: block; }
+
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            color: #333;
+            border: none;
+            padding: 11px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-google:hover { background: #f0f0f0; }
+        .btn-google svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: var(--ink-dim);
+            font-size: 0.8em;
+            font-style: italic;
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-mid);
+        }
+
+        .auth-field { margin-bottom: 16px; }
+        .auth-field label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            padding: 9px 12px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .auth-field input:focus { border-color: var(--gold); }
+
+        .auth-error {
+            color: #c04040;
+            font-size: 0.85em;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .btn-auth {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 11px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 4px;
+        }
+        .btn-auth:hover { background: var(--h-gold-b); }
+        .btn-auth:disabled { opacity: 0.5; cursor: default; }
+
+        /* ── Hub sections ── */
         .hub-section { margin-bottom: 56px; }
         .hub-section-header {
             display: flex;
@@ -55,8 +179,6 @@
             letter-spacing: 0.18em;
             text-transform: uppercase;
         }
-
-        /* Create button */
         .btn-create {
             font-family: 'Cinzel', serif;
             font-size: 0.7em;
@@ -67,18 +189,17 @@
             background: transparent;
             padding: 7px 18px;
             cursor: pointer;
+            text-decoration: none;
             transition: all 0.2s;
         }
         .btn-create:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
 
-        /* Cards grid */
+        /* ── Cards ── */
         .hub-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2px;
         }
-
-        /* Campaign card */
         .hub-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -90,7 +211,6 @@
             position: relative;
             overflow: hidden;
             transition: all 0.22s;
-            cursor: pointer;
         }
         .hub-card::after {
             content: '';
@@ -103,7 +223,6 @@
         }
         .hub-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
         .hub-card:hover::after { opacity: 1; }
-
         .hub-card-role {
             font-family: 'Cinzel', serif;
             font-size: 0.62em;
@@ -120,12 +239,7 @@
             margin-bottom: 8px;
             line-height: 1.3;
         }
-        .hub-card-meta {
-            font-size: 0.85em;
-            color: var(--ink-dim);
-            flex: 1;
-            margin-bottom: 16px;
-        }
+        .hub-card-meta { font-size: 0.85em; color: var(--ink-dim); flex: 1; margin-bottom: 16px; }
         .hub-card-link {
             font-family: 'Cinzel', serif;
             font-size: 0.68em;
@@ -135,19 +249,11 @@
             transition: color 0.2s;
         }
         .hub-card:hover .hub-card-link { color: var(--gold); }
-
         .role-gm { color: var(--gold); }
         .role-player { color: var(--ink-muted); }
+        .hub-empty { color: var(--ink-dim); font-style: italic; font-size: 0.9em; padding: 8px 0; }
 
-        /* Empty state */
-        .hub-empty {
-            color: var(--ink-dim);
-            font-style: italic;
-            font-size: 0.9em;
-            padding: 8px 0;
-        }
-
-        /* Modal */
+        /* ── Modals ── */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -162,7 +268,7 @@
             background: var(--bg-card, #14110d);
             border: 1px solid var(--border-gold);
             padding: 36px 40px;
-            max-width: 440px;
+            max-width: 460px;
             width: 90%;
         }
         .modal-title {
@@ -172,7 +278,13 @@
             color: var(--gold-mid);
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            margin-bottom: 24px;
+            margin-bottom: 6px;
+        }
+        .modal-sub {
+            color: var(--ink-dim);
+            font-style: italic;
+            font-size: 0.88em;
+            margin-bottom: 28px;
         }
         .modal-label {
             font-family: 'Cinzel', serif;
@@ -228,29 +340,28 @@
         .btn-submit:disabled { opacity: 0.5; cursor: default; }
         .modal-error { color: #c04040; font-size: 0.85em; margin-bottom: 16px; display: none; }
 
-        /* Sign in button */
-        .btn-google {
+        /* Color swatches */
+        .color-swatches {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #fff;
-            color: #333;
-            border: none;
-            padding: 12px 28px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.78em;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
         }
-        .btn-google:hover { background: #f0f0f0; }
-        .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: #fff; transform: scale(1.15); }
 
         @media (max-width: 700px) {
             .hub-wrap { padding: 32px 20px 60px; }
             .hub-grid { grid-template-columns: 1fr; }
+            .auth-card { padding: 28px 24px; }
             .modal-box { padding: 28px 24px; }
         }
     </style>
@@ -259,20 +370,59 @@
     <nav class="site-nav"></nav>
 
     <div class="hub-wrap">
-        <!-- Auth gate (shown when not logged in) -->
+
+        <!-- Auth gate -->
         <div class="auth-gate" id="authGate">
             <h1>Brackenroll</h1>
-            <p>A Daggerheart virtual tabletop.<br>Sign in to access your campaigns and characters.</p>
-            <button class="btn-google" id="googleSignIn">
-                <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-                Sign in with Google
-            </button>
+            <p class="auth-gate-sub">A Daggerheart virtual tabletop.</p>
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tabSignIn">Sign In</button>
+                    <button class="auth-tab" id="tabRegister">Create Account</button>
+                </div>
+
+                <!-- Sign In -->
+                <div class="auth-panel active" id="panelSignIn">
+                    <button class="btn-google" id="googleSignIn">
+                        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                        Continue with Google
+                    </button>
+                    <div class="auth-divider">or</div>
+                    <p class="auth-error" id="signInError"></p>
+                    <div class="auth-field">
+                        <label for="signInEmail">Email</label>
+                        <input type="email" id="signInEmail" autocomplete="email" placeholder="you@example.com">
+                    </div>
+                    <div class="auth-field">
+                        <label for="signInPassword">Password</label>
+                        <input type="password" id="signInPassword" autocomplete="current-password" placeholder="••••••••">
+                    </div>
+                    <button class="btn-auth" id="emailSignInBtn">Sign In</button>
+                </div>
+
+                <!-- Register -->
+                <div class="auth-panel" id="panelRegister">
+                    <button class="btn-google" id="googleRegister">
+                        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                        Continue with Google
+                    </button>
+                    <div class="auth-divider">or</div>
+                    <p class="auth-error" id="registerError"></p>
+                    <div class="auth-field">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" autocomplete="email" placeholder="you@example.com">
+                    </div>
+                    <div class="auth-field">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" autocomplete="new-password" placeholder="At least 6 characters">
+                    </div>
+                    <button class="btn-auth" id="emailRegisterBtn">Create Account</button>
+                </div>
+            </div>
         </div>
 
-        <!-- Main hub (shown when logged in) -->
+        <!-- Hub (shown when logged in) -->
         <div id="hubContent" style="display:none;">
-
-            <!-- Campaigns -->
             <div class="hub-section">
                 <div class="hub-section-header">
                     <h2>My Campaigns</h2>
@@ -282,8 +432,6 @@
                     <p class="hub-empty">Loading campaigns…</p>
                 </div>
             </div>
-
-            <!-- Characters -->
             <div class="hub-section">
                 <div class="hub-section-header">
                     <h2>My Characters</h2>
@@ -293,7 +441,23 @@
                     <p class="hub-empty">Loading characters…</p>
                 </div>
             </div>
+        </div>
 
+    </div>
+
+    <!-- Onboarding modal (first sign-in) -->
+    <div class="modal-overlay" id="onboardingModal">
+        <div class="modal-box">
+            <div class="modal-title">Welcome to Brackenroll</div>
+            <p class="modal-sub">Tell us a little about yourself before we head in.</p>
+            <p class="modal-error" id="onboardingError"></p>
+            <label class="modal-label" for="onboardingName">Display Name</label>
+            <input class="modal-input" id="onboardingName" type="text" placeholder="How you appear to other players" maxlength="40" autocomplete="off">
+            <label class="modal-label">Avatar Color</label>
+            <div class="color-swatches" id="colorSwatches"></div>
+            <div class="modal-actions">
+                <button class="btn-submit" id="onboardingSubmit">Get Started</button>
+            </div>
         </div>
     </div>
 
@@ -314,59 +478,162 @@
     <script src="nav.js"></script>
     <script type="module">
         import {
-            onAuthChange, signInWithGoogle,
-            getCampaigns, createCampaign,
-            loadCharacters
+            onAuthChange, signInWithGoogle, emailSignIn, emailRegister,
+            getCampaigns, createCampaign, loadCharacters, updateUserProfile
         } from './firebase-init.js';
 
-        const authGate   = document.getElementById('authGate');
-        const hubContent = document.getElementById('hubContent');
-        const campaignGrid   = document.getElementById('campaignGrid');
-        const characterGrid  = document.getElementById('characterGrid');
-        const modal      = document.getElementById('campaignModal');
-        const modalInput = document.getElementById('campaignNameInput');
-        const modalError = document.getElementById('campaignModalError');
-        const modalSubmit = document.getElementById('campaignModalSubmit');
+        // ── Auth tabs ──
+        const tabSignIn   = document.getElementById('tabSignIn');
+        const tabRegister = document.getElementById('tabRegister');
+        const panelSignIn = document.getElementById('panelSignIn');
+        const panelReg    = document.getElementById('panelRegister');
+
+        tabSignIn.addEventListener('click', () => setTab('signin'));
+        tabRegister.addEventListener('click', () => setTab('register'));
+        function setTab(t) {
+            tabSignIn.classList.toggle('active', t === 'signin');
+            tabRegister.classList.toggle('active', t === 'register');
+            panelSignIn.classList.toggle('active', t === 'signin');
+            panelReg.classList.toggle('active', t === 'register');
+        }
+
+        // ── Auth actions ──
+        const googleSvg = `<svg viewBox="0 0 48 48" width="16" height="16"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.58-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 
         document.getElementById('googleSignIn').addEventListener('click', () => signInWithGoogle());
+        document.getElementById('googleRegister').addEventListener('click', () => signInWithGoogle());
 
-        document.getElementById('createCampaignBtn').addEventListener('click', () => {
-            modalInput.value = '';
-            modalError.style.display = 'none';
-            modal.classList.add('open');
-            modalInput.focus();
+        document.getElementById('emailSignInBtn').addEventListener('click', async () => {
+            const email = document.getElementById('signInEmail').value.trim();
+            const pass  = document.getElementById('signInPassword').value;
+            const err   = document.getElementById('signInError');
+            err.style.display = 'none';
+            if (!email || !pass) { showErr(err, 'Please enter your email and password.'); return; }
+            try { await emailSignIn(email, pass); }
+            catch (e) { showErr(err, friendlyAuthError(e.code)); }
         });
 
-        document.getElementById('campaignModalCancel').addEventListener('click', () => modal.classList.remove('open'));
-        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+        document.getElementById('emailRegisterBtn').addEventListener('click', async () => {
+            const email = document.getElementById('registerEmail').value.trim();
+            const pass  = document.getElementById('registerPassword').value;
+            const err   = document.getElementById('registerError');
+            err.style.display = 'none';
+            if (!email || !pass) { showErr(err, 'Please fill in all fields.'); return; }
+            if (pass.length < 6) { showErr(err, 'Password must be at least 6 characters.'); return; }
+            try { await emailRegister(email, pass); }
+            catch (e) { showErr(err, friendlyAuthError(e.code)); }
+        });
 
-        modalSubmit.addEventListener('click', async () => {
-            const name = modalInput.value.trim();
-            if (!name) { showModalError('Please enter a campaign name.'); return; }
-            modalSubmit.disabled = true;
-            modalSubmit.textContent = 'Creating…';
+        document.getElementById('signInPassword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('emailSignInBtn').click();
+        });
+        document.getElementById('registerPassword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('emailRegisterBtn').click();
+        });
+
+        function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+        function friendlyAuthError(code) {
+            const map = {
+                'auth/user-not-found':      'No account found with that email.',
+                'auth/wrong-password':      'Incorrect password.',
+                'auth/invalid-credential':  'Incorrect email or password.',
+                'auth/email-already-in-use':'An account with that email already exists.',
+                'auth/weak-password':       'Password must be at least 6 characters.',
+                'auth/invalid-email':       'Please enter a valid email address.',
+                'auth/too-many-requests':   'Too many attempts. Try again later.',
+            };
+            return map[code] ?? 'Something went wrong. Please try again.';
+        }
+
+        // ── Onboarding modal ──
+        const COLORS = [
+            { hex: '#c0392b', name: 'Crimson'  },
+            { hex: '#2980b9', name: 'Sapphire' },
+            { hex: '#27ae60', name: 'Emerald'  },
+            { hex: '#8e44ad', name: 'Amethyst' },
+            { hex: '#d4ac0d', name: 'Gold'     },
+            { hex: '#ca6f1e', name: 'Copper'   },
+            { hex: '#717d7e', name: 'Steel'    },
+            { hex: '#c0609a', name: 'Rose'     },
+        ];
+        let selectedColor = COLORS[0].hex;
+
+        const swatchWrap = document.getElementById('colorSwatches');
+        COLORS.forEach(c => {
+            const s = document.createElement('button');
+            s.type = 'button';
+            s.className = 'color-swatch' + (c.hex === selectedColor ? ' selected' : '');
+            s.style.background = c.hex;
+            s.title = c.name;
+            s.addEventListener('click', () => {
+                selectedColor = c.hex;
+                swatchWrap.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
+                s.classList.add('selected');
+            });
+            swatchWrap.appendChild(s);
+        });
+
+        document.getElementById('onboardingSubmit').addEventListener('click', async () => {
+            const name = document.getElementById('onboardingName').value.trim();
+            const err  = document.getElementById('onboardingError');
+            if (!name) { showErr(err, 'Please enter a display name.'); return; }
+            const btn = document.getElementById('onboardingSubmit');
+            btn.disabled = true; btn.textContent = 'Saving…';
             try {
-                const id = await createCampaign(currentUser.uid, name);
-                modal.classList.remove('open');
-                window.location.href = `campaign.html?id=${id}`;
+                await updateUserProfile(currentUser.uid, {
+                    displayName: name,
+                    avatarColor: selectedColor,
+                    onboardingComplete: true
+                });
+                document.getElementById('onboardingModal').classList.remove('open');
+                loadHub(currentUser);
             } catch (e) {
-                showModalError('Something went wrong. Try again.');
-                modalSubmit.disabled = false;
-                modalSubmit.textContent = 'Create';
+                showErr(err, 'Something went wrong. Please try again.');
+                btn.disabled = false; btn.textContent = 'Get Started';
             }
         });
 
-        modalInput.addEventListener('keydown', e => { if (e.key === 'Enter') modalSubmit.click(); });
+        document.getElementById('onboardingName').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('onboardingSubmit').click();
+        });
 
-        function showModalError(msg) {
-            modalError.textContent = msg;
-            modalError.style.display = 'block';
-        }
+        // ── Campaign modal ──
+        const campaignModal  = document.getElementById('campaignModal');
+        const campaignInput  = document.getElementById('campaignNameInput');
+        const campaignError  = document.getElementById('campaignModalError');
+        const campaignSubmit = document.getElementById('campaignModalSubmit');
 
+        document.getElementById('createCampaignBtn').addEventListener('click', () => {
+            campaignInput.value = '';
+            campaignError.style.display = 'none';
+            campaignModal.classList.add('open');
+            campaignInput.focus();
+        });
+        document.getElementById('campaignModalCancel').addEventListener('click', () => campaignModal.classList.remove('open'));
+        campaignModal.addEventListener('click', e => { if (e.target === campaignModal) campaignModal.classList.remove('open'); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') campaignModal.classList.remove('open'); });
+        campaignInput.addEventListener('keydown', e => { if (e.key === 'Enter') campaignSubmit.click(); });
+
+        campaignSubmit.addEventListener('click', async () => {
+            const name = campaignInput.value.trim();
+            if (!name) { showErr(campaignError, 'Please enter a campaign name.'); return; }
+            campaignSubmit.disabled = true; campaignSubmit.textContent = 'Creating…';
+            try {
+                const id = await createCampaign(currentUser.uid, name);
+                campaignModal.classList.remove('open');
+                window.location.href = `campaign.html?id=${id}`;
+            } catch (e) {
+                showErr(campaignError, 'Something went wrong. Try again.');
+                campaignSubmit.disabled = false; campaignSubmit.textContent = 'Create';
+            }
+        });
+
+        // ── Auth state ──
         let currentUser = null;
+        const authGate   = document.getElementById('authGate');
+        const hubContent = document.getElementById('hubContent');
 
-        onAuthChange(async user => {
+        onAuthChange(async (user, needsOnboarding) => {
             if (!user) {
                 authGate.style.display = 'flex';
                 hubContent.style.display = 'none';
@@ -375,7 +642,17 @@
             currentUser = user;
             authGate.style.display = 'none';
             hubContent.style.display = 'block';
-            loadHub(user);
+
+            if (needsOnboarding) {
+                // Pre-fill display name from Google if available
+                const nameInput = document.getElementById('onboardingName');
+                if (user.displayName) nameInput.value = user.displayName;
+                document.getElementById('onboardingModal').classList.add('open');
+                nameInput.focus();
+                // Hub loads after onboarding completes
+            } else {
+                loadHub(user);
+            }
         });
 
         async function loadHub(user) {
@@ -388,9 +665,10 @@
         }
 
         function renderCampaigns(campaigns, uid) {
-            campaignGrid.innerHTML = '';
+            const grid = document.getElementById('campaignGrid');
+            grid.innerHTML = '';
             if (campaigns.length === 0) {
-                campaignGrid.innerHTML = '<p class="hub-empty">No campaigns yet. Create one or join one with an invite link.</p>';
+                grid.innerHTML = '<p class="hub-empty">No campaigns yet. Create one or join with an invite link.</p>';
                 return;
             }
             campaigns
@@ -402,17 +680,18 @@
                     card.href = `campaign.html?id=${c.id}`;
                     card.innerHTML = `
                         <div class="hub-card-role ${isOwner ? 'role-gm' : 'role-player'}">${isOwner ? 'Game Master' : 'Player'}</div>
-                        <div class="hub-card-name">${escHtml(c.name)}</div>
+                        <div class="hub-card-name">${esc(c.name)}</div>
                         <div class="hub-card-meta">${c.memberUids.length} member${c.memberUids.length !== 1 ? 's' : ''}</div>
                         <span class="hub-card-link">View Campaign →</span>`;
-                    campaignGrid.appendChild(card);
+                    grid.appendChild(card);
                 });
         }
 
         function renderCharacters(characters) {
-            characterGrid.innerHTML = '';
+            const grid = document.getElementById('characterGrid');
+            grid.innerHTML = '';
             if (characters.length === 0) {
-                characterGrid.innerHTML = '<p class="hub-empty">No characters yet. Create your first one above.</p>';
+                grid.innerHTML = '<p class="hub-empty">No characters yet. Create your first one above.</p>';
                 return;
             }
             characters.forEach(ch => {
@@ -420,15 +699,15 @@
                 card.className = 'hub-card';
                 card.href = `character-sheet.html?id=${ch.id}`;
                 card.innerHTML = `
-                    <div class="hub-card-role">${escHtml(ch.className ?? '')}</div>
-                    <div class="hub-card-name">${escHtml(ch.name ?? 'Unnamed')}</div>
+                    <div class="hub-card-role">${esc(ch.className ?? '')}</div>
+                    <div class="hub-card-name">${esc(ch.name ?? 'Unnamed')}</div>
                     <div class="hub-card-meta">Level ${ch.sheetState?.level ?? 1}</div>
                     <span class="hub-card-link">Open Sheet →</span>`;
-                characterGrid.appendChild(card);
+                grid.appendChild(card);
             });
         }
 
-        function escHtml(s) {
+        function esc(s) {
             return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
     </script>
