@@ -1,0 +1,7 @@
+name = "brackenroll-r2-presign"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, WORKER_SECRET
+# set via: npx wrangler secret put <NAME>

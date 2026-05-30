@@ -146,6 +146,83 @@
             display: none;
         }
 
+        /* Dice theme picker */
+        .dice-theme-row {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .dice-theme-group label.profile-label { margin-bottom: 8px; }
+        .dice-theme-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .dice-theme-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border: 1px solid var(--border-mid);
+            background: transparent;
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+        }
+        .dice-theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .dice-theme-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.12); color: var(--gold); }
+
+        /* Pending shares */
+        .share-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .share-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+        .share-row:first-of-type { padding-top: 0; }
+        .share-row-info { flex: 1; min-width: 0; }
+        .share-row-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            color: var(--ink);
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .share-row-meta {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.82em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+        .share-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .share-accept-btn, .share-decline-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            cursor: pointer;
+            border: 1px solid;
+            background: transparent;
+            transition: all 0.15s;
+        }
+        .share-accept-btn  { color: #5a9e5a; border-color: rgba(90,158,90,0.4); }
+        .share-accept-btn:hover  { background: rgba(90,158,90,0.1); }
+        .share-decline-btn { color: var(--ink-dim); border-color: var(--border-mid); }
+        .share-decline-btn:hover { color: rgba(192,96,96,0.9); border-color: rgba(192,96,96,0.3); }
+        .shares-empty {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            color: var(--ink-dim);
+            font-size: 0.9em;
+        }
+
         @media (max-width: 700px) {
             .profile-wrap { padding: 28px 20px 60px; }
             .profile-section { padding: 24px 20px; }
@@ -191,6 +268,28 @@
             <p class="profile-error" id="profileError"></p>
         </div>
 
+        <!-- Dice theme section -->
+        <div class="profile-section">
+            <div class="profile-section-title">Your Dice</div>
+            <div class="dice-theme-row">
+                <div class="dice-theme-group">
+                    <label class="profile-label">Standard Dice</label>
+                    <div class="dice-theme-options" id="standardThemeOptions"></div>
+                </div>
+                <div class="dice-theme-group">
+                    <label class="profile-label">Hope Die (d12)</label>
+                    <div class="dice-theme-options" id="hopeThemeOptions"></div>
+                </div>
+                <div class="dice-theme-group">
+                    <label class="profile-label">Fear Die (d12)</label>
+                    <div class="dice-theme-options" id="fearThemeOptions"></div>
+                </div>
+            </div>
+            <button class="btn-save" id="saveDiceBtn">Save Dice</button>
+            <p class="profile-success" id="diceSuccess">Dice preferences saved.</p>
+            <p class="profile-error" id="diceError"></p>
+        </div>
+
         <!-- Password section (email users only) -->
         <div class="profile-section" id="passwordSection" style="display:none;">
             <div class="profile-section-title">Change Password</div>
@@ -226,13 +325,20 @@
             </div>
         </div>
 
+        <!-- Pending shares -->
+        <div class="profile-section" id="sharesSection" style="display:none;">
+            <div class="profile-section-title">Pending Shares</div>
+            <div id="sharesList"></div>
+        </div>
+
     </div>
 
     <script type="module">
         import {
             onAuthChange, getUserProfile, updateUserProfile,
-            isEmailUser, changePassword
-        } from './firebase-init.js';
+            isEmailUser, changePassword,
+            getPendingShares, acceptShare, declineShare
+        } from './supabase-client.js';
 
         const COLORS = [
             { hex: '#c0392b', name: 'Crimson'  },
@@ -245,8 +351,22 @@
             { hex: '#c0609a', name: 'Rose'     },
         ];
 
+        const THEMES = [
+            { id: 'smooth',        label: 'Smooth'     },
+            { id: 'default',       label: 'Default'    },
+            { id: 'rust',          label: 'Rust'       },
+            { id: 'rock',          label: 'Rock'       },
+            { id: 'wooden',        label: 'Wooden'     },
+            { id: 'blueGreenMetal',label: 'Metal'      },
+            { id: 'diceOfRolling', label: 'Rolling'    },
+            { id: 'smooth-pip',    label: 'Pip'        },
+        ];
+
+        const DEFAULT_DICE_PREFS = { standard_theme: 'smooth', hope_theme: 'default', fear_theme: 'rust' };
+
         let currentUser = null;
         let selectedColor = '';
+        let dicePrefs = { ...DEFAULT_DICE_PREFS };
 
         // ── Color swatches ────────────────────────────────────────────────────
         const swatchWrap = document.getElementById('colorSwatches');
@@ -276,22 +396,123 @@
 
         document.getElementById('displayNameInput').addEventListener('input', updateAvatarPreview);
 
+        // ── Dice theme picker ─────────────────────────────────────────────────
+        function buildThemePicker(containerId, prefKey) {
+            const wrap = document.getElementById(containerId);
+            THEMES.forEach(t => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'dice-theme-btn' + (dicePrefs[prefKey] === t.id ? ' selected' : '');
+                btn.textContent = t.label;
+                btn.dataset.theme = t.id;
+                btn.addEventListener('click', () => {
+                    dicePrefs = { ...dicePrefs, [prefKey]: t.id };
+                    wrap.querySelectorAll('.dice-theme-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                });
+                wrap.appendChild(btn);
+            });
+        }
+
+        function loadDicePrefs(profile) {
+            dicePrefs = { ...DEFAULT_DICE_PREFS, ...(profile?.dice_prefs || {}) };
+            ['standardThemeOptions', 'hopeThemeOptions', 'fearThemeOptions'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+            buildThemePicker('standardThemeOptions', 'standard_theme');
+            buildThemePicker('hopeThemeOptions',     'hope_theme');
+            buildThemePicker('fearThemeOptions',     'fear_theme');
+        }
+
+        document.getElementById('saveDiceBtn').addEventListener('click', async () => {
+            const err = document.getElementById('diceError');
+            const ok  = document.getElementById('diceSuccess');
+            hide(err); hide(ok);
+            const btn = document.getElementById('saveDiceBtn');
+            btn.disabled = true; btn.textContent = 'Saving…';
+            try {
+                await updateUserProfile(currentUser.uid, { dice_prefs: dicePrefs });
+                show(ok);
+                setTimeout(() => hide(ok), 3000);
+            } catch (e) {
+                console.error('Dice prefs save error:', e);
+                show(err, 'Failed to save. Please try again.');
+            } finally {
+                btn.disabled = false; btn.textContent = 'Save Dice';
+            }
+        });
+
         // ── Auth ──────────────────────────────────────────────────────────────
         onAuthChange(async (user) => {
             if (!user) { window.location.href = 'index.html'; return; }
             currentUser = user;
             await loadProfile(user);
+            await loadPendingShares();
         });
+
+        async function loadPendingShares() {
+            const shares = await getPendingShares(currentUser.uid);
+            const section = document.getElementById('sharesSection');
+            const list    = document.getElementById('sharesList');
+
+            if (!shares.length) { section.style.display = 'none'; return; }
+
+            section.style.display = 'block';
+            list.innerHTML = '';
+
+            const TYPE_LABELS = {
+                weapon: 'Weapon', armor: 'Armor', loot_item: 'Loot Item',
+                domain_card: 'Domain Card', ancestry: 'Ancestry', community: 'Community',
+                class: 'Class', domain: 'Domain', adversary: 'Adversary',
+            };
+
+            shares.forEach(share => {
+                const item = share.homebrew_content;
+                const row  = document.createElement('div');
+                row.className = 'share-row';
+                row.innerHTML =
+                    `<div class="share-row-info">` +
+                        `<div class="share-row-name">${esc(item.name)}</div>` +
+                        `<div class="share-row-meta">${TYPE_LABELS[item.content_type] || item.content_type}</div>` +
+                    `</div>` +
+                    `<div class="share-row-actions">` +
+                        `<button class="share-accept-btn">Accept</button>` +
+                        `<button class="share-decline-btn">Decline</button>` +
+                    `</div>`;
+
+                row.querySelector('.share-accept-btn').addEventListener('click', async () => {
+                    try {
+                        await acceptShare(share.id, currentUser.uid);
+                        row.remove();
+                        if (!list.children.length) section.style.display = 'none';
+                    } catch (e) {
+                        alert('Failed to accept share. Please try again.');
+                    }
+                });
+
+                row.querySelector('.share-decline-btn').addEventListener('click', async () => {
+                    await declineShare(share.id);
+                    row.remove();
+                    if (!list.children.length) section.style.display = 'none';
+                });
+
+                list.appendChild(row);
+            });
+        }
+
+        function esc(str) {
+            return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
 
         async function loadProfile(user) {
             const profile = await getUserProfile(user.uid);
 
             // Display name
             const nameInput = document.getElementById('displayNameInput');
-            nameInput.value = profile?.displayName || user.displayName || '';
+            nameInput.value = profile?.display_name || user.user_metadata?.full_name || '';
 
             // Color
-            selectedColor = profile?.avatarColor || COLORS[0].hex;
+            selectedColor = profile?.avatar_color || COLORS[0].hex;
             swatchWrap.querySelectorAll('.color-swatch').forEach(btn => {
                 if (btn.style.background === selectedColor || btn.style.backgroundColor === selectedColor) {
                     btn.classList.add('selected');
@@ -304,10 +525,11 @@
             });
 
             updateAvatarPreview();
+            loadDicePrefs(profile);
 
             // Account info
             document.getElementById('emailDisplay').value = user.email || '—';
-            const emailAuth = isEmailUser();
+            const emailAuth = await isEmailUser();
             document.getElementById('providerDisplay').value = emailAuth ? 'Email & Password' : 'Google';
             if (emailAuth) document.getElementById('passwordSection').style.display = 'block';
         }
@@ -325,12 +547,13 @@
             btn.disabled = true; btn.textContent = 'Saving…';
             try {
                 await updateUserProfile(currentUser.uid, {
-                    displayName: name,
-                    avatarColor: selectedColor
+                    display_name: name,
+                    avatar_color: selectedColor
                 });
                 show(ok);
                 setTimeout(() => hide(ok), 3000);
             } catch (e) {
+                console.error('Profile save error:', e);
                 show(err, 'Failed to save. Please try again.');
             } finally {
                 btn.disabled = false; btn.textContent = 'Save Changes';
@@ -360,13 +583,11 @@
                 show(ok);
                 setTimeout(() => hide(ok), 3000);
             } catch (e) {
-                const msgs = {
-                    'auth/wrong-password':      'Current password is incorrect.',
-                    'auth/invalid-credential':  'Current password is incorrect.',
-                    'auth/too-many-requests':   'Too many attempts. Try again later.',
-                    'auth/requires-recent-login': 'Please sign out and sign back in before changing your password.',
-                };
-                show(err, msgs[e.code] ?? 'Failed to update password. Please try again.');
+                const m = (e.message || '').toLowerCase();
+                const msg = m.includes('incorrect') || m.includes('invalid') ? 'Current password is incorrect.'
+                    : m.includes('too many') ? 'Too many attempts. Try again later.'
+                    : 'Failed to update password. Please try again.';
+                show(err, msg);
             } finally {
                 btn.disabled = false; btn.textContent = 'Update Password';
             }

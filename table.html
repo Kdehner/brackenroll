@@ -1,0 +1,3934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { overflow: hidden; }
+
+        .table-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ── Top bar ───────────────────────────────────────────────────────── */
+        .table-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 52px;
+            background: #14110d;
+            border-bottom: 1px solid rgba(201,168,76,0.28);
+            flex-shrink: 0;
+            gap: 16px;
+            z-index: 10;
+        }
+        .table-bar-left { display: flex; align-items: center; gap: 16px; }
+        .table-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #6a5a40;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .table-back:hover { color: #c9a84c; }
+        .table-campaign-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            font-weight: 600;
+            color: #e8dcc8;
+            letter-spacing: 0.06em;
+        }
+        .table-session-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5a9e5a;
+            animation: pulse 1.8s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.35; }
+        }
+        .table-scene-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            color: #6a5a40;
+            border-left: 1px solid rgba(201,168,76,0.18);
+            padding-left: 14px;
+        }
+        .table-scene-label span { color: #c9a84c; }
+        .table-bar-right { display: flex; align-items: center; gap: 12px; }
+        .table-members   { display: flex; gap: 6px; align-items: center; }
+        .table-member-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            font-weight: 700;
+            color: rgba(0,0,0,0.6);
+            background: var(--border-mid);
+        }
+
+        /* ── Canvas area ───────────────────────────────────────────────────── */
+        .table-canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #0e0b08;
+        }
+        #konvaContainer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .table-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            padding: 40px;
+            z-index: 5;
+        }
+        .table-center-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            color: #c9a84c;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── GM Toolbar ────────────────────────────────────────────────────── */
+        .gm-toolbar {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e190f;
+            border: 1px solid rgba(201,168,76,0.4);
+            padding: 10px 16px;
+            gap: 10px;
+            align-items: center;
+            z-index: 20;
+        }
+        .gm-toolbar.visible { display: flex; }
+        .toolbar-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #6a5a40;
+            margin-right: 4px;
+        }
+        .toolbar-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 7px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar-btn:hover  { border-color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .toolbar-btn.active { border-color: #c9a84c; background: rgba(201,168,76,0.12); }
+        .toolbar-btn.locked { color: #c06060; border-color: rgba(192,96,96,0.5); background: rgba(192,96,96,0.08); }
+        .toolbar-btn.locked:hover { background: rgba(192,96,96,0.15); border-color: #c06060; }
+        .toolbar-sep {
+            width: 1px;
+            height: 22px;
+            background: rgba(201,168,76,0.15);
+            flex-shrink: 0;
+        }
+        .toolbar-map-input { display: flex; align-items: center; gap: 8px; }
+        .toolbar-input {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #e8dcc8;
+            padding: 6px 10px;
+            outline: none;
+            width: 280px;
+            transition: border-color 0.2s;
+        }
+        .toolbar-input:focus { border-color: #c9a84c; }
+        .toolbar-input::placeholder { color: #4a3e2e; }
+
+        /* ── Rolls panel ───────────────────────────────────────────────────── */
+        .table-rolls-toggle {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            border: 1px solid rgba(201,168,76,0.3);
+            background: transparent;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .table-rolls-toggle:hover,
+        .table-rolls-toggle.active { border-color: #c9a84c; background: rgba(201,168,76,0.1); }
+
+        .rolls-panel {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 300px;
+            background: #14110d;
+            border-left: 1px solid rgba(201,168,76,0.2);
+            z-index: 15;
+        }
+        .rolls-panel.open { display: flex; }
+        .rolls-header {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(201,168,76,0.15);
+            flex-shrink: 0;
+        }
+        .rolls-feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .rolls-feed::-webkit-scrollbar { width: 4px; }
+        .rolls-feed::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .roll-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(201,168,76,0.1);
+            padding: 10px 12px;
+        }
+        .roll-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .roll-card-avatar {
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cinzel', serif; font-size: 0.6em; font-weight: 700;
+            color: rgba(0,0,0,0.6); flex-shrink: 0;
+        }
+        .roll-card-name { font-family: 'Cinzel', serif; font-size: 0.68em; color: #8a7860; letter-spacing: 0.06em; }
+        .roll-card-dice { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .roll-die { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .roll-die-label { font-family: 'Cinzel', serif; font-size: 0.55em; letter-spacing: 0.1em; text-transform: uppercase; }
+        .roll-die-label.hope { color: #c9a84c; }
+        .roll-die-label.fear { color: #8a4040; }
+        .roll-die-value { font-family: 'Cinzel', serif; font-size: 1.4em; font-weight: 700; line-height: 1; }
+        .roll-die-value.hope { color: #e8c96a; }
+        .roll-die-value.fear { color: #c06060; }
+        .roll-separator { color: #4a3e2e; }
+        .roll-total { margin-left: auto; font-family: 'Cinzel', serif; font-size: 1.8em; font-weight: 700; color: #e8dcc8; line-height: 1; }
+        .roll-result { font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; display: inline-block; }
+        .roll-result.with-hope { color: #e8c96a; border: 1px solid rgba(232,201,106,0.3); }
+        .roll-result.with-fear { color: #c06060; border: 1px solid rgba(192,96,96,0.3); }
+        .roll-result.critical  { color: #fff; background: rgba(232,201,106,0.15); border: 1px solid rgba(232,201,106,0.5); }
+        .rolls-footer { padding: 12px; border-top: 1px solid rgba(201,168,76,0.15); flex-shrink: 0; }
+        .roll-btn {
+            width: 100%; font-family: 'Cinzel', serif; font-size: 0.72em; letter-spacing: 0.14em; text-transform: uppercase;
+            padding: 11px; cursor: pointer; font-weight: 600; transition: all 0.2s; border: none;
+        }
+        .roll-btn.hope { background: rgba(201,168,76,0.15); color: #e8c96a; border: 1px solid rgba(201,168,76,0.4); }
+        .roll-btn.hope:hover { background: rgba(201,168,76,0.25); }
+        .roll-btn:disabled { opacity: 0.4; cursor: default; }
+        .rolls-empty { color: #4a3e2e; font-style: italic; font-size: 0.85em; text-align: center; padding: 24px 0; }
+
+        /* ── GM Panels (shared shell) ──────────────────────────────────────── */
+        .gm-panel {
+            position: absolute;
+            width: 264px;
+            background: #1a140c;
+            border: 1px solid rgba(201,168,76,0.45);
+            z-index: 30;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.7);
+            user-select: none;
+        }
+        .gm-panel.hidden { display: none; }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: #14110d;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            cursor: grab;
+        }
+        .panel-header:active { cursor: grabbing; }
+        .panel-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #c9a84c;
+        }
+        .panel-actions { display: flex; gap: 2px; }
+        .panel-icon-btn {
+            background: transparent; border: none; color: #6a5a40;
+            cursor: pointer; font-size: 1em; padding: 2px 6px; line-height: 1; transition: color 0.15s;
+        }
+        .panel-icon-btn:hover { color: #c9a84c; }
+        .panel-body { padding: 14px 12px; }
+
+        /* ── Tokens panel ──────────────────────────────────────────────────── */
+        .tokens-list { display: flex; flex-direction: column; gap: 2px; min-width: 220px; max-height: 280px; overflow-y: auto; }
+        .tp-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; }
+        .tp-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+        .tp-label { flex: 1; font-size: 13px; color: #d4b896; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+        .tp-type { font-size: 10px; color: #7a6a54; padding: 1px 4px; border: 1px solid #3a2e1e; border-radius: 3px; flex-shrink: 0; }
+        .tp-add-btn { font-size: 11px; padding: 2px 7px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.35); color: #c9a84c; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
+        .tp-add-btn:hover { background: rgba(201,168,76,0.22); }
+        .tp-add-btn:disabled { opacity: 0.4; cursor: default; }
+        .tp-in-scene { font-size: 12px; color: #7a9a6a; flex-shrink: 0; }
+        .tp-del-btn { font-size: 14px; color: #5a4a38; background: none; border: none; cursor: pointer; padding: 0 2px; line-height: 1; flex-shrink: 0; }
+        .tp-del-btn:hover:not(:disabled) { color: #c06060; }
+        .tp-del-btn:disabled { opacity: 0.25; cursor: default; }
+        .tokens-panel-footer { margin-top: 8px; padding-top: 8px; border-top: 1px solid #2a1e0e; display: flex; gap: 6px; }
+        .tokens-empty { font-size: 12px; color: #5a4a38; margin: 4px 0; }
+
+        /* ── Fear Tracker ──────────────────────────────────────────────────── */
+        .fear-pips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+        .fear-pip {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid rgba(201,168,76,0.25);
+            background: transparent; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+        }
+        .fear-pip.filled { background: #c9a84c; border-color: #c9a84c; }
+        .fear-pip:hover  { border-color: #c9a84c; }
+        .fear-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .fear-adj-btn {
+            width: 40px; height: 40px;
+            background: transparent; border: 1px solid rgba(201,168,76,0.3);
+            color: #c9a84c; font-family: 'Cinzel', serif; font-size: 1.4em; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+        }
+        .fear-adj-btn:hover { background: rgba(201,168,76,0.1); border-color: #c9a84c; }
+        .fear-count-display {
+            font-family: 'Cinzel', serif; font-size: 2.6em; font-weight: 700;
+            color: #e8dcc8; line-height: 1; min-width: 48px; text-align: center;
+        }
+        .fear-visibility-btn {
+            width: 100%; font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 8px; background: transparent; border: 1px solid rgba(201,168,76,0.22); color: #6a5a40; cursor: pointer; transition: all 0.2s;
+        }
+        .fear-visibility-btn.visible { border-color: rgba(90,158,90,0.5); color: #5a9e5a; }
+        .fear-visibility-btn:hover   { border-color: #c9a84c; color: #c9a84c; }
+
+        /* ── Countdown Clocks ──────────────────────────────────────────────── */
+        .clock-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-height: 260px; overflow-y: auto; }
+        .clock-list::-webkit-scrollbar { width: 3px; }
+        .clock-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .clock-item { display: flex; align-items: center; gap: 8px; }
+        .clock-pie {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid rgba(201,168,76,0.25); flex-shrink: 0; cursor: pointer; transition: border-color 0.15s;
+        }
+        .clock-pie:hover { border-color: #c9a84c; }
+        .clock-info    { flex: 1; min-width: 0; }
+        .clock-name    { font-family: 'Cinzel', serif; font-size: 0.7em; color: #e8dcc8; letter-spacing: 0.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .clock-progress{ font-family: 'EB Garamond', serif; font-size: 0.75em; color: #6a5a40; font-style: italic; }
+        .clock-item-actions { display: flex; gap: 3px; }
+        .clock-action-btn {
+            background: transparent; border: 1px solid rgba(201,168,76,0.18); color: #6a5a40;
+            cursor: pointer; font-size: 0.65em; font-family: 'Cinzel', serif; padding: 3px 5px;
+            transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .clock-action-btn:hover        { color: #c9a84c; border-color: #c9a84c; }
+        .clock-action-btn.danger:hover { color: #c06060; border-color: #c06060; }
+        .clock-action-btn.vis-on       { color: #5a9e5a; border-color: rgba(90,158,90,0.4); }
+        .new-clock-form { border-top: 1px solid rgba(201,168,76,0.14); padding-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+        .clock-name-input {
+            font-family: 'EB Garamond', serif; font-size: 0.9em;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.22);
+            color: #e8dcc8; padding: 6px 8px; outline: none; width: 100%; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .clock-name-input:focus { border-color: #c9a84c; }
+        .clock-name-input::placeholder { color: #4a3e2e; }
+        .clock-seg-row { display: flex; gap: 6px; align-items: center; }
+        .seg-label { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.1em; text-transform: uppercase; color: #6a5a40; }
+        .seg-btn {
+            font-family: 'Cinzel', serif; font-size: 0.63em; letter-spacing: 0.08em;
+            padding: 5px 10px; background: transparent; border: 1px solid rgba(201,168,76,0.22); color: #6a5a40; cursor: pointer; transition: all 0.15s;
+        }
+        .seg-btn.selected { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .add-clock-btn {
+            font-family: 'Cinzel', serif; font-size: 0.63em; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 8px; background: transparent; border: 1px solid rgba(201,168,76,0.3);
+            color: #c9a84c; cursor: pointer; transition: all 0.2s; width: 100%;
+        }
+        .add-clock-btn:hover { background: rgba(201,168,76,0.1); border-color: #c9a84c; }
+        .clocks-empty { font-style: italic; font-size: 0.8em; color: #4a3e2e; text-align: center; padding: 6px 0 2px; }
+
+        /* ── Scenes Panel ──────────────────────────────────────────────────── */
+        .scene-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; max-height: 280px; overflow-y: auto; }
+        .scene-list::-webkit-scrollbar { width: 3px; }
+        .scene-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+
+        .scene-item {
+            display: flex; align-items: center; gap: 7px;
+            padding: 7px 8px; border: 1px solid transparent;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .scene-item:hover { background: rgba(255,255,255,0.025); border-color: rgba(201,168,76,0.15); }
+        .scene-item.previewing { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.3); }
+        .scene-item.pushed .scene-dot { background: #5a9e5a; }
+
+        .scene-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #3a3020; flex-shrink: 0; transition: background 0.2s;
+        }
+        .scene-name {
+            flex: 1; font-family: 'Cinzel', serif; font-size: 0.68em;
+            color: #e8dcc8; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .scene-item-btns { display: flex; gap: 3px; flex-shrink: 0; }
+        .scene-item-btn {
+            background: transparent; border: 1px solid rgba(201,168,76,0.18); color: #6a5a40;
+            cursor: pointer; font-family: 'Cinzel', serif; font-size: 0.6em; padding: 3px 7px;
+            transition: all 0.15s; letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .scene-item-btn:hover      { color: #c9a84c; border-color: #c9a84c; }
+        .scene-item-btn.push:hover { color: #5a9e5a; border-color: rgba(90,158,90,0.5); }
+        .scene-item-btn.del:hover  { color: #c06060; border-color: #c06060; }
+
+        .new-scene-form { border-top: 1px solid rgba(201,168,76,0.14); padding-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+        .scene-name-input {
+            font-family: 'EB Garamond', serif; font-size: 0.9em;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.22);
+            color: #e8dcc8; padding: 6px 8px; outline: none; width: 100%; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .scene-name-input:focus { border-color: #c9a84c; }
+        .scene-name-input::placeholder { color: #4a3e2e; }
+
+        .scene-bg-row { display: flex; gap: 5px; }
+        .bg-opt {
+            font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 5px 0; background: transparent; border: 1px solid rgba(201,168,76,0.22);
+            color: #6a5a40; cursor: pointer; transition: all 0.15s; flex: 1; text-align: center;
+        }
+        .bg-opt.selected { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.1); }
+
+        .scene-url-input {
+            font-family: 'EB Garamond', serif; font-size: 0.88em;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.22);
+            color: #e8dcc8; padding: 6px 8px; outline: none; width: 100%; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .scene-url-input:focus { border-color: #c9a84c; }
+        .scene-url-input::placeholder { color: #4a3e2e; }
+
+        .scenes-empty { font-style: italic; font-size: 0.8em; color: #4a3e2e; text-align: center; padding: 8px 0; }
+
+        /* ── Player HUD ────────────────────────────────────────────────────── */
+        .player-hud {
+            position: absolute; bottom: 80px; left: 20px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 25; pointer-events: none;
+        }
+        .player-hud.hidden { display: none; }
+        .hud-fear {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(20,17,13,0.9); border: 1px solid rgba(201,168,76,0.3); padding: 8px 14px;
+        }
+        .hud-fear-label { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.18em; text-transform: uppercase; color: #6a5a40; }
+        .hud-fear-count { font-family: 'Cinzel', serif; font-size: 1.6em; font-weight: 700; color: #c9a84c; line-height: 1; }
+        .hud-clock {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(20,17,13,0.9); border: 1px solid rgba(201,168,76,0.2); padding: 6px 10px;
+        }
+        .hud-clock-pie  { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(201,168,76,0.3); flex-shrink: 0; }
+        .hud-clock-name { font-family: 'Cinzel', serif; font-size: 0.65em; letter-spacing: 0.05em; color: #e8dcc8; }
+
+        /* ── Dice tray ─────────────────────────────────────────────────────── */
+        .dice-tray {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dice-tray-sep {
+            width: 1px;
+            height: 18px;
+            background: rgba(201,168,76,0.2);
+            flex-shrink: 0;
+            margin: 0 3px;
+        }
+        .dice-tray-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #c9a84c;
+            cursor: pointer;
+            padding: 5px 9px;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .dice-tray-btn:hover:not(:disabled) { border-color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .dice-tray-btn:disabled { opacity: 0.3; cursor: default; }
+        .dice-tray-btn.duality-btn { color: #e8c96a; border-color: rgba(232,201,106,0.35); }
+        .dice-tray-btn.duality-btn:hover:not(:disabled) { background: rgba(232,201,106,0.12); border-color: #e8c96a; }
+        .dice-tray-btn.hope-btn { color: #e8c96a; border-color: rgba(232,201,106,0.25); font-size: 0.65em; }
+        .dice-tray-btn.hope-btn:hover:not(:disabled) { background: rgba(232,201,106,0.1); border-color: #e8c96a; }
+        .dice-tray-btn.fear-btn { color: #c06060; border-color: rgba(192,96,96,0.25); font-size: 0.65em; }
+        .dice-tray-btn.fear-btn:hover:not(:disabled) { background: rgba(192,96,96,0.1); border-color: #c06060; }
+        .dice-tray-btn.roll-execute-btn { color: #e8dcc8; border-color: rgba(232,220,200,0.4); }
+        .dice-pending-display {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            color: #8a7860;
+            white-space: nowrap;
+            min-width: 36px;
+            text-align: center;
+            font-style: italic;
+        }
+        /* ── Token context menu ────────────────────────────────────────────── */
+        .token-ctx-menu {
+            position: absolute;
+            z-index: 30;
+            background: #1a1510;
+            border: 1px solid rgba(201,168,76,0.35);
+            padding: 6px 0;
+            min-width: 180px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+            display: none;
+        }
+        .token-ctx-label-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px 8px;
+            border-bottom: 1px solid rgba(201,168,76,0.12);
+        }
+        .token-ctx-label-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #e8dcc8;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            padding: 4px 8px;
+            outline: none;
+            min-width: 0;
+        }
+        .token-ctx-label-input:focus { border-color: #c9a84c; }
+        .token-ctx-save {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 8px;
+            border: 1px solid rgba(201,168,76,0.4);
+            background: transparent;
+            color: #c9a84c;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .token-ctx-save:hover { background: rgba(201,168,76,0.12); }
+        .token-ctx-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            background: transparent;
+            border: none;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .token-ctx-item:hover { background: rgba(201,168,76,0.08); }
+        .token-ctx-item.danger { color: #c06060; }
+        .token-ctx-item.danger:hover { background: rgba(192,96,96,0.08); }
+        .token-ctx-divider { height: 1px; background: rgba(201,168,76,0.1); margin: 4px 0; }
+
+        /* ── Quick-add token popover ───────────────────────────────────────── */
+        .quick-token-popover {
+            position: absolute;
+            top: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+            background: #1a1510;
+            border: 1px solid rgba(201,168,76,0.4);
+            padding: 14px 16px;
+            min-width: 220px;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.7);
+            display: none;
+        }
+        .quick-token-popover.open { display: block; }
+        .qtp-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #8a7860;
+            margin-bottom: 10px;
+        }
+        .qtp-input {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #e8dcc8;
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            padding: 7px 10px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        .qtp-input:focus { border-color: #c9a84c; }
+        .qtp-swatches { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .qtp-swatch {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.12s, border-color 0.12s;
+        }
+        .qtp-swatch:hover { transform: scale(1.15); }
+        .qtp-swatch.selected { border-color: #fff; transform: scale(1.15); }
+        .qtp-add {
+            width: 100%;
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: #e8c96a;
+            padding: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .qtp-add:hover { background: rgba(201,168,76,0.25); }
+        .qtp-add:disabled { opacity: 0.4; cursor: default; }
+
+        /* dice-box appends a canvas to #canvasWrap — position it over Konva */
+        .dice-box-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            pointer-events: none;
+            z-index: 8;
+        }
+        /* roll attribution overlay */
+        #rollAttribOverlay {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20,17,13,0.88);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #e8dcc8;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            letter-spacing: 0.08em;
+            padding: 8px 16px;
+            pointer-events: none;
+            z-index: 25;
+            white-space: nowrap;
+            transition: opacity 0.6s;
+        }
+        #rollAttribOverlay.fading { opacity: 0; }
+
+        /* ── Encounter Runner Panel ─────────────────────────────────────────── */
+        .enc-panel-section { padding: 10px 12px; }
+        .enc-browse-title { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.14em; text-transform: uppercase; color: #8a7860; margin-bottom: 8px; }
+        .enc-browse-list { display: flex; flex-direction: column; gap: 2px; max-height: 280px; overflow-y: auto; margin-bottom: 4px; }
+        .enc-browse-list::-webkit-scrollbar { width: 3px; }
+        .enc-browse-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .enc-browse-row { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border: 1px solid rgba(201,168,76,0.1); background: rgba(255,255,255,0.02); transition: background 0.15s; }
+        .enc-browse-row:hover { background: rgba(255,255,255,0.04); }
+        .enc-browse-info { flex: 1; min-width: 0; }
+        .enc-browse-name { font-family: 'Cinzel', serif; font-size: 0.72em; color: #e8dcc8; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .enc-browse-meta { font-family: 'EB Garamond', serif; font-size: 0.78em; color: #6a5a40; font-style: italic; }
+        .enc-load-btn { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.1em; text-transform: uppercase; color: #c9a84c; border: 1px solid rgba(201,168,76,0.3); background: transparent; padding: 4px 10px; cursor: pointer; flex-shrink: 0; transition: all 0.15s; }
+        .enc-load-btn:hover { border-color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .enc-load-btn:disabled { opacity: 0.4; cursor: default; }
+        .enc-empty-note { font-family: 'EB Garamond', serif; font-size: 0.82em; color: #4a3e2e; font-style: italic; text-align: center; padding: 12px 4px; }
+        .enc-live-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid rgba(201,168,76,0.15); background: rgba(201,168,76,0.04); gap: 8px; }
+        .enc-live-name { font-family: 'Cinzel', serif; font-size: 0.72em; color: #e8c96a; letter-spacing: 0.06em; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .enc-end-btn { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(180,60,60,0.8); border: 1px solid rgba(180,60,60,0.3); background: transparent; padding: 4px 10px; cursor: pointer; flex-shrink: 0; transition: all 0.15s; }
+        .enc-end-btn:hover { border-color: rgba(180,60,60,0.7); color: rgba(200,80,80,1); }
+        .enc-entries { padding: 6px 8px; max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+        .enc-entries::-webkit-scrollbar { width: 3px; }
+        .enc-entries::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .enc-entry-row { padding: 6px 8px; border: 1px solid rgba(201,168,76,0.1); background: rgba(255,255,255,0.02); transition: all 0.15s; }
+        .enc-entry-row.defeated { opacity: 0.35; }
+        .enc-entry-row.bloodied { border-color: rgba(192,96,96,0.3); background: rgba(192,96,96,0.04); }
+        .enc-entry-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .enc-entry-label { font-family: 'Cinzel', serif; font-size: 0.7em; color: #e8dcc8; letter-spacing: 0.04em; flex: 1; }
+        .enc-bloodied-badge { font-family: 'Cinzel', serif; font-size: 0.54em; letter-spacing: 0.08em; text-transform: uppercase; color: #c06060; border: 1px solid rgba(192,96,96,0.35); padding: 1px 5px; flex-shrink: 0; }
+        .enc-entry-controls { display: flex; align-items: center; gap: 5px; }
+        .enc-hp-btn { width: 22px; height: 22px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.2); color: #c9a84c; font-family: 'Cinzel', serif; font-size: 0.9em; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+        .enc-hp-btn:hover { background: rgba(201,168,76,0.1); border-color: #c9a84c; }
+        .enc-hp-display { font-family: 'Cinzel', serif; font-size: 0.76em; color: #e8dcc8; min-width: 38px; text-align: center; flex: 1; }
+        .enc-defeat-btn { font-family: 'Cinzel', serif; font-size: 0.56em; letter-spacing: 0.08em; text-transform: uppercase; color: #4a3e2e; border: 1px solid rgba(201,168,76,0.1); background: transparent; padding: 2px 6px; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+        .enc-defeat-btn:hover { color: #c06060; border-color: rgba(192,96,96,0.3); }
+        .enc-defeat-btn.active { color: #5a9e5a; border-color: rgba(90,158,90,0.3); }
+        .enc-add-section { padding: 8px 12px; border-top: 1px solid rgba(201,168,76,0.1); }
+        .enc-panel-add-btn { width: 100%; font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 0.12em; text-transform: uppercase; color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); background: transparent; padding: 7px; cursor: pointer; transition: all 0.2s; }
+        .enc-panel-add-btn:hover { background: rgba(201,168,76,0.08); border-color: #c9a84c; }
+        .enc-picker { margin-top: 6px; border: 1px solid rgba(201,168,76,0.2); background: #14110d; }
+        .enc-picker-search { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.04); border: none; border-bottom: 1px solid rgba(201,168,76,0.15); color: #e8dcc8; font-family: 'EB Garamond', serif; font-size: 0.9em; padding: 6px 10px; outline: none; }
+        .enc-picker-search:focus { background: rgba(255,255,255,0.06); }
+        .enc-picker-tabs { display: flex; border-bottom: 1px solid rgba(201,168,76,0.1); }
+        .enc-picker-tab { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 12px; border: none; background: transparent; color: #4a3e2e; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s; }
+        .enc-picker-tab.active { color: #c9a84c; border-bottom-color: #c9a84c; }
+        .enc-picker-list { max-height: 180px; overflow-y: auto; }
+        .enc-picker-list::-webkit-scrollbar { width: 3px; }
+        .enc-picker-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .enc-picker-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid rgba(201,168,76,0.06); transition: background 0.12s; }
+        .enc-picker-item:last-child { border-bottom: none; }
+        .enc-picker-item:hover { background: rgba(255,255,255,0.03); }
+        .enc-picker-item-name { font-family: 'EB Garamond', serif; font-size: 0.88em; color: #d4b896; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .enc-picker-item-tier { font-family: 'Cinzel', serif; font-size: 0.56em; color: #8a7860; flex-shrink: 0; }
+        .enc-picker-add-btn { font-family: 'Cinzel', serif; font-size: 0.56em; letter-spacing: 0.08em; text-transform: uppercase; color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); background: transparent; padding: 3px 7px; cursor: pointer; flex-shrink: 0; transition: all 0.12s; }
+        .enc-picker-add-btn:hover { background: rgba(201,168,76,0.1); border-color: #c9a84c; }
+        .enc-picker-add-btn:disabled { opacity: 0.4; cursor: default; }
+        .enc-picker-empty { font-family: 'EB Garamond', serif; font-size: 0.82em; color: #4a3e2e; font-style: italic; padding: 10px; text-align: center; }
+
+        /* ── Loot Panel ──────────────────────────────────────────────────────── */
+        .loot-ctrl-row { display: grid; grid-template-columns: 64px 1fr; gap: 8px; align-items: center; margin-bottom: 6px; }
+        .loot-ctrl-label { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.12em; text-transform: uppercase; color: #5a4e3e; }
+        .loot-ctrl-select {
+            appearance: none;
+            background: rgba(255,255,255,0.04);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e8dcc8;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            padding: 5px 22px 5px 8px;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        .loot-ctrl-select:focus { border-color: rgba(201,168,76,0.5); }
+        .loot-roll-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: rgba(201,168,76,0.85);
+            color: #0c0a07;
+            border: none;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 6px;
+            transition: background 0.2s;
+        }
+        .loot-roll-btn:hover { background: #c9a84c; }
+        .loot-roll-btn:disabled { opacity: 0.4; cursor: default; }
+        .loot-results { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+        .loot-result-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); padding: 8px 10px; display: flex; gap: 8px; align-items: flex-start; }
+        .loot-result-main { flex: 1; min-width: 0; }
+        .loot-result-name { font-family: 'Cinzel', serif; font-size: 0.68em; font-weight: 600; color: #e8dcc8; margin-bottom: 3px; }
+        .loot-result-desc { font-family: 'EB Garamond', serif; font-size: 0.8em; color: rgba(232,220,200,0.6); line-height: 1.4; }
+        .loot-result-meta { font-family: 'Cinzel', serif; font-size: 0.5em; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+        .loot-r-common    { color: rgba(180,180,160,0.6); }
+        .loot-r-uncommon  { color: rgba(120,180,100,0.75); }
+        .loot-r-rare      { color: rgba(100,140,220,0.75); }
+        .loot-r-legendary { color: #c9a84c; }
+        .loot-reroll-btn { flex-shrink: 0; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: rgba(232,220,200,0.4); font-size: 0.9em; line-height: 1; padding: 4px 6px; cursor: pointer; transition: all 0.15s; }
+        .loot-reroll-btn:hover { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .loot-empty { font-family: 'EB Garamond', serif; font-size: 0.82em; color: #4a3e2e; font-style: italic; padding: 6px 0; }
+
+        /* ── Fog Panel ───────────────────────────────────────────────────────── */
+        .fog-panel-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .fog-panel-label { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.14em; text-transform: uppercase; color: #8a7860; }
+        .fog-onoff-btn {
+            font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 5px 14px; background: transparent; border: 1px solid rgba(201,168,76,0.22); color: #5a4e3e; cursor: pointer; transition: all 0.2s;
+        }
+        .fog-onoff-btn.fog-on { border-color: rgba(90,158,90,0.5); color: #5a9e5a; background: rgba(90,158,90,0.08); }
+        .fog-onoff-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.6); color: #c9a84c; }
+        .fog-onoff-btn:disabled { opacity: 0.3; cursor: default; }
+        .fog-tools { display: flex; gap: 4px; margin-bottom: 10px; }
+        .fog-tool-btn {
+            flex: 1; font-family: 'Cinzel', serif; font-size: 0.56em; letter-spacing: 0.06em; text-transform: uppercase;
+            padding: 6px 2px; background: transparent; border: 1px solid rgba(201,168,76,0.18); color: #6a5a40; cursor: pointer; transition: all 0.15s; text-align: center;
+        }
+        .fog-tool-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .fog-tool-btn.active { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .fog-tool-btn:disabled { opacity: 0.3; cursor: default; }
+        .fog-actions { display: flex; gap: 6px; }
+        .fog-action-btn {
+            flex: 1; font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 7px 4px; background: transparent; border: 1px solid rgba(201,168,76,0.22); color: #6a5a40; cursor: pointer; transition: all 0.15s; text-align: center;
+        }
+        .fog-action-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .fog-action-btn.danger:hover:not(:disabled) { border-color: rgba(192,96,96,0.5); color: #c06060; }
+        .fog-action-btn:disabled { opacity: 0.3; cursor: default; }
+        .fog-hint { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.76em; color: #4a3e2e; margin-top: 8px; }
+        .fog-brush-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .fog-brush-label { font-family: 'Cinzel', serif; font-size: 0.56em; letter-spacing: 0.1em; text-transform: uppercase; color: #6a5a40; flex-shrink: 0; }
+        .fog-brush-slider { flex: 1; accent-color: #c9a84c; cursor: pointer; }
+        .fog-brush-value { font-family: 'Cinzel', serif; font-size: 0.58em; color: #8a7860; flex-shrink: 0; min-width: 26px; text-align: right; }
+
+        /* ── Parchment Overlays ──────────────────────────────────────────────── */
+        .parchment-overlay {
+            position: absolute;
+            width: 540px;
+            background: #14100a;
+            border: 1px solid rgba(201,168,76,0.5);
+            z-index: 35;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+        }
+        .parchment-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            background: #14110d;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            cursor: grab;
+            flex-shrink: 0;
+        }
+        .parchment-header:active { cursor: grabbing; }
+        .parchment-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .parch-tool-btn {
+            width: 24px; height: 24px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.2);
+            color: #6a5a40;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78em;
+            transition: all 0.15s;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .parch-tool-btn:hover { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .parch-tool-btn.active { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.1); }
+        .parch-color-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.12s, border-color 0.12s;
+            flex-shrink: 0;
+        }
+        .parch-color-dot:hover { transform: scale(1.2); }
+        .parch-color-dot.active { border-color: #e8dcc8; transform: scale(1.15); }
+        .parch-size-row { display: flex; align-items: center; gap: 4px; }
+        .parch-size-slider { width: 52px; accent-color: #c9a84c; cursor: pointer; }
+        .parch-sep { width: 1px; height: 18px; background: rgba(201,168,76,0.15); flex-shrink: 0; margin: 0 2px; }
+        .parchment-canvas {
+            display: block;
+            width: 540px;
+            height: 360px;
+            cursor: crosshair;
+            touch-action: none;
+            flex-shrink: 0;
+        }
+        .parch-footer {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 8px;
+            background: #14110d;
+            border-top: 1px solid rgba(201,168,76,0.15);
+            flex-shrink: 0;
+        }
+        .parch-action-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.56em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #c9a84c;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .parch-action-btn:hover { border-color: #c9a84c; background: rgba(201,168,76,0.08); }
+        .parch-action-btn.danger:hover { border-color: rgba(192,96,96,0.5); color: #c06060; }
+        .parch-footer-spacer { flex: 1; }
+        .parch-who {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.72em;
+            color: #4a3e2e;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+
+        /* ── Parchments library panel ─────────────────────────────────────────── */
+        .parch-lib-list { display: flex; flex-direction: column; gap: 3px; max-height: 280px; overflow-y: auto; margin-bottom: 8px; }
+        .parch-lib-list::-webkit-scrollbar { width: 3px; }
+        .parch-lib-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+        .parch-lib-row {
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 7px;
+            border: 1px solid rgba(201,168,76,0.1);
+            background: rgba(255,255,255,0.02);
+            transition: background 0.15s;
+        }
+        .parch-lib-row:hover { background: rgba(255,255,255,0.04); }
+        .parch-lib-icon { font-size: 1em; color: #5a4a38; flex-shrink: 0; width: 18px; text-align: center; }
+        .parch-lib-name {
+            flex: 1;
+            font-family: 'Cinzel', serif; font-size: 0.66em; color: #e8dcc8; letter-spacing: 0.04em;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .parch-lib-btn {
+            font-family: 'Cinzel', serif; font-size: 0.55em; letter-spacing: 0.08em; text-transform: uppercase;
+            color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); background: transparent;
+            padding: 2px 6px; cursor: pointer; flex-shrink: 0; transition: all 0.12s;
+        }
+        .parch-lib-btn:hover { background: rgba(201,168,76,0.08); border-color: #c9a84c; }
+        .parch-lib-btn.danger:hover { color: #c06060; border-color: rgba(192,96,96,0.3); }
+        .parch-lib-empty { font-family: 'EB Garamond', serif; font-size: 0.82em; color: #4a3e2e; font-style: italic; text-align: center; padding: 12px 4px; }
+        .parch-panel-new { display: flex; gap: 6px; border-top: 1px solid rgba(201,168,76,0.14); padding-top: 10px; }
+        .parch-panel-new-btn {
+            flex: 1;
+            font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 7px 4px; background: transparent; border: 1px solid rgba(201,168,76,0.28);
+            color: #c9a84c; cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .parch-panel-new-btn:hover { background: rgba(201,168,76,0.08); border-color: #c9a84c; }
+
+        /* ── Parchment toast (player receives a handout) ──────────────────────── */
+        .parch-toast {
+            position: absolute;
+            bottom: 88px; right: 20px;
+            background: #1a140c;
+            border: 1px solid rgba(201,168,76,0.5);
+            padding: 10px 12px;
+            z-index: 45;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            max-width: 300px;
+        }
+        .parch-toast.visible { display: flex; }
+        .parch-toast-text { flex: 1; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.88em; color: #e8dcc8; line-height: 1.4; }
+        .parch-toast-btn {
+            font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.12em; text-transform: uppercase;
+            color: #c9a84c; border: 1px solid rgba(201,168,76,0.4); background: transparent;
+            padding: 5px 10px; cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+        }
+        .parch-toast-btn:hover { background: rgba(201,168,76,0.1); }
+
+        /* ── Parchment lightbox (view a sent parchment) ───────────────────────── */
+        .parch-lightbox {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.82);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .parch-lightbox.visible { display: flex; }
+        .parch-lightbox-canvas { max-width: 90vw; max-height: 75vh; border: 1px solid rgba(201,168,76,0.4); box-shadow: 0 8px 40px rgba(0,0,0,0.9); display: block; }
+        .parch-lightbox-title { font-family: 'Cinzel', serif; font-size: 0.72em; letter-spacing: 0.16em; text-transform: uppercase; color: #c9a84c; }
+        .parch-lightbox-close {
+            font-family: 'Cinzel', serif; font-size: 0.65em; letter-spacing: 0.12em; text-transform: uppercase;
+            color: #6a5a40; border: 1px solid rgba(201,168,76,0.25); background: transparent;
+            padding: 6px 18px; cursor: pointer; transition: all 0.15s;
+        }
+        .parch-lightbox-close:hover { color: #c9a84c; border-color: #c9a84c; }
+
+        /* ── Send-to-players popover ─────────────────────────────────────────── */
+        .parch-send-popover {
+            position: absolute;
+            bottom: 38px; right: 0;
+            background: #1a140c;
+            border: 1px solid rgba(201,168,76,0.4);
+            padding: 10px 12px;
+            z-index: 50;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            min-width: 180px;
+            display: none;
+        }
+        .parch-send-popover.open { display: block; }
+        .parch-send-title { font-family: 'Cinzel', serif; font-size: 0.58em; letter-spacing: 0.12em; text-transform: uppercase; color: #8a7860; margin-bottom: 8px; }
+        .parch-send-player { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
+        .parch-send-player input[type=checkbox] { accent-color: #c9a84c; cursor: pointer; }
+        .parch-send-player-name { font-family: 'EB Garamond', serif; font-size: 0.9em; color: #d4b896; }
+        .parch-send-confirm {
+            width: 100%; margin-top: 8px;
+            font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 6px; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.4);
+            color: #c9a84c; cursor: pointer; transition: all 0.15s;
+        }
+        .parch-send-confirm:hover { background: rgba(201,168,76,0.22); }
+
+        @media (max-width: 600px) {
+            .table-campaign-name { display: none; }
+            .rolls-panel { width: 100%; }
+            .dice-tray { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="table-layout">
+
+        <!-- Top bar -->
+        <div class="table-bar">
+            <div class="table-bar-left">
+                <a class="table-back" id="tableBackLink" href="index.html">← Campaign</a>
+                <div class="table-session-dot"></div>
+                <div class="table-campaign-name" id="tableCampaignName">Loading…</div>
+                <div class="table-scene-label hidden" id="tableSceneLabel">Scene: <span id="tableSceneName"></span></div>
+            </div>
+            <div class="table-bar-right">
+                <div class="table-members" id="tableMembers"></div>
+                <div class="dice-tray" id="diceTray">
+                    <button class="dice-tray-btn duality-btn" id="btnDuality" disabled title="Roll Hope &amp; Fear (2d12)">Hope / Fear</button>
+                    <button class="dice-tray-btn hope-btn" id="btnHope" disabled title="Roll Hope die (1d12)">Hope</button>
+                    <button class="dice-tray-btn fear-btn" id="btnFear" disabled title="Roll Fear die (1d12)">Fear</button>
+                    <div class="dice-tray-sep"></div>
+                    <button class="dice-tray-btn die-btn" data-sides="4" disabled>d4</button>
+                    <button class="dice-tray-btn die-btn" data-sides="6" disabled>d6</button>
+                    <button class="dice-tray-btn die-btn" data-sides="8" disabled>d8</button>
+                    <button class="dice-tray-btn die-btn" data-sides="10" disabled>d10</button>
+                    <button class="dice-tray-btn die-btn" data-sides="12" disabled>d12</button>
+                    <button class="dice-tray-btn die-btn" data-sides="20" disabled>d20</button>
+                    <div class="dice-pending-display" id="dicePendingDisplay"></div>
+                    <button class="dice-tray-btn roll-execute-btn" id="btnRollExecute" disabled>Roll</button>
+                </div>
+                <button class="table-rolls-toggle" id="btnNewParchment" title="Open a shared parchment on the table">✦ Parchment</button>
+                <button class="table-rolls-toggle" id="rollsToggle" title="Dice Rolls">⚂ Rolls</button>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="table-canvas-wrap" id="canvasWrap">
+            <div class="table-center" id="tableLoading">
+                <div class="table-center-title">Preparing Table…</div>
+            </div>
+            <div id="konvaContainer"></div>
+
+            <!-- Quick-add token popover (GM only) -->
+            <div class="quick-token-popover" id="quickTokenPopover">
+                <div class="qtp-title">Drop Token</div>
+                <input class="qtp-input" id="qtpLabel" type="text" maxlength="40" placeholder="Label (e.g. Goblin A)">
+                <div class="qtp-swatches" id="qtpSwatches"></div>
+                <button class="qtp-add" id="qtpAdd">Add to Scene</button>
+            </div>
+
+            <!-- Token context menu (GM only) -->
+            <div class="token-ctx-menu" id="tokenCtxMenu">
+                <div class="token-ctx-label-row">
+                    <input class="token-ctx-label-input" id="tcmLabelInput" type="text" maxlength="40" placeholder="Token label">
+                    <button class="token-ctx-save" id="tcmSaveLabel">Save</button>
+                </div>
+                <div class="token-ctx-divider"></div>
+                <button class="token-ctx-item" id="tcmToggleVisible">Hide from Players</button>
+                <button class="token-ctx-item" id="tcmToggleMoveable">Lock Movement</button>
+                <button class="token-ctx-item danger" id="tcmRemove">Remove from Scene</button>
+            </div>
+
+            <!-- Roll attribution label -->
+            <div id="rollAttribOverlay" style="display:none;"></div>
+
+            <!-- Rolls panel -->
+            <div class="rolls-panel" id="rollsPanel">
+                <div class="rolls-header">Dice Rolls</div>
+                <div class="rolls-feed" id="rollsFeed"><p class="rolls-empty">No rolls yet.</p></div>
+            </div>
+
+            <!-- GM toolbar -->
+            <div class="gm-toolbar" id="gmToolbar">
+                <span class="toolbar-label">GM</span>
+                <button class="toolbar-btn" id="btnScenesPanel">Scenes</button>
+                <button class="toolbar-btn" id="btnSpawnTokens">Tokens</button>
+                <button class="toolbar-btn" id="btnMoveLock" title="Toggle player token movement">Move: On</button>
+                <button class="toolbar-btn" id="btnQuickToken" title="Drop a token on the scene">＋ Token</button>
+                <div class="toolbar-sep"></div>
+                <button class="toolbar-btn" id="btnFearPanel">Fear</button>
+                <button class="toolbar-btn" id="btnClocksPanel">Clocks</button>
+                <button class="toolbar-btn" id="btnEncounterPanel">Encounters</button>
+                <button class="toolbar-btn" id="btnLootPanel">Loot</button>
+                <button class="toolbar-btn" id="btnFogPanel">Fog</button>
+                <button class="toolbar-btn" id="btnParchmentsPanel">Parchments</button>
+            </div>
+
+            <!-- Scenes panel (GM only) -->
+            <div class="gm-panel hidden" id="scenesPanel" data-panel-key="scenes" style="top:72px;left:20px;">
+                <div class="panel-header">
+                    <span class="panel-title">Scenes</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="scene-list" id="sceneList"></div>
+                    <div class="new-scene-form">
+                        <input class="scene-name-input" id="sceneNameInput" placeholder="New scene name…" maxlength="60">
+                        <div class="scene-bg-row">
+                            <button class="bg-opt selected" data-bg="table">Table</button>
+                            <button class="bg-opt" data-bg="url">URL</button>
+                            <button class="bg-opt" data-bg="upload">Upload</button>
+                        </div>
+                        <input class="scene-url-input" id="sceneBgUrl" type="url" placeholder="Image URL…" style="display:none;">
+                        <input type="file" id="sceneBgFile" accept="image/*" style="display:none;">
+                        <button class="add-clock-btn" id="btnCreateScene">+ Create Scene</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fear Tracker panel (GM only) -->
+            <div class="gm-panel hidden" id="fearPanel" data-panel-key="fear" style="top:72px;right:20px;">
+                <div class="panel-header">
+                    <span class="panel-title">Fear Tracker</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-popout-btn" title="Pop out">⊡</button>
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="fear-pips" id="fearPips"></div>
+                    <div class="fear-controls">
+                        <button class="fear-adj-btn" id="btnFearMinus">−</button>
+                        <div class="fear-count-display" id="fearCount">0</div>
+                        <button class="fear-adj-btn" id="btnFearPlus">+</button>
+                    </div>
+                    <button class="fear-visibility-btn" id="btnFearVisible">Hidden from Players</button>
+                </div>
+            </div>
+
+            <!-- Countdown Clocks panel (GM only) -->
+            <div class="gm-panel hidden" id="clocksPanel" data-panel-key="clocks" style="top:72px;right:304px;">
+                <div class="panel-header">
+                    <span class="panel-title">Countdown Clocks</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-popout-btn" title="Pop out">⊡</button>
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="clock-list" id="clockList"></div>
+                    <div class="new-clock-form">
+                        <input class="clock-name-input" id="clockNameInput" placeholder="Clock name…" maxlength="40">
+                        <div class="clock-seg-row">
+                            <span class="seg-label">Segments:</span>
+                            <button class="seg-btn" data-segs="4">4</button>
+                            <button class="seg-btn selected" data-segs="6">6</button>
+                            <button class="seg-btn" data-segs="8">8</button>
+                        </div>
+                        <button class="add-clock-btn" id="btnAddClock">+ Add Clock</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tokens panel (GM only) -->
+            <div class="gm-panel hidden" id="tokensPanel" data-panel-key="tokens" style="top:72px;left:200px;">
+                <div class="panel-header">
+                    <span class="panel-title">Tokens</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="tokens-list" id="tokensPanelList"><p class="tokens-empty">No tokens yet.</p></div>
+                    <div class="tokens-panel-footer">
+                        <button class="toolbar-btn" id="btnSpawnCharTokens" title="Place all player character tokens in current scene">Spawn PCs</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loot Generator panel (GM only) -->
+            <div class="gm-panel hidden" id="lootPanel" data-panel-key="loot" style="top:72px;left:560px;width:280px;">
+                <div class="panel-header">
+                    <span class="panel-title">Loot Generator</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-popout-btn" title="Pop out">⊡</button>
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body" id="lootPanelBody"></div>
+            </div>
+
+            <!-- Encounter Runner panel (GM only) -->
+            <div class="gm-panel hidden" id="encounterPanel" data-panel-key="encounters" style="top:72px;left:240px;width:300px;">
+                <div class="panel-header">
+                    <span class="panel-title">Encounter Runner</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body" id="encounterPanelBody" style="padding:0;"></div>
+            </div>
+
+            <!-- Fog of War panel (GM only) -->
+            <div class="gm-panel hidden" id="fogPanel" data-panel-key="fog" style="top:72px;left:380px;width:240px;">
+                <div class="panel-header">
+                    <span class="panel-title">Fog of War</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-popout-btn" title="Pop out">⊡</button>
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="fog-panel-row">
+                        <span class="fog-panel-label">Fog</span>
+                        <button class="fog-onoff-btn" id="btnFogToggle" disabled>Off</button>
+                    </div>
+                    <div class="fog-tools">
+                        <button class="fog-tool-btn" data-tool="circle" id="btnFogCircle" disabled>○ Circle</button>
+                        <button class="fog-tool-btn" data-tool="rect"   id="btnFogRect"   disabled>□ Rect</button>
+                        <button class="fog-tool-btn" data-tool="brush"  id="btnFogBrush"  disabled>⬤ Brush</button>
+                        <button class="fog-tool-btn" data-tool="erase"  id="btnFogErase"  disabled>✕ Erase</button>
+                    </div>
+                    <div class="fog-brush-row" id="fogBrushRow" style="display:none;">
+                        <span class="fog-brush-label">Size</span>
+                        <input class="fog-brush-slider" id="fogBrushSlider" type="range" min="20" max="200" value="80">
+                        <span class="fog-brush-value" id="fogBrushValue">80</span>
+                    </div>
+                    <div class="fog-actions">
+                        <button class="fog-action-btn" id="btnFogRevealAll" disabled>Reveal All</button>
+                        <button class="fog-action-btn danger" id="btnFogReset" disabled>Reset</button>
+                    </div>
+                    <p class="fog-hint" id="fogHint"></p>
+                </div>
+            </div>
+
+            <!-- Parchments library panel (GM only) -->
+            <div class="gm-panel hidden" id="parchmentsPanel" data-panel-key="parchments" style="top:72px;left:620px;width:264px;">
+                <div class="panel-header">
+                    <span class="panel-title">Parchments</span>
+                    <div class="panel-actions">
+                        <button class="panel-icon-btn panel-popout-btn" title="Pop out">⊡</button>
+                        <button class="panel-icon-btn panel-close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="parch-lib-list" id="parchLibList"><p class="parch-lib-empty">No parchments yet.</p></div>
+                    <div class="parch-panel-new">
+                        <button class="parch-panel-new-btn" id="btnParchNewDrawing">+ Drawing</button>
+                        <a class="parch-panel-new-btn" id="btnParchNewEditor" href="#" target="_blank">+ Text / Image</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active parchment overlays (created dynamically) -->
+            <div id="parchOverlayContainer"></div>
+
+            <!-- Parchment toast: you received a handout -->
+            <div class="parch-toast" id="parchToast">
+                <div class="parch-toast-text" id="parchToastText">You received a parchment.</div>
+                <button class="parch-toast-btn" id="parchToastView">View</button>
+                <button class="parch-toast-btn" id="parchToastDismiss">✕</button>
+            </div>
+
+            <!-- Parchment lightbox viewer -->
+            <div class="parch-lightbox" id="parchLightbox">
+                <div class="parch-lightbox-title" id="parchLightboxTitle"></div>
+                <canvas class="parch-lightbox-canvas" id="parchLightboxCanvas"></canvas>
+                <button class="parch-lightbox-close" id="parchLightboxClose">Close</button>
+            </div>
+
+            <!-- Player HUD: fear count + visible clocks -->
+            <div class="player-hud hidden" id="playerHud"></div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+    <script type="module">
+        import {
+            onAuthChange,
+            getCampaign, getCampaignMembers,
+            getUserProfile, getCharactersByCampaign,
+            getActiveSession,
+            onSessionChange, updateSessionMap, uploadSessionMap,
+            addSessionRoll, onRollsChange,
+            updateGmState, uploadAsset,
+            createScene as dbCreateScene, getScenes, getScene, deleteScene as dbDeleteScene,
+            getTokenDefinitions, createTokenDefinition, updateTokenDefinition, deleteTokenDefinition,
+            getSceneTokens, upsertSceneToken, setSceneTokenVisibility, removeSceneToken, onSceneTokensChange,
+            setSessionMoveLock,
+            createTableBroadcastChannel, sendTokenMove,
+            getEncounters, getEncounterWithEntries, addEncounterEntry, getAdversaries,
+            saveFogState, sendFogUpdate,
+            saveParchment, loadCampaignParchments, deleteParchment,
+            createActiveParchment, updateActiveParchmentData, loadActiveParchments, deleteActiveParchment,
+            sendParchmentToPlayer, loadPlayerParchments,
+            sendParchmentStroke, sendParchmentOpen, sendParchmentClose, sendParchmentDelivery,
+            getLootHomebrew,
+        } from './supabase-client.js';
+        import { makeLog } from './logger.js';
+        import { loadLootData, rollSet, rollOne, rollSetWithHomebrew, rollOneWithHomebrew, pickHomebrew } from './loot-roller.js';
+        import { ParchmentDraw, INK_COLORS } from './parchment-draw.js';
+        const log = makeLog('table');
+
+        // ── State ─────────────────────────────────────────────────────────────
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+        if (!campaignId) window.location.href = 'index.html';
+
+        let currentUser    = null;
+        let campaign       = null;
+        let session        = null;
+        let members        = [];
+        let profileMap     = {};
+        let charMap        = {};
+        let isGM           = false;
+        let unsubscribe    = null;
+        let currentGmState  = { mapUrl: '', fear: 0, fearVisible: false, clocks: [], active_scene_id: null };
+        let playerMoveLocked = false;
+
+        // Scene state
+        let scenesCache      = {};  // id → scene object
+        let scenesOrdered    = [];  // ordered list for GM panel
+        let gmPreviewSceneId = null; // GM's local preview (may differ from pushed)
+
+        // Token state
+        let allTokenDefs       = [];   // all token_definitions for this campaign
+        let sceneTokens        = [];   // array from getSceneTokens()
+        let unsubscribeTokens  = null;
+
+        // Konva handles
+        let stage      = null;
+        let bgLayer    = null;
+        let tokenLayer = null;
+        const tokenNodes   = {};  // tokenDefId → Konva.Group
+        let draggingTokenId = null;
+
+        // GM panel BroadcastChannel
+        const panelChannel = new BroadcastChannel('brackenroll-gm-panels');
+
+        // Supabase Broadcast channel for live token drag
+        let broadcastChannel = null;
+        let lastBroadcastMs  = 0;
+
+        // Dice roller
+        let diceBox          = null;
+        let pendingDice      = {};   // sides → count
+        let pendingRollType  = 'standard';
+        let pendingRollGroups = [];
+        let newClockSegments = 6;
+        let newSceneBgType   = 'table';
+
+        // Loot panel
+        let lootData         = null;
+        let lootResults      = [];
+        let lootRarity       = 'common';
+        let lootType         = 'items';
+        let lootHomebrew     = [];
+        let lootUseHomebrew  = false;
+
+        // Fog of war
+        let fogLayer       = null;
+        let fogGroup       = null;
+        let fogState       = { enabled: false, shapes: [] };
+        let fogTool        = null;
+        let fogDrawing     = false;
+        let fogDrawStart   = null;
+        let fogPreview     = null;
+        let fogBrushPoints  = [];
+        let brushSize       = 80;
+        let fogBrushCursor  = null;
+
+        // Parchments
+        let campaignParchments  = [];  // saved library parchments
+        let activeParchmentsMap = {};  // activeParchmentId → { ap row, ParchmentDraw }
+        let parchSaveTimers     = {};  // activeParchmentId → debounce timer
+        let pendingToastParch   = null; // parchment waiting in toast
+
+        // Encounter runner
+        let gmEncounters     = [];
+        let encOfficialAdv   = null;
+        let encCustomAdv     = null;
+        let encPickerTab     = 'official';
+        let encPickerSearch  = '';
+        let encPickerVisible = false;
+
+        // ── Auth boot ──────────────────────────────────────────────────────────
+
+        let booted = false;
+        onAuthChange(async (user, needsOnboarding) => {
+            if (!user || needsOnboarding) { window.location.href = 'index.html'; return; }
+            currentUser = user;
+            if (booted) return;
+            booted = true;
+            await boot();
+        });
+
+        async function boot() {
+            [campaign, members, session] = await Promise.all([
+                getCampaign(campaignId),
+                getCampaignMembers(campaignId),
+                getActiveSession(campaignId),
+            ]);
+
+            if (!campaign || !members.some(m => m.uid === currentUser.uid)) {
+                showError('You are not a member of this campaign.');
+                return;
+            }
+            if (!session) {
+                showError('No active session found.', `campaign.html?id=${campaignId}`);
+                return;
+            }
+
+            isGM = campaign.gm_id === currentUser.uid;
+
+            const [profiles, charsByCampaign] = await Promise.all([
+                Promise.all(members.map(m => getUserProfile(m.uid))),
+                getCharactersByCampaign(campaignId),
+            ]);
+            profiles.forEach((p, i) => { if (p) profileMap[members[i].uid] = p; });
+            charMap = charsByCampaign;
+
+            const gs = session.gm_state || {};
+            currentGmState  = { mapUrl: '', fear: 0, fearVisible: false, clocks: [], active_scene_id: null, ...gs };
+            playerMoveLocked = session.player_move_locked ?? false;
+
+            // Pre-load scene data
+            if (isGM) {
+                const [scenes, encounters] = await Promise.all([
+                    getScenes(campaignId),
+                    getEncounters(campaignId),
+                ]);
+                scenes.forEach(s => { scenesCache[s.id] = s; });
+                scenesOrdered = scenes;
+                gmEncounters  = encounters;
+            } else if (currentGmState.active_scene_id) {
+                const s = await getScene(currentGmState.active_scene_id);
+                if (s) scenesCache[s.id] = s;
+            }
+
+            document.title = `${campaign.name} — Table`;
+            document.getElementById('tableCampaignName').textContent = campaign.name;
+            document.getElementById('tableBackLink').href = `campaign.html?id=${campaignId}`;
+
+            renderMemberDots();
+            updateSceneLabel();
+            initStage();
+            const bootScene = currentDisplaySceneId() ? scenesCache[currentDisplaySceneId()] : null;
+            applyFogState(bootScene?.fog_state);
+            await loadSceneTokens(currentDisplaySceneId());
+            broadcastChannel = createTableBroadcastChannel(session.id, onRemoteTokenMove, onRemoteFogUpdate, {
+                onStroke:   onRemoteParchmentStroke,
+                onOpen:     onRemoteParchmentOpen,
+                onClose:    onRemoteParchmentClose,
+                onDelivery: onRemoteParchmentDelivery,
+            });
+            initDiceBox().catch(err => log.warn('dice-box init failed:', err));
+
+            if (isGM) {
+                document.getElementById('gmToolbar').classList.add('visible');
+                // btnSpawnTokens now handled by initTokensPanel (panel toggle)
+                document.getElementById('btnMoveLock').addEventListener('click', toggleMoveLock);
+                renderMoveLockBtn();
+                initTokenContextMenu();
+                initQuickTokenPopover();
+                initTokensPanel();
+                initScenes();
+                initFearTracker();
+                initClocks();
+                initEncounterPanel();
+                initLootPanel();
+                initFogPanel();
+                initParchmentsPanel();
+                initGmPanelChannel();
+                ensureCharacterTokens().catch(e => log.error('ensureCharacterTokens failed:', e));
+            }
+
+            initParchmentBar();
+            initParchmentToast();
+            // Restore any active parchments from this session
+            loadActiveParchments(session.id).then(aps => {
+                aps.forEach(ap => openActiveParchmentOverlay(ap, true));
+            }).catch(e => log.warn('loadActiveParchments failed:', e));
+            // Players load their received parchments
+            if (!isGM) {
+                loadPlayerParchments(currentUser.uid).catch(e => log.warn('loadPlayerParchments failed:', e));
+            }
+
+            renderPlayerHud();
+            unsubscribe = onSessionChange(campaignId, session.id,
+                s => onSessionUpdate(s).catch(e => log.error('onSessionUpdate failed:', e)));
+            initRollsPanel();
+        }
+
+        // ── Utility ────────────────────────────────────────────────────────────
+
+        function showError(msg, backHref) {
+            document.getElementById('tableLoading').innerHTML =
+                `<div class="table-center-title">${msg}</div>` +
+                `<a href="${backHref || 'index.html'}" style="color:#c9a84c;font-family:'Cinzel',serif;font-size:0.75em;letter-spacing:0.1em;">← Go Back</a>`;
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function renderMemberDots() {
+            const wrap = document.getElementById('tableMembers');
+            wrap.innerHTML = '';
+            members.forEach(m => {
+                const profile = profileMap[m.uid] ?? {};
+                const name    = profile.display_name || 'Player';
+                const color   = profile.avatar_color || '#555';
+                const dot     = document.createElement('div');
+                dot.className = 'table-member-dot';
+                dot.style.background = color;
+                dot.textContent = name.charAt(0).toUpperCase();
+                dot.title = name;
+                wrap.appendChild(dot);
+            });
+        }
+
+        function updateSceneLabel() {
+            const label    = document.getElementById('tableSceneLabel');
+            const nameEl   = document.getElementById('tableSceneName');
+            const sceneId  = currentGmState.active_scene_id;
+            const scene    = sceneId ? scenesCache[sceneId] : null;
+            if (scene) {
+                nameEl.textContent = scene.name;
+                label.classList.remove('hidden');
+            } else {
+                label.classList.add('hidden');
+            }
+        }
+
+        // ── Konva stage ────────────────────────────────────────────────────────
+
+        function initStage() {
+            const wrap = document.getElementById('canvasWrap');
+            document.getElementById('tableLoading').style.display = 'none';
+
+            stage = new Konva.Stage({ container: 'konvaContainer', width: wrap.clientWidth, height: wrap.clientHeight });
+            bgLayer    = new Konva.Layer();
+            tokenLayer = new Konva.Layer();
+            stage.add(bgLayer, tokenLayer);
+
+            initFogLayer();
+            drawBackground(resolveBackground());
+
+            window.addEventListener('resize', () => {
+                stage.width(wrap.clientWidth);
+                stage.height(wrap.clientHeight);
+                drawBackground(resolveBackground());
+                repositionTokens();
+                if (fogState.enabled) drawFogGroup();
+            });
+        }
+
+        // Returns the image URL to show (null = dark grid only)
+        function resolveBackground(sceneId) {
+            const sid   = sceneId !== undefined ? sceneId : currentGmState.active_scene_id;
+            const scene = sid ? scenesCache[sid] : null;
+            if (scene) return scene.background === 'table' ? null : (scene.background || null);
+            return currentGmState.mapUrl || null;
+        }
+
+        function drawBackground(mapUrl) {
+            bgLayer.destroyChildren();
+            const w = stage.width(), h = stage.height();
+            bgLayer.add(new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#0e0b08' }));
+            if (mapUrl) {
+                const img = new window.Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const scale = Math.max(w / img.width, h / img.height);
+                    const dw = img.width * scale, dh = img.height * scale;
+                    bgLayer.add(new Konva.Image({ image: img, x: (w - dw) / 2, y: (h - dh) / 2, width: dw, height: dh }));
+                    addGridLines(w, h);
+                    bgLayer.draw();
+                };
+                img.onerror = () => { addGridLines(w, h); bgLayer.draw(); };
+                img.src = mapUrl;
+            } else {
+                addGridLines(w, h);
+                bgLayer.draw();
+            }
+        }
+
+        function addGridLines(w, h) {
+            const grid = 60;
+            for (let x = 0; x <= w; x += grid)
+                bgLayer.add(new Konva.Line({ points: [x, 0, x, h], stroke: 'rgba(201,168,76,0.06)', strokeWidth: 1 }));
+            for (let y = 0; y <= h; y += grid)
+                bgLayer.add(new Konva.Line({ points: [0, y, w, y], stroke: 'rgba(201,168,76,0.06)', strokeWidth: 1 }));
+        }
+
+        // ── Token sync ─────────────────────────────────────────────────────────
+
+        function currentDisplaySceneId() {
+            return isGM ? (gmPreviewSceneId ?? currentGmState.active_scene_id) : currentGmState.active_scene_id;
+        }
+
+        async function loadSceneTokens(sceneId) {
+            if (unsubscribeTokens) { unsubscribeTokens(); unsubscribeTokens = null; }
+            [sceneTokens, allTokenDefs] = await Promise.all([
+                sceneId ? getSceneTokens(sceneId) : Promise.resolve([]),
+                getTokenDefinitions(campaignId),
+            ]);
+            syncTokenNodes(sceneTokens);
+            if (sceneId) {
+                unsubscribeTokens = onSceneTokensChange(sceneId, async () => {
+                    [sceneTokens, allTokenDefs] = await Promise.all([
+                        getSceneTokens(sceneId),
+                        getTokenDefinitions(campaignId),
+                    ]);
+                    syncTokenNodes(sceneTokens);
+                });
+            }
+        }
+
+        function tokenCanDrag(t) {
+            if (isGM) return true;
+            return !playerMoveLocked && t.player_moveable && t.owner_id === currentUser.uid;
+        }
+
+        function syncTokenNodes(tokens) {
+            const activeIds = new Set(tokens.map(t => t.id));
+            Object.keys(tokenNodes).forEach(id => {
+                if (!activeIds.has(id)) { tokenNodes[id].destroy(); delete tokenNodes[id]; }
+            });
+            tokens.forEach(t => {
+                if (t.id === draggingTokenId) return;
+                if (!t.visible && !isGM) return;
+                const canDrag = tokenCanDrag(t);
+                if (tokenNodes[t.id]) {
+                    tokenNodes[t.id].position(toPixels(t));
+                    tokenNodes[t.id].draggable(canDrag);
+                } else {
+                    tokenNodes[t.id] = createTokenNode(t);
+                    tokenLayer.add(tokenNodes[t.id]);
+                }
+            });
+            tokenLayer.draw();
+            renderTokensPanel();
+        }
+
+        function toPixels(t) { return { x: t.nx * stage.width(), y: t.ny * stage.height() }; }
+
+        function repositionTokens() {
+            sceneTokens.forEach(t => {
+                if (t.id === draggingTokenId) return;
+                const node = tokenNodes[t.id];
+                if (node) node.position(toPixels(t));
+            });
+            tokenLayer.draw();
+        }
+
+        function createTokenNode(t) {
+            const canDrag  = tokenCanDrag(t);
+            const nameText = t.label || '?';
+            const group    = new Konva.Group({ x: toPixels(t).x, y: toPixels(t).y, draggable: canDrag });
+
+            group.add(new Konva.Circle({ radius: 26, fill: t.color || '#888', stroke: 'rgba(255,255,255,0.28)', strokeWidth: 2 }));
+            group.add(new Konva.Text({ text: nameText.charAt(0).toUpperCase(), fontSize: 15, fontFamily: 'Cinzel', fontStyle: 'bold', fill: 'rgba(0,0,0,0.65)', offsetX: 4, offsetY: 7 }));
+            group.add(new Konva.Text({ text: nameText, fontSize: 11, fontFamily: 'Cinzel', fill: '#e8dcc8', y: 32, offsetX: nameText.length * 3, visible: false, id: 'tooltip' }));
+
+            group.on('mouseenter', () => { group.findOne('#tooltip').visible(true); tokenLayer.draw(); if (tokenCanDrag(t)) stage.container().style.cursor = 'grab'; });
+            group.on('mouseleave', () => { group.findOne('#tooltip').visible(false); tokenLayer.draw(); stage.container().style.cursor = 'default'; });
+
+            if (isGM) {
+                group.on('contextmenu', e => {
+                    e.evt.preventDefault();
+                    const wrap = document.getElementById('canvasWrap');
+                    const rect = wrap.getBoundingClientRect();
+                    // Find the live token data so visibility state is current
+                    const live = sceneTokens.find(s => s.id === t.id) ?? t;
+                    showCtxMenu(live, e.evt.clientX - rect.left, e.evt.clientY - rect.top);
+                });
+            }
+
+            group.on('dragstart', () => { draggingTokenId = t.id; stage.container().style.cursor = 'grabbing'; group.moveToTop(); });
+            group.on('dragmove', () => {
+                if (!broadcastChannel) return;
+                const now = Date.now();
+                if (now - lastBroadcastMs < 33) return;
+                lastBroadcastMs = now;
+                const pos = group.position();
+                sendTokenMove(broadcastChannel, t.id, pos.x / stage.width(), pos.y / stage.height());
+            });
+            group.on('dragend', () => {
+                draggingTokenId = null;
+                stage.container().style.cursor = tokenCanDrag(t) ? 'grab' : 'default';
+                const pos = group.position();
+                const nx = pos.x / stage.width(), ny = pos.y / stage.height();
+                const sceneId = currentDisplaySceneId();
+                if (sceneId) upsertSceneToken(sceneId, t.id, nx, ny).catch(e => log.error('upsertSceneToken failed:', e));
+            });
+
+            return group;
+        }
+
+        // ── Broadcast token move (receive) ────────────────────────────────────
+
+        function onRemoteTokenMove({ tokenId, nx, ny }) {
+            if (tokenId === draggingTokenId) return;
+            const node = tokenNodes[tokenId];
+            if (!node || !stage) return;
+            node.position({ x: nx * stage.width(), y: ny * stage.height() });
+            tokenLayer.draw();
+        }
+
+        // ── Spawn tokens (GM only) ─────────────────────────────────────────────
+
+        // ── Token context menu (GM only) ──────────────────────────────────────
+
+        let ctxToken = null;
+
+        function initTokenContextMenu() {
+            const menu        = document.getElementById('tokenCtxMenu');
+            const labelInput  = document.getElementById('tcmLabelInput');
+            const saveBtn     = document.getElementById('tcmSaveLabel');
+            const visBtn      = document.getElementById('tcmToggleVisible');
+            const moveBtn     = document.getElementById('tcmToggleMoveable');
+            const removeBtn   = document.getElementById('tcmRemove');
+
+            saveBtn.addEventListener('click', async () => {
+                if (!ctxToken) return;
+                const { id } = ctxToken;
+                const newLabel = labelInput.value.trim();
+                if (!newLabel) return;
+                hideCtxMenu();
+                try { await updateTokenDefinition(id, { label: newLabel }); }
+                catch (e) { log.error('rename token failed:', e); }
+            });
+
+            labelInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveBtn.click(); });
+
+            visBtn.addEventListener('click', async () => {
+                if (!ctxToken) return;
+                const { id, visible } = ctxToken;
+                const sceneId = currentDisplaySceneId();
+                if (!sceneId) return;
+                hideCtxMenu();
+                try { await setSceneTokenVisibility(sceneId, id, !visible); }
+                catch (e) { log.error('set visibility failed:', e); }
+            });
+
+            moveBtn.addEventListener('click', async () => {
+                if (!ctxToken) return;
+                const { id, player_moveable } = ctxToken;
+                hideCtxMenu();
+                try { await updateTokenDefinition(id, { player_moveable: !player_moveable }); }
+                catch (e) { log.error('set moveable failed:', e); }
+            });
+
+            removeBtn.addEventListener('click', async () => {
+                if (!ctxToken) return;
+                const { id } = ctxToken;
+                const sceneId = currentDisplaySceneId();
+                if (!sceneId) return;
+                hideCtxMenu();
+                // Optimistic update — remove from canvas immediately.
+                sceneTokens = sceneTokens.filter(t => t.id !== id);
+                syncTokenNodes(sceneTokens);
+                try { await removeSceneToken(sceneId, id); }
+                catch (e) {
+                    log.error('remove scene token failed:', e);
+                    sceneTokens = await getSceneTokens(sceneId);
+                    syncTokenNodes(sceneTokens);
+                }
+            });
+
+            // Close on outside click or Escape
+            document.addEventListener('click', e => {
+                if (!menu.contains(e.target)) hideCtxMenu();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCtxMenu(); });
+        }
+
+        function showCtxMenu(token, x, y) {
+            ctxToken = token;
+            const menu       = document.getElementById('tokenCtxMenu');
+            const labelInput = document.getElementById('tcmLabelInput');
+            const visBtn     = document.getElementById('tcmToggleVisible');
+            const moveBtn    = document.getElementById('tcmToggleMoveable');
+
+            labelInput.value = token.label || '';
+            visBtn.textContent  = token.visible        ? 'Hide from Players' : 'Show to Players';
+            moveBtn.textContent = token.player_moveable ? 'Lock Movement'     : 'Unlock Movement';
+
+            // Keep menu inside canvas bounds
+            const wrap = document.getElementById('canvasWrap');
+            const mw = 190, mh = 140;
+            const cx = Math.min(x, wrap.clientWidth  - mw - 4);
+            const cy = Math.min(y, wrap.clientHeight - mh - 4);
+            menu.style.left    = cx + 'px';
+            menu.style.top     = cy + 'px';
+            menu.style.display = 'block';
+            labelInput.focus();
+            labelInput.select();
+        }
+
+        function hideCtxMenu() {
+            document.getElementById('tokenCtxMenu').style.display = 'none';
+            ctxToken = null;
+        }
+
+        // ── Quick-add token popover (GM only) ────────────────────────────────
+
+        const QTP_COLORS = ['#c0392b','#2980b9','#27ae60','#8e44ad','#d4ac0d','#ca6f1e','#717d7e','#c0609a','#e8dcc8','#4a3e2e'];
+        let qtpColor = QTP_COLORS[0];
+
+        function initTokensPanel() {
+            initPanelToggle('tokensPanel', 'btnSpawnTokens', { noPopOut: true });
+            document.getElementById('btnSpawnCharTokens').addEventListener('click', spawnTokens);
+        }
+
+        function renderTokensPanel() {
+            const list = document.getElementById('tokensPanelList');
+            if (!list) return;
+            const sceneId  = currentDisplaySceneId();
+            const inSceneIds = new Set(sceneTokens.map(t => t.id));
+
+            if (!allTokenDefs.length) {
+                list.innerHTML = '<p class="tokens-empty">No tokens yet.</p>';
+                return;
+            }
+
+            list.innerHTML = '';
+            for (const def of allTokenDefs) {
+                const row = document.createElement('div');
+                row.className = 'tp-row';
+
+                const dot = document.createElement('span');
+                dot.className = 'tp-dot';
+                dot.style.background = def.color || '#888';
+
+                const label = document.createElement('span');
+                label.className = 'tp-label';
+                label.title = def.label;
+                label.textContent = def.label;
+
+                const typeSpan = document.createElement('span');
+                typeSpan.className = 'tp-type';
+                typeSpan.textContent = def.token_type === 'character' ? 'PC' : def.token_type === 'adversary' ? 'NPC' : 'GEN';
+
+                if (inSceneIds.has(def.id)) {
+                    const badge = document.createElement('span');
+                    badge.className = 'tp-in-scene';
+                    badge.textContent = '✓';
+                    const delBtn = makeTokenDelBtn(def);
+                    row.append(dot, label, typeSpan, badge, delBtn);
+                } else {
+                    const addBtn = document.createElement('button');
+                    addBtn.className = 'tp-add-btn';
+                    addBtn.textContent = 'Add';
+                    addBtn.addEventListener('click', async () => {
+                        if (!sceneId) return;
+                        addBtn.disabled = true;
+                        try { await upsertSceneToken(sceneId, def.id, 0.5, 0.5); }
+                        catch (e) { log.error('add token to scene failed:', e); addBtn.disabled = false; }
+                    });
+                    const delBtn = makeTokenDelBtn(def);
+                    row.append(dot, label, typeSpan, addBtn, delBtn);
+                }
+
+                list.appendChild(row);
+            }
+        }
+
+        function makeTokenDelBtn(def) {
+            const btn = document.createElement('button');
+            btn.className = 'tp-del-btn';
+            const isPC = def.token_type === 'character';
+            btn.title = isPC ? 'PC tokens are managed automatically' : 'Delete from campaign';
+            btn.textContent = '×';
+            btn.disabled = isPC;
+            if (!isPC) {
+                btn.addEventListener('click', async () => {
+                    if (!confirm(`Delete "${def.label}"? This removes it from all scenes.`)) return;
+                    // Optimistic update — remove from local state immediately so canvas clears now.
+                    allTokenDefs = allTokenDefs.filter(d => d.id !== def.id);
+                    sceneTokens  = sceneTokens.filter(t => t.id !== def.id);
+                    syncTokenNodes(sceneTokens);
+                    try { await deleteTokenDefinition(def.id); }
+                    catch (e) {
+                        log.error('delete token definition failed:', e);
+                        // Roll back on failure
+                        allTokenDefs = await getTokenDefinitions(campaignId);
+                        sceneTokens  = await getSceneTokens(currentDisplaySceneId());
+                        syncTokenNodes(sceneTokens);
+                    }
+                });
+            }
+            return btn;
+        }
+
+        function initQuickTokenPopover() {
+            const popover  = document.getElementById('quickTokenPopover');
+            const labelIn  = document.getElementById('qtpLabel');
+            const addBtn   = document.getElementById('qtpAdd');
+            const swatches = document.getElementById('qtpSwatches');
+
+            QTP_COLORS.forEach((hex, i) => {
+                const s = document.createElement('button');
+                s.type = 'button';
+                s.className = 'qtp-swatch' + (i === 0 ? ' selected' : '');
+                s.style.background = hex;
+                s.addEventListener('click', () => {
+                    qtpColor = hex;
+                    swatches.querySelectorAll('.qtp-swatch').forEach(b => b.classList.remove('selected'));
+                    s.classList.add('selected');
+                });
+                swatches.appendChild(s);
+            });
+
+            document.getElementById('btnQuickToken').addEventListener('click', e => {
+                e.stopPropagation();
+                popover.classList.toggle('open');
+                if (popover.classList.contains('open')) { labelIn.value = ''; labelIn.focus(); }
+            });
+
+            addBtn.addEventListener('click', addQuickToken);
+            labelIn.addEventListener('keydown', e => { if (e.key === 'Enter') addQuickToken(); if (e.key === 'Escape') popover.classList.remove('open'); });
+
+            document.addEventListener('click', e => {
+                if (!popover.contains(e.target) && e.target.id !== 'btnQuickToken') {
+                    popover.classList.remove('open');
+                }
+            });
+        }
+
+        async function addQuickToken() {
+            const label  = document.getElementById('qtpLabel').value.trim() || 'Token';
+            const addBtn = document.getElementById('qtpAdd');
+            addBtn.disabled = true;
+            try {
+                let sceneId = currentDisplaySceneId();
+                if (!sceneId) {
+                    // No scene active — use the first existing scene, or create one if none exist
+                    let scene = scenesOrdered[0];
+                    if (!scene) {
+                        scene = await dbCreateScene(campaignId, 'Base Table', 'table');
+                        scenesCache[scene.id] = scene;
+                        scenesOrdered = [scene];
+                    }
+                    await pushScene(scene.id);
+                    await loadSceneTokens(scene.id);
+                    sceneId = scene.id;
+                }
+                const def = await createTokenDefinition(campaignId, {
+                    label,
+                    token_type:      'generic',
+                    color:           qtpColor,
+                    player_moveable: false,
+                });
+                await upsertSceneToken(sceneId, def.id, 0.5, 0.5);
+                document.getElementById('quickTokenPopover').classList.remove('open');
+            } finally {
+                addBtn.disabled = false;
+            }
+        }
+
+        // ── Movement lock (GM only) ────────────────────────────────────────────
+
+        function renderMoveLockBtn() {
+            const btn = document.getElementById('btnMoveLock');
+            if (!btn) return;
+            if (playerMoveLocked) {
+                btn.textContent = 'Move: Off';
+                btn.classList.add('locked');
+            } else {
+                btn.textContent = 'Move: On';
+                btn.classList.remove('locked');
+            }
+        }
+
+        async function toggleMoveLock() {
+            const next = !playerMoveLocked;
+            playerMoveLocked = next;
+            renderMoveLockBtn();
+            syncTokenNodes(sceneTokens);
+            await setSessionMoveLock(session.id, next);
+        }
+
+        // Creates token_definitions for any player characters that don't have one yet.
+        // Called automatically on GM boot — no scene placement.
+        async function ensureCharacterTokens() {
+            const existing = await getTokenDefinitions(campaignId);
+            const existingCharIds = new Set(existing.filter(t => t.character_id).map(t => t.character_id));
+
+            for (const m of members) {
+                if (m.uid === campaign.gm_id) continue;
+                const profile = profileMap[m.uid] ?? {};
+                const ch      = (charMap[m.uid] ?? [])[0];
+                if (!ch || existingCharIds.has(ch.id)) continue;
+                await createTokenDefinition(campaignId, {
+                    label:           ch.name || profile.display_name || 'Player',
+                    token_type:      'character',
+                    character_id:    ch.id,
+                    owner_id:        m.uid,
+                    color:           profile.avatar_color || '#888',
+                    player_moveable: true,
+                });
+            }
+        }
+
+        // Places all character token_definitions into the current scene at default
+        // positions for any that aren't already in the scene.
+        async function spawnTokens() {
+            const sceneId = currentDisplaySceneId();
+            if (!sceneId) return;
+            const [allDefs, currentTokens] = await Promise.all([
+                getTokenDefinitions(campaignId),
+                getSceneTokens(sceneId),
+            ]);
+            const placedDefIds = new Set(currentTokens.map(t => t.id));
+            const charDefs = allDefs.filter(t => t.token_type === 'character');
+            let col = currentTokens.filter(t => t.token_type === 'character').length;
+
+            for (const def of charDefs) {
+                if (placedDefIds.has(def.id)) continue;
+                await upsertSceneToken(sceneId, def.id, 0.08 + col * 0.08, 0.5);
+                col++;
+            }
+        }
+
+        // ── Panel shell ────────────────────────────────────────────────────────
+
+        function makeDraggable(el, handle, key) {
+            let startX, startY, startLeft, startTop;
+            handle.addEventListener('mousedown', e => {
+                if (e.target.closest('button')) return;
+                e.preventDefault();
+                const elRect = el.getBoundingClientRect(), parentRect = el.offsetParent.getBoundingClientRect();
+                startX = e.clientX; startY = e.clientY;
+                startLeft = elRect.left - parentRect.left; startTop = elRect.top - parentRect.top;
+                el.style.right = ''; el.style.left = startLeft + 'px'; el.style.top = startTop + 'px';
+                const onMove = e => { el.style.left = (startLeft + e.clientX - startX) + 'px'; el.style.top = (startTop + e.clientY - startY) + 'px'; };
+                const onUp   = () => { localStorage.setItem(`panel-${key}`, JSON.stringify({ x: parseFloat(el.style.left), y: parseFloat(el.style.top) })); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+        }
+
+        function initPanelToggle(panelId, toggleId, { noPopOut } = {}) {
+            const panel  = document.getElementById(panelId);
+            const toggle = document.getElementById(toggleId);
+            const key    = panel.dataset.panelKey;
+            const header = panel.querySelector('.panel-header');
+
+            const saved = JSON.parse(localStorage.getItem(`panel-${key}`) || 'null');
+            if (saved) { panel.style.left = saved.x + 'px'; panel.style.top = saved.y + 'px'; panel.style.right = ''; }
+
+            makeDraggable(panel, header, key);
+
+            toggle.addEventListener('click', () => {
+                const hidden = panel.classList.toggle('hidden');
+                toggle.classList.toggle('active', !hidden);
+            });
+            panel.querySelector('.panel-close-btn').addEventListener('click', () => {
+                panel.classList.add('hidden');
+                toggle.classList.remove('active');
+            });
+
+            if (!noPopOut) {
+                panel.querySelector('.panel-popout-btn')?.addEventListener('click', () => {
+                    const w = window.open(`panel-${key}.html`, `brackenroll-panel-${key}`, 'width=320,height=480,toolbar=no,menubar=no,status=no,resizable=yes');
+                    if (!w) { alert('Please allow pop-ups for this site.'); return; }
+                    panel.classList.add('hidden');
+                    toggle.classList.remove('active');
+                });
+            }
+        }
+
+        // ── Fog of War ─────────────────────────────────────────────────────────
+
+        function initFogLayer() {
+            fogLayer = new Konva.Layer();
+            fogGroup = new Konva.Group({ listening: false });
+            fogBrushCursor = new Konva.Circle({ radius: brushSize / 2, stroke: 'rgba(201,168,76,0.75)', strokeWidth: 1.5, dash: [4, 3], fill: 'rgba(201,168,76,0.06)', listening: false, visible: false });
+            fogLayer.add(fogGroup);
+            fogLayer.add(fogBrushCursor);
+            stage.add(fogLayer);
+
+            stage.container().addEventListener('mouseleave', () => {
+                if (fogBrushCursor.visible()) { fogBrushCursor.visible(false); fogLayer.batchDraw(); }
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key !== 'Escape' || !fogDrawing) return;
+                fogDrawing = false;
+                if (fogPreview) { fogPreview.destroy(); fogPreview = null; }
+                fogDrawStart = null;
+                fogBrushPoints = [];
+                fogLayer.batchDraw();
+            });
+
+            stage.on('mousedown', () => {
+                if (!fogTool || !fogState.enabled) return;
+                const pos = stage.getPointerPosition();
+                if (!pos) return;
+                if (fogTool === 'erase') { eraseAtPoint(pos.x, pos.y); return; }
+                fogDrawing = true;
+                if (fogTool === 'brush') {
+                    fogBrushPoints = [pos.x, pos.y];
+                    fogPreview = new Konva.Line({ points: [pos.x, pos.y, pos.x, pos.y + 0.1], stroke: 'rgba(201,168,76,0.5)', strokeWidth: brushSize, lineCap: 'round', lineJoin: 'round', listening: false });
+                } else {
+                    fogDrawStart = { ...pos };
+                    const attrs = { stroke: 'rgba(201,168,76,0.7)', strokeWidth: 1, dash: [5, 3], fill: 'rgba(201,168,76,0.08)', listening: false };
+                    fogPreview = fogTool === 'circle'
+                        ? new Konva.Circle({ x: pos.x, y: pos.y, radius: 1, ...attrs })
+                        : new Konva.Rect({ x: pos.x, y: pos.y, width: 1, height: 1, ...attrs });
+                }
+                fogLayer.add(fogPreview);
+                fogLayer.batchDraw();
+            });
+
+            stage.on('mousemove', () => {
+                const pos = stage.getPointerPosition();
+                if (fogTool === 'brush' && pos) {
+                    fogBrushCursor.position(pos);
+                    if (!fogBrushCursor.visible()) fogBrushCursor.visible(true);
+                    if (fogDrawing && fogPreview) {
+                        const lx = fogBrushPoints[fogBrushPoints.length - 2], ly = fogBrushPoints[fogBrushPoints.length - 1];
+                        const dx = pos.x - lx, dy = pos.y - ly;
+                        if (Math.sqrt(dx * dx + dy * dy) >= 6) {
+                            fogBrushPoints.push(pos.x, pos.y);
+                            fogPreview.points(fogBrushPoints);
+                        }
+                    }
+                    fogLayer.batchDraw();
+                    return;
+                }
+                if (!fogDrawing || !fogPreview || !pos) return;
+                if (fogTool === 'circle') {
+                    const dx = pos.x - fogDrawStart.x, dy = pos.y - fogDrawStart.y;
+                    fogPreview.radius(Math.max(1, Math.sqrt(dx * dx + dy * dy)));
+                } else {
+                    fogPreview.setAttrs({ x: Math.min(fogDrawStart.x, pos.x), y: Math.min(fogDrawStart.y, pos.y), width: Math.abs(pos.x - fogDrawStart.x), height: Math.abs(pos.y - fogDrawStart.y) });
+                }
+                fogLayer.batchDraw();
+            });
+
+            stage.on('mouseup', () => {
+                if (!fogDrawing) return;
+                fogDrawing = false;
+                const pos = stage.getPointerPosition();
+                if (fogPreview) { fogPreview.destroy(); fogPreview = null; }
+                const shape = fogTool === 'brush' ? buildFogShape(null, null) : (pos && fogDrawStart) ? buildFogShape(fogDrawStart, pos) : null;
+                fogDrawStart = null;
+                if (shape) {
+                    fogState = { ...fogState, shapes: [...fogState.shapes, shape] };
+                    drawFogGroup();
+                    persistFogState();
+                    broadcastFogState();
+                } else {
+                    fogLayer.batchDraw();
+                }
+            });
+        }
+
+        function buildFogShape(start, end) {
+            if (fogTool === 'brush') {
+                if (fogBrushPoints.length < 4) return null;
+                return { id: crypto.randomUUID(), type: 'brush', points: [...fogBrushPoints], strokeWidth: brushSize };
+            }
+            if (fogTool === 'circle') {
+                const dx = end.x - start.x, dy = end.y - start.y;
+                const radius = Math.sqrt(dx * dx + dy * dy);
+                if (radius < 8) return null;
+                return { id: crypto.randomUUID(), type: 'circle', x: Math.round(start.x), y: Math.round(start.y), radius: Math.round(radius) };
+            }
+            const w = Math.abs(end.x - start.x), h = Math.abs(end.y - start.y);
+            if (w < 8 || h < 8) return null;
+            return { id: crypto.randomUUID(), type: 'rect', x: Math.round(Math.min(start.x, end.x)), y: Math.round(Math.min(start.y, end.y)), width: Math.round(w), height: Math.round(h) };
+        }
+
+        function drawFogGroup() {
+            fogGroup.destroyChildren();
+            fogGroup.clearCache();
+            if (!fogState.enabled) { fogLayer.batchDraw(); return; }
+            const opacity = isGM ? 0.45 : 0.9;
+            fogGroup.add(new Konva.Rect({ x: 0, y: 0, width: stage.width(), height: stage.height(), fill: `rgba(0,0,0,${opacity})`, listening: false }));
+            (fogState.shapes || []).forEach(s => {
+                let node;
+                if (s.type === 'circle') {
+                    node = new Konva.Circle({ x: s.x, y: s.y, radius: s.radius, fill: 'black', listening: false });
+                } else if (s.type === 'brush') {
+                    node = new Konva.Line({ points: s.points, stroke: 'black', strokeWidth: s.strokeWidth, lineCap: 'round', lineJoin: 'round', listening: false });
+                } else {
+                    node = new Konva.Rect({ x: s.x, y: s.y, width: s.width, height: s.height, fill: 'black', listening: false });
+                }
+                node.globalCompositeOperation('destination-out');
+                fogGroup.add(node);
+            });
+            fogGroup.cache({ x: 0, y: 0, width: stage.width(), height: stage.height() });
+            fogLayer.batchDraw();
+        }
+
+        function applyFogState(state) {
+            fogState = (state && typeof state === 'object') ? { enabled: false, shapes: [], ...state } : { enabled: false, shapes: [] };
+            drawFogGroup();
+            if (isGM) renderFogPanel();
+        }
+
+        function eraseAtPoint(x, y) {
+            if (!fogState.shapes.length) return;
+            let target = null, bestArea = Infinity;
+            for (const s of fogState.shapes) {
+                let inside = false, area = 0;
+                if (s.type === 'circle') {
+                    const dx = x - s.x, dy = y - s.y;
+                    inside = Math.sqrt(dx * dx + dy * dy) <= s.radius;
+                    area   = Math.PI * s.radius * s.radius;
+                } else if (s.type === 'brush') {
+                    const hw = (s.strokeWidth || 40) / 2;
+                    const pts = s.points;
+                    for (let i = 0; i < pts.length - 1; i += 2) {
+                        const dx = pts[i] - x, dy = pts[i + 1] - y;
+                        if (Math.sqrt(dx * dx + dy * dy) <= hw) { inside = true; break; }
+                    }
+                    // approximate area as bounding box
+                    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                    for (let i = 0; i < pts.length - 1; i += 2) { minX = Math.min(minX, pts[i]); maxX = Math.max(maxX, pts[i]); minY = Math.min(minY, pts[i + 1]); maxY = Math.max(maxY, pts[i + 1]); }
+                    area = (maxX - minX + s.strokeWidth) * (maxY - minY + s.strokeWidth);
+                } else {
+                    inside = x >= s.x && x <= s.x + s.width && y >= s.y && y <= s.y + s.height;
+                    area   = s.width * s.height;
+                }
+                if (inside && area < bestArea) { bestArea = area; target = s; }
+            }
+            if (!target) return;
+            fogState = { ...fogState, shapes: fogState.shapes.filter(s => s.id !== target.id) };
+            drawFogGroup();
+            persistFogState();
+            broadcastFogState();
+        }
+
+        function persistFogState() {
+            const sceneId = currentDisplaySceneId();
+            if (!sceneId) return;
+            saveFogState(sceneId, fogState)
+                .then(() => { if (scenesCache[sceneId]) scenesCache[sceneId].fog_state = fogState; })
+                .catch(e => log.error('saveFogState failed:', e));
+        }
+
+        function broadcastFogState() {
+            if (broadcastChannel) sendFogUpdate(broadcastChannel, fogState);
+            broadcastPanelState();
+        }
+
+        function onRemoteFogUpdate(payload) {
+            if (isGM) return;
+            applyFogState(payload);
+        }
+
+        function setFogTool(tool) {
+            if (fogDrawing) {
+                fogDrawing = false;
+                if (fogPreview) { fogPreview.destroy(); fogPreview = null; fogLayer.batchDraw(); }
+                fogDrawStart = null;
+            }
+            fogTool = tool;
+            if (tokenLayer) tokenLayer.listening(!tool);
+            if (stage) stage.container().style.cursor = tool === 'brush' ? 'none' : tool === 'erase' ? 'cell' : (tool ? 'crosshair' : 'default');
+            if (fogBrushCursor) { fogBrushCursor.visible(false); if (fogLayer) fogLayer.batchDraw(); }
+            renderFogPanel();
+        }
+
+        function applyFogToggle() {
+            if (!currentDisplaySceneId()) return;
+            fogState = { ...fogState, enabled: !fogState.enabled };
+            if (!fogState.enabled) setFogTool(null);
+            drawFogGroup();
+            renderFogPanel();
+            persistFogState();
+            broadcastFogState();
+        }
+
+        function applyFogRevealAll() {
+            if (!fogState.enabled) return;
+            const w = stage.width(), h = stage.height();
+            fogState = { ...fogState, shapes: [{ id: crypto.randomUUID(), type: 'rect', x: 0, y: 0, width: w, height: h }] };
+            drawFogGroup();
+            renderFogPanel();
+            persistFogState();
+            broadcastFogState();
+        }
+
+        function applyFogReset() {
+            if (!fogState.enabled) return;
+            fogState = { ...fogState, shapes: [] };
+            drawFogGroup();
+            renderFogPanel();
+            persistFogState();
+            broadcastFogState();
+        }
+
+        function initFogPanel() {
+            initPanelToggle('fogPanel', 'btnFogPanel');
+            document.getElementById('btnFogToggle').addEventListener('click', applyFogToggle);
+            document.querySelectorAll('.fog-tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!fogState.enabled) return;
+                    setFogTool(btn.dataset.tool === fogTool ? null : btn.dataset.tool);
+                });
+            });
+            const slider = document.getElementById('fogBrushSlider');
+            slider.addEventListener('input', () => {
+                brushSize = parseInt(slider.value);
+                document.getElementById('fogBrushValue').textContent = brushSize;
+                if (fogBrushCursor) fogBrushCursor.radius(brushSize / 2);
+            });
+            document.getElementById('btnFogRevealAll').addEventListener('click', applyFogRevealAll);
+            document.getElementById('btnFogReset').addEventListener('click', () => {
+                if (!fogState.enabled) return;
+                if (!confirm('Clear all fog reveals?')) return;
+                applyFogReset();
+            });
+            renderFogPanel();
+        }
+
+        function renderFogPanel() {
+            const toggleBtn = document.getElementById('btnFogToggle');
+            if (!toggleBtn) return;
+            const enabled  = fogState.enabled;
+            const hasScene = !!currentDisplaySceneId();
+            toggleBtn.textContent = enabled ? 'On' : 'Off';
+            toggleBtn.classList.toggle('fog-on', enabled);
+            toggleBtn.disabled = !hasScene;
+            document.querySelectorAll('.fog-tool-btn').forEach(btn => {
+                btn.disabled = !enabled;
+                btn.classList.toggle('active', enabled && btn.dataset.tool === fogTool);
+            });
+            document.getElementById('fogBrushRow').style.display = (enabled && fogTool === 'brush') ? 'flex' : 'none';
+            document.getElementById('btnFogRevealAll').disabled = !enabled;
+            document.getElementById('btnFogReset').disabled     = !enabled;
+            const hint = document.getElementById('fogHint');
+            hint.textContent = !hasScene ? 'Push a scene to enable fog.' : '';
+        }
+
+        // ── Parchments ─────────────────────────────────────────────────────────
+
+        function initParchmentBar() {
+            document.getElementById('btnNewParchment').addEventListener('click', openNewParchment);
+        }
+
+        function initParchmentsPanel() {
+            initPanelToggle('parchmentsPanel', 'btnParchmentsPanel');
+            document.getElementById('btnParchNewDrawing').addEventListener('click', openNewParchment);
+            document.getElementById('btnParchNewEditor').href = `parchment-editor.html?campaign=${campaignId}`;
+            loadCampaignParchments(campaignId).then(ps => {
+                campaignParchments = ps;
+                renderParchmentsPanel();
+            }).catch(e => log.warn('loadCampaignParchments failed:', e));
+        }
+
+        function renderParchmentsPanel() {
+            const list = document.getElementById('parchLibList');
+            if (!list) return;
+            if (!campaignParchments.length) {
+                list.innerHTML = '<p class="parch-lib-empty">No saved parchments yet.</p>';
+                return;
+            }
+            list.innerHTML = '';
+            for (const p of campaignParchments) {
+                const type = p.canvas_data?.type || 'drawing';
+                const icon = type === 'image' ? '🖼' : type === 'text' ? '📜' : '✍';
+                const row = document.createElement('div');
+                row.className = 'parch-lib-row';
+                row.innerHTML = `
+                    <span class="parch-lib-icon">${icon}</span>
+                    <span class="parch-lib-name" title="${escHtml(p.name)}">${escHtml(p.name)}</span>
+                    <button class="parch-lib-btn" data-action="open" data-id="${p.id}">Open</button>
+                    <button class="parch-lib-btn" data-action="send" data-id="${p.id}">Send</button>
+                    <button class="parch-lib-btn danger" data-action="del" data-id="${p.id}">✕</button>`;
+                row.querySelector('[data-action=open]').addEventListener('click', () => openSavedParchmentOnTable(p.id));
+                row.querySelector('[data-action=send]').addEventListener('click', e => showSendPopover(p.id, e.currentTarget));
+                row.querySelector('[data-action=del]').addEventListener('click', async () => {
+                    if (!confirm(`Delete "${p.name}"?`)) return;
+                    try {
+                        await deleteParchment(p.id);
+                        campaignParchments = campaignParchments.filter(x => x.id !== p.id);
+                        renderParchmentsPanel();
+                        broadcastPanelState();
+                    } catch (err) { log.error('deleteParchment failed:', err); }
+                });
+                list.appendChild(row);
+            }
+        }
+
+        async function openNewParchment() {
+            const ap = await createActiveParchment(currentUser.uid, session.id, campaignId, {
+                label: 'Untitled',
+                canvas_data: { type: 'drawing', background: 'parchment', strokes: [] },
+            });
+            openActiveParchmentOverlay(ap, false);
+            if (broadcastChannel) sendParchmentOpen(broadcastChannel, ap);
+            broadcastPanelState();
+        }
+
+        async function openSavedParchmentOnTable(parchmentId) {
+            const p = campaignParchments.find(x => x.id === parchmentId);
+            if (!p) return;
+            const ap = await createActiveParchment(currentUser.uid, session.id, campaignId, {
+                label:       p.name,
+                canvas_data: p.canvas_data,
+            });
+            openActiveParchmentOverlay(ap, false);
+            if (broadcastChannel) sendParchmentOpen(broadcastChannel, ap);
+            broadcastPanelState();
+        }
+
+        function openActiveParchmentOverlay(ap, silent) {
+            if (document.getElementById(`parch-${ap.id}`)) return;
+
+            const wrap   = document.getElementById('parchOverlayContainer');
+            const canvasW = 540, canvasH = 360;
+
+            // Stagger new parchments so they don't perfectly overlap
+            const offset = Object.keys(activeParchmentsMap).length * 22;
+            const startX = ap.x ? ap.x * document.getElementById('canvasWrap').clientWidth  : 60 + offset;
+            const startY = ap.y ? ap.y * document.getElementById('canvasWrap').clientHeight : 60 + offset;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'parchment-overlay';
+            overlay.id = `parch-${ap.id}`;
+            overlay.style.left = startX + 'px';
+            overlay.style.top  = startY + 'px';
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'parchment-header';
+
+            const title = document.createElement('span');
+            title.className = 'parchment-title';
+            title.textContent = ap.label || 'Untitled';
+
+            // Tool buttons
+            const penBtn   = makeParchToolBtn('✒', 'Pen',    'pen');
+            const eraseBtn = makeParchToolBtn('◻', 'Eraser', 'eraser');
+            penBtn.classList.add('active');
+
+            // Color dots
+            const colorDots = INK_COLORS.map((c, i) => {
+                const dot = document.createElement('span');
+                dot.className = 'parch-color-dot' + (i === 0 ? ' active' : '');
+                dot.title = c.label;
+                dot.style.background = c.value;
+                dot.dataset.color = c.value;
+                return dot;
+            });
+
+            const sep1 = document.createElement('span');
+            sep1.className = 'parch-sep';
+
+            // Size slider
+            const sizeRow = document.createElement('div');
+            sizeRow.className = 'parch-size-row';
+            const sizeSlider = document.createElement('input');
+            sizeSlider.type = 'range'; sizeSlider.min = '1'; sizeSlider.max = '16'; sizeSlider.value = '4';
+            sizeSlider.className = 'parch-size-slider';
+
+            sizeRow.appendChild(sizeSlider);
+
+            const sep2 = document.createElement('span');
+            sep2.className = 'parch-sep';
+
+            // Close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'panel-icon-btn';
+            closeBtn.title = 'Close';
+            closeBtn.textContent = '×';
+
+            header.append(title, penBtn, eraseBtn, sep1, ...colorDots, sep2, sizeRow, closeBtn);
+
+            // Drawing canvas
+            const canvas = document.createElement('canvas');
+            canvas.className = 'parchment-canvas';
+            canvas.style.width  = canvasW + 'px';
+            canvas.style.height = canvasH + 'px';
+
+            // Footer
+            const footer = document.createElement('div');
+            footer.className = 'parch-footer';
+
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'parch-action-btn danger';
+            clearBtn.textContent = 'Clear';
+
+            const spacer = document.createElement('div');
+            spacer.className = 'parch-footer-spacer';
+
+            const whoEl = document.createElement('div');
+            whoEl.className = 'parch-who';
+            whoEl.id = `parch-who-${ap.id}`;
+
+            const footerRight = document.createElement('div');
+            footerRight.style.cssText = 'display:flex;gap:5px;position:relative;';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'parch-action-btn';
+            saveBtn.textContent = 'Save';
+
+            const sendBtn = document.createElement('button');
+            sendBtn.className = 'parch-action-btn';
+            sendBtn.textContent = 'Send';
+
+            footerRight.append(saveBtn, sendBtn);
+            footer.append(clearBtn, spacer, whoEl, footerRight);
+
+            overlay.append(header, canvas, footer);
+            wrap.appendChild(overlay);
+
+            // Init drawing engine
+            const bg = ap.canvas_data?.background || 'parchment';
+            const drawing = new ParchmentDraw(canvas, {
+                background: bg,
+                onStrokeComplete: stroke => onLocalParchmentStroke(ap.id, stroke),
+            });
+            drawing.loadStrokes(ap.canvas_data?.strokes || []);
+
+            activeParchmentsMap[ap.id] = { ap, drawing };
+
+            // Wire up tools
+            penBtn.addEventListener('click', () => {
+                drawing.setTool('pen');
+                penBtn.classList.add('active');
+                eraseBtn.classList.remove('active');
+            });
+            eraseBtn.addEventListener('click', () => {
+                drawing.setTool('eraser');
+                eraseBtn.classList.add('active');
+                penBtn.classList.remove('active');
+            });
+            colorDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    colorDots.forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    drawing.setColor(dot.dataset.color);
+                    // Switch back to pen if on eraser
+                    if (drawing.tool === 'eraser') {
+                        drawing.setTool('pen');
+                        penBtn.classList.add('active');
+                        eraseBtn.classList.remove('active');
+                    }
+                });
+            });
+            sizeSlider.addEventListener('input', () => drawing.setWidth(parseInt(sizeSlider.value)));
+
+            clearBtn.addEventListener('click', () => {
+                if (!confirm('Clear this parchment?')) return;
+                drawing.clear();
+                scheduleParchSave(ap.id, drawing);
+            });
+
+            saveBtn.addEventListener('click', () => saveParchmentToLibrary(ap.id, drawing));
+            sendBtn.addEventListener('click', e => showSendPopoverForActive(ap.id, e.currentTarget, drawing));
+
+            closeBtn.addEventListener('click', () => closeActiveParchmentOverlay(ap.id));
+
+            makeDraggable(overlay, header, `parch-${ap.id}`);
+        }
+
+        function makeParchToolBtn(icon, title, tool) {
+            const btn = document.createElement('button');
+            btn.className = 'parch-tool-btn';
+            btn.title = title;
+            btn.textContent = icon;
+            btn.dataset.tool = tool;
+            return btn;
+        }
+
+        function onLocalParchmentStroke(activeParchmentId, stroke) {
+            if (broadcastChannel) sendParchmentStroke(broadcastChannel, activeParchmentId, stroke);
+            scheduleParchSave(activeParchmentId, activeParchmentsMap[activeParchmentId]?.drawing);
+        }
+
+        function scheduleParchSave(activeParchmentId, drawing) {
+            if (!drawing) return;
+            if (parchSaveTimers[activeParchmentId]) clearTimeout(parchSaveTimers[activeParchmentId]);
+            parchSaveTimers[activeParchmentId] = setTimeout(() => {
+                delete parchSaveTimers[activeParchmentId];
+                const entry = activeParchmentsMap[activeParchmentId];
+                if (!entry) return;
+                const canvas_data = { ...(entry.ap.canvas_data || {}), strokes: drawing.getStrokes() };
+                updateActiveParchmentData(activeParchmentId, canvas_data)
+                    .catch(e => log.error('updateActiveParchmentData failed:', e));
+            }, 2500);
+        }
+
+        async function closeActiveParchmentOverlay(activeParchmentId) {
+            const overlay = document.getElementById(`parch-${activeParchmentId}`);
+            if (overlay) overlay.remove();
+            if (parchSaveTimers[activeParchmentId]) {
+                clearTimeout(parchSaveTimers[activeParchmentId]);
+                delete parchSaveTimers[activeParchmentId];
+            }
+            const entry = activeParchmentsMap[activeParchmentId];
+            delete activeParchmentsMap[activeParchmentId];
+            if (broadcastChannel) sendParchmentClose(broadcastChannel, activeParchmentId);
+            broadcastPanelState();
+            if (entry) {
+                // Final save then delete from active table
+                const canvas_data = { ...(entry.ap.canvas_data || {}), strokes: entry.drawing.getStrokes() };
+                try {
+                    await updateActiveParchmentData(activeParchmentId, canvas_data);
+                    await deleteActiveParchment(activeParchmentId);
+                } catch (e) { log.error('closeActiveParchment cleanup failed:', e); }
+            }
+        }
+
+        async function saveParchmentToLibrary(activeParchmentId, drawing) {
+            const entry = activeParchmentsMap[activeParchmentId];
+            if (!entry) return;
+
+            const name = prompt('Save as:', entry.ap.label || 'Untitled');
+            if (!name) return;
+
+            const canvas_data = {
+                type:       'drawing',
+                background: drawing.getBackground(),
+                strokes:    drawing.getStrokes(),
+            };
+            try {
+                const saved = await saveParchment(currentUser.uid, campaignId, { name, canvas_data });
+                campaignParchments = [saved, ...campaignParchments];
+                renderParchmentsPanel();
+                broadcastPanelState();
+            } catch (e) { log.error('saveParchment failed:', e); alert('Failed to save parchment.'); }
+        }
+
+        function showSendPopover(parchmentId, anchor) {
+            const p = campaignParchments.find(x => x.id === parchmentId);
+            if (!p) return;
+            openSendPopover(anchor, async selectedUids => {
+                for (const uid of selectedUids) {
+                    try {
+                        await sendParchmentToPlayer(parchmentId, uid, null);
+                    } catch (e) { log.error('sendParchmentToPlayer failed:', e); }
+                }
+                if (broadcastChannel && selectedUids.length) {
+                    sendParchmentDelivery(broadcastChannel, { name: p.name, canvas_data: p.canvas_data, recipientIds: selectedUids });
+                }
+            });
+        }
+
+        async function showSendPopoverForActive(activeParchmentId, anchor, drawing) {
+            // Save to library first if not already saved, then send
+            const canvas_data = { type: 'drawing', background: drawing.getBackground(), strokes: drawing.getStrokes() };
+            openSendPopover(anchor, async selectedUids => {
+                try {
+                    const name = activeParchmentsMap[activeParchmentId]?.ap.label || 'Parchment';
+                    const saved = await saveParchment(currentUser.uid, campaignId, { name, canvas_data });
+                    campaignParchments = [saved, ...campaignParchments];
+                    renderParchmentsPanel();
+                    for (const uid of selectedUids) {
+                        await sendParchmentToPlayer(saved.id, uid, null);
+                    }
+                    if (broadcastChannel) sendParchmentDelivery(broadcastChannel, { name: saved.name, canvas_data, recipientIds: selectedUids });
+                } catch (e) { log.error('showSendPopoverForActive failed:', e); alert('Failed to send parchment.'); }
+            });
+        }
+
+        function openSendPopover(anchor, onConfirm) {
+            // Remove any existing popover
+            document.querySelectorAll('.parch-send-popover').forEach(p => p.remove());
+
+            const players = members.filter(m => m.uid !== campaign.gm_id);
+            if (!players.length) { alert('No players in this campaign.'); return; }
+
+            const pop = document.createElement('div');
+            pop.className = 'parch-send-popover open';
+
+            const title = document.createElement('div');
+            title.className = 'parch-send-title';
+            title.textContent = 'Send to Players';
+            pop.appendChild(title);
+
+            const checks = [];
+            players.forEach(m => {
+                const profile = profileMap[m.uid] ?? {};
+                const row = document.createElement('label');
+                row.className = 'parch-send-player';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox'; cb.checked = true; cb.value = m.uid;
+                const name = document.createElement('span');
+                name.className = 'parch-send-player-name';
+                name.textContent = profile.display_name || 'Player';
+                row.append(cb, name);
+                pop.appendChild(row);
+                checks.push(cb);
+            });
+
+            const btn = document.createElement('button');
+            btn.className = 'parch-send-confirm';
+            btn.textContent = 'Send';
+            btn.addEventListener('click', () => {
+                const selected = checks.filter(c => c.checked).map(c => c.value);
+                pop.remove();
+                if (selected.length) onConfirm(selected);
+            });
+            pop.appendChild(btn);
+
+            anchor.parentElement.style.position = 'relative';
+            anchor.parentElement.appendChild(pop);
+
+            const closeOnOutside = e => {
+                if (!pop.contains(e.target) && e.target !== anchor) {
+                    pop.remove();
+                    document.removeEventListener('click', closeOnOutside);
+                }
+            };
+            setTimeout(() => document.addEventListener('click', closeOnOutside), 0);
+        }
+
+        // ── Parchment broadcast receivers ──────────────────────────────────────
+
+        function onRemoteParchmentStroke({ id, stroke }) {
+            const entry = activeParchmentsMap[id];
+            if (entry) entry.drawing.applyStroke(stroke);
+        }
+
+        function onRemoteParchmentOpen(ap) {
+            if (!activeParchmentsMap[ap.id]) openActiveParchmentOverlay(ap, true);
+        }
+
+        function onRemoteParchmentClose({ id }) {
+            const overlay = document.getElementById(`parch-${id}`);
+            if (overlay) overlay.remove();
+            delete activeParchmentsMap[id];
+            broadcastPanelState();
+        }
+
+        function onRemoteParchmentDelivery(payload) {
+            // Only show toast to the actual recipients
+            if (!payload.recipientIds?.includes(currentUser.uid)) return;
+            showParchmentToast(payload.name, payload.canvas_data);
+        }
+
+        // ── Parchment toast & lightbox ─────────────────────────────────────────
+
+        let _toastTimer = null;
+
+        function showParchmentToast(name, canvas_data) {
+            pendingToastParch = { name, canvas_data };
+            const toast = document.getElementById('parchToast');
+            document.getElementById('parchToastText').textContent = `You received: "${name}"`;
+            toast.classList.add('visible');
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(() => toast.classList.remove('visible'), 12000);
+        }
+
+        function initParchmentToast() {
+            document.getElementById('parchToastView').addEventListener('click', () => {
+                document.getElementById('parchToast').classList.remove('visible');
+                if (pendingToastParch) openParchmentLightbox(pendingToastParch.name, pendingToastParch.canvas_data);
+            });
+            document.getElementById('parchToastDismiss').addEventListener('click', () => {
+                document.getElementById('parchToast').classList.remove('visible');
+            });
+            document.getElementById('parchLightboxClose').addEventListener('click', () => {
+                document.getElementById('parchLightbox').classList.remove('visible');
+            });
+        }
+
+        function openParchmentLightbox(name, canvas_data) {
+            const lb      = document.getElementById('parchLightbox');
+            const lbTitle = document.getElementById('parchLightboxTitle');
+            const lbCanvas = document.getElementById('parchLightboxCanvas');
+
+            lbTitle.textContent = name || 'Parchment';
+            lbCanvas.style.width  = '540px';
+            lbCanvas.style.height = '360px';
+
+            lb.classList.add('visible');
+
+            const d = new ParchmentDraw(lbCanvas, {
+                background: canvas_data?.background || 'parchment',
+                readOnly: true,
+            });
+            d.loadStrokes(canvas_data?.strokes || []);
+        }
+
+        // ── GM BroadcastChannel ────────────────────────────────────────────────
+
+        function initGmPanelChannel() {
+            panelChannel.onmessage = e => {
+                const { type, value, id, name, segments } = e.data;
+                switch (type) {
+                    case 'panel_ready':          broadcastPanelState(); break;
+                    case 'fear_set':             applyFear(Math.max(0, Math.min(12, value))); break;
+                    case 'fear_plus':            applyFear(Math.min(12, (currentGmState.fear || 0) + 1)); break;
+                    case 'fear_minus':           applyFear(Math.max(0,  (currentGmState.fear || 0) - 1)); break;
+                    case 'fear_toggle_visible':  applyFearVisible(!(currentGmState.fearVisible || false)); break;
+                    case 'clock_tick':           applyClockTick(id); break;
+                    case 'clock_toggle_visible': applyClockToggleVisible(id); break;
+                    case 'clock_delete':         applyClockDelete(id); break;
+                    case 'clock_add':            applyClockAdd(name, segments); break;
+                    case 'fog_toggle':           applyFogToggle();    break;
+                    case 'fog_reveal_all':       applyFogRevealAll(); break;
+                    case 'fog_reset':            applyFogReset();     break;
+                    case 'parch_open_new':       openNewParchment();  break;
+                    case 'parch_open_saved':     openSavedParchmentOnTable(e.data.parchmentId); break;
+                    case 'parch_delete': {
+                        const pid = e.data.parchmentId;
+                        if (!pid) break;
+                        deleteParchment(pid).then(() => {
+                            campaignParchments = campaignParchments.filter(x => x.id !== pid);
+                            renderParchmentsPanel();
+                            broadcastPanelState();
+                        }).catch(err => log.error('panel parch_delete failed:', err));
+                        break;
+                    }
+                }
+            };
+        }
+
+        function broadcastPanelState() {
+            panelChannel.postMessage({ type: 'state_update', payload: {
+                fear:              currentGmState.fear || 0,
+                fearVisible:       currentGmState.fearVisible || false,
+                clocks:            currentGmState.clocks || [],
+                fogEnabled:        fogState.enabled,
+                fogShapeCount:     (fogState.shapes || []).length,
+                fogHasScene:       !!currentDisplaySceneId(),
+                parchmentCount:    campaignParchments.length,
+                activeParchCount:  Object.keys(activeParchmentsMap).length,
+                parchmentList:     campaignParchments.map(p => ({ id: p.id, name: p.name, canvas_data: { type: p.canvas_data?.type } })),
+                campaignId,
+            }});
+        }
+
+        // ── Scenes ─────────────────────────────────────────────────────────────
+
+        function initScenes() {
+            initPanelToggle('scenesPanel', 'btnScenesPanel', { noPopOut: true });
+
+            // Background type picker
+            document.querySelectorAll('.bg-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.bg-opt').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    newSceneBgType = btn.dataset.bg;
+                    document.getElementById('sceneBgUrl').style.display  = newSceneBgType === 'url'    ? 'block' : 'none';
+                    document.getElementById('sceneBgFile').style.display = newSceneBgType === 'upload' ? 'block' : 'none';
+                    if (newSceneBgType === 'upload') document.getElementById('sceneBgFile').click();
+                });
+            });
+
+            document.getElementById('btnCreateScene').addEventListener('click', createSceneFromForm);
+            document.getElementById('sceneNameInput').addEventListener('keydown', e => { if (e.key === 'Enter') createSceneFromForm(); });
+
+            renderScenes();
+        }
+
+        function renderScenes() {
+            const listEl  = document.getElementById('sceneList');
+            const pushedId = currentGmState.active_scene_id;
+            listEl.innerHTML = '';
+
+            // Base Table row (always first)
+            const baseItem = document.createElement('div');
+            baseItem.className = 'scene-item' + (!pushedId ? ' pushed' : '') + (!gmPreviewSceneId ? ' previewing' : '');
+            baseItem.innerHTML = `
+                <div class="scene-dot"></div>
+                <div class="scene-name">Base Table</div>
+                <div class="scene-item-btns">
+                    <button class="scene-item-btn push" title="Push to players">→</button>
+                </div>`;
+            baseItem.addEventListener('click', e => { if (!e.target.closest('button')) previewSceneLocally(null); });
+            baseItem.querySelector('.push').addEventListener('click', () => pushScene(null));
+            listEl.appendChild(baseItem);
+
+            if (!scenesOrdered.length) {
+                const empty = document.createElement('div');
+                empty.className = 'scenes-empty';
+                empty.textContent = 'No scenes yet.';
+                listEl.appendChild(empty);
+                return;
+            }
+
+            scenesOrdered.forEach(scene => {
+                const isPushed    = scene.id === pushedId;
+                const isPreviewing = scene.id === gmPreviewSceneId;
+                const item = document.createElement('div');
+                item.className = 'scene-item' + (isPushed ? ' pushed' : '') + (isPreviewing ? ' previewing' : '');
+                item.innerHTML = `
+                    <div class="scene-dot"></div>
+                    <div class="scene-name">${escHtml(scene.name)}</div>
+                    <div class="scene-item-btns">
+                        <button class="scene-item-btn push" title="Push to players">→</button>
+                        <button class="scene-item-btn del" title="Delete scene">✕</button>
+                    </div>`;
+                item.addEventListener('click', e => { if (!e.target.closest('button')) previewSceneLocally(scene.id); });
+                item.querySelector('.push').addEventListener('click', () => pushScene(scene.id));
+                item.querySelector('.del' ).addEventListener('click', () => removeScene(scene.id));
+                listEl.appendChild(item);
+            });
+        }
+
+        function previewSceneLocally(sceneId) {
+            gmPreviewSceneId = sceneId;
+            drawBackground(resolveBackground(sceneId));
+            applyFogState((sceneId ? scenesCache[sceneId] : null)?.fog_state);
+            loadSceneTokens(currentDisplaySceneId()).catch(e => log.error('loadSceneTokens failed:', e));
+            renderScenes();
+        }
+
+        async function pushScene(sceneId) {
+            gmPreviewSceneId = sceneId;
+            currentGmState = { ...currentGmState, active_scene_id: sceneId };
+            drawBackground(resolveBackground(sceneId));
+            applyFogState((sceneId ? scenesCache[sceneId] : null)?.fog_state);
+            updateSceneLabel();
+            renderScenes();
+            await updateGmState(session.id, { active_scene_id: sceneId });
+        }
+
+        async function createSceneFromForm() {
+            const name = document.getElementById('sceneNameInput').value.trim();
+            if (!name) { document.getElementById('sceneNameInput').focus(); return; }
+
+            let background = 'table';
+            if (newSceneBgType === 'url') {
+                background = document.getElementById('sceneBgUrl').value.trim() || 'table';
+            } else if (newSceneBgType === 'upload') {
+                const file = document.getElementById('sceneBgFile').files[0];
+                if (file) {
+                    const btn = document.getElementById('btnCreateScene');
+                    btn.textContent = 'Uploading…'; btn.disabled = true;
+                    try {
+                        const { publicUrl } = await uploadAsset(campaignId, 'map', file);
+                        background = publicUrl;
+                    } catch (e) {
+                        log.error('Scene upload failed:', e);
+                    } finally {
+                        btn.textContent = '+ Create Scene'; btn.disabled = false;
+                    }
+                }
+            }
+
+            const scene = await dbCreateScene(campaignId, name, background);
+            scenesCache[scene.id] = scene;
+            scenesOrdered.push(scene);
+            document.getElementById('sceneNameInput').value = '';
+            document.getElementById('sceneBgUrl').value = '';
+            document.getElementById('sceneBgFile').value = '';
+            renderScenes();
+        }
+
+        async function removeScene(sceneId) {
+            if (currentGmState.active_scene_id === sceneId) {
+                await pushScene(null);
+            }
+            if (gmPreviewSceneId === sceneId) previewSceneLocally(null);
+            try {
+                await dbDeleteScene(sceneId);
+            } catch (e) {
+                log.error('delete scene failed:', e);
+                return;
+            }
+            delete scenesCache[sceneId];
+            scenesOrdered = scenesOrdered.filter(s => s.id !== sceneId);
+            renderScenes();
+        }
+
+        // ── Fear Tracker ───────────────────────────────────────────────────────
+
+        function initFearTracker() {
+            initPanelToggle('fearPanel', 'btnFearPanel');
+            document.getElementById('btnFearMinus' ).addEventListener('click', () => applyFear(Math.max(0,  (currentGmState.fear || 0) - 1)));
+            document.getElementById('btnFearPlus'  ).addEventListener('click', () => applyFear(Math.min(12, (currentGmState.fear || 0) + 1)));
+            document.getElementById('btnFearVisible').addEventListener('click', () => applyFearVisible(!(currentGmState.fearVisible || false)));
+            renderFear();
+        }
+
+        function renderFear() {
+            const fear    = currentGmState.fear        || 0;
+            const visible = currentGmState.fearVisible || false;
+            const pipsEl  = document.getElementById('fearPips');
+            if (pipsEl) {
+                pipsEl.innerHTML = '';
+                for (let i = 1; i <= 12; i++) {
+                    const pip = document.createElement('div');
+                    pip.className = 'fear-pip' + (i <= fear ? ' filled' : '');
+                    pip.addEventListener('click', () => applyFear(i));
+                    pipsEl.appendChild(pip);
+                }
+            }
+            const countEl = document.getElementById('fearCount');
+            if (countEl) countEl.textContent = fear;
+            const visBtn = document.getElementById('btnFearVisible');
+            if (visBtn) { visBtn.textContent = visible ? 'Shown to Players' : 'Hidden from Players'; visBtn.classList.toggle('visible', visible); }
+            broadcastPanelState();
+        }
+
+        async function applyFear(value) {
+            currentGmState = { ...currentGmState, fear: value };
+            renderFear(); renderPlayerHud();
+            await updateGmState(session.id, { fear: value });
+        }
+
+        async function applyFearVisible(visible) {
+            currentGmState = { ...currentGmState, fearVisible: visible };
+            renderFear(); renderPlayerHud();
+            await updateGmState(session.id, { fearVisible: visible });
+        }
+
+        // ── Countdown Clocks ───────────────────────────────────────────────────
+
+        function initClocks() {
+            initPanelToggle('clocksPanel', 'btnClocksPanel');
+            document.querySelectorAll('.seg-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    newClockSegments = parseInt(btn.dataset.segs);
+                });
+            });
+            document.getElementById('btnAddClock').addEventListener('click', () => {
+                const name = document.getElementById('clockNameInput').value.trim();
+                if (!name) { document.getElementById('clockNameInput').focus(); return; }
+                applyClockAdd(name, newClockSegments);
+                document.getElementById('clockNameInput').value = '';
+            });
+            document.getElementById('clockNameInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btnAddClock').click(); });
+            renderClocks();
+        }
+
+        function renderClocks() {
+            const clocks = currentGmState.clocks || [];
+            const listEl = document.getElementById('clockList');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            if (!clocks.length) { listEl.innerHTML = '<div class="clocks-empty">No clocks yet.</div>'; broadcastPanelState(); return; }
+            clocks.forEach(clock => {
+                const pct  = Math.round((clock.filled / clock.segments) * 100);
+                const item = document.createElement('div');
+                item.className = 'clock-item';
+                item.innerHTML = `
+                    <div class="clock-pie" data-id="${clock.id}" style="background:conic-gradient(#c9a84c ${pct}%,#2a2318 ${pct}%);" title="Click to tick"></div>
+                    <div class="clock-info">
+                        <div class="clock-name">${escHtml(clock.name)}</div>
+                        <div class="clock-progress">${clock.filled}/${clock.segments}</div>
+                    </div>
+                    <div class="clock-item-actions">
+                        <button class="clock-action-btn${clock.visible ? ' vis-on' : ''}" data-id="${clock.id}" data-action="toggle">${clock.visible ? '👁' : '○'}</button>
+                        <button class="clock-action-btn" data-id="${clock.id}" data-action="tick">+1</button>
+                        <button class="clock-action-btn danger" data-id="${clock.id}" data-action="delete">✕</button>
+                    </div>`;
+                item.querySelector('.clock-pie').addEventListener('click', () => applyClockTick(clock.id));
+                item.querySelectorAll('[data-action]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const { action, id } = btn.dataset;
+                        if (action === 'tick')   applyClockTick(id);
+                        if (action === 'toggle') applyClockToggleVisible(id);
+                        if (action === 'delete') applyClockDelete(id);
+                    });
+                });
+                listEl.appendChild(item);
+            });
+            broadcastPanelState();
+        }
+
+        async function applyClockAdd(name, segments) {
+            const clocks = [...(currentGmState.clocks || []), { id: crypto.randomUUID(), name, segments, filled: 0, visible: false }];
+            currentGmState = { ...currentGmState, clocks }; renderClocks(); renderPlayerHud();
+            await updateGmState(session.id, { clocks });
+        }
+        async function applyClockTick(id) {
+            const clocks = (currentGmState.clocks || []).map(c => c.id === id ? { ...c, filled: Math.min(c.segments, c.filled + 1) } : c);
+            currentGmState = { ...currentGmState, clocks }; renderClocks(); renderPlayerHud();
+            await updateGmState(session.id, { clocks });
+        }
+        async function applyClockToggleVisible(id) {
+            const clocks = (currentGmState.clocks || []).map(c => c.id === id ? { ...c, visible: !c.visible } : c);
+            currentGmState = { ...currentGmState, clocks }; renderClocks(); renderPlayerHud();
+            await updateGmState(session.id, { clocks });
+        }
+        async function applyClockDelete(id) {
+            const clocks = (currentGmState.clocks || []).filter(c => c.id !== id);
+            currentGmState = { ...currentGmState, clocks }; renderClocks(); renderPlayerHud();
+            await updateGmState(session.id, { clocks });
+        }
+
+        // ── Encounter Runner ───────────────────────────────────────────────────
+
+        // ── Loot Panel ────────────────────────────────────────────────────────
+
+        function initLootPanel() {
+            initPanelToggle('lootPanel', 'btnLootPanel');
+            renderLootPanel();
+            Promise.all([
+                loadLootData(),
+                getLootHomebrew(campaignId),
+            ]).then(([data, hb]) => {
+                lootData     = data;
+                lootHomebrew = hb || [];
+                document.getElementById('lootRollBtn')?.removeAttribute('disabled');
+                if (lootHomebrew.length) renderLootHbRow();
+            });
+        }
+
+        function renderLootPanel() {
+            const body = document.getElementById('lootPanelBody');
+
+            // Controls
+            const controls = document.createElement('div');
+            controls.innerHTML =
+                `<div class="loot-ctrl-row">
+                    <span class="loot-ctrl-label">Rarity</span>
+                    <select class="loot-ctrl-select" id="lootRarity">
+                        <option value="common">Common (2d12)</option>
+                        <option value="uncommon">Uncommon (3d12)</option>
+                        <option value="rare">Rare (4d12)</option>
+                        <option value="legendary">Legendary (5d12)</option>
+                    </select>
+                </div>
+                <div class="loot-ctrl-row">
+                    <span class="loot-ctrl-label">Type</span>
+                    <select class="loot-ctrl-select" id="lootType">
+                        <option value="items">Items</option>
+                        <option value="consumables">Consumables</option>
+                        <option value="both">Both (mixed)</option>
+                    </select>
+                </div>
+                <div class="loot-ctrl-row">
+                    <span class="loot-ctrl-label">Count</span>
+                    <select class="loot-ctrl-select" id="lootCount">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <button class="loot-roll-btn" id="lootRollBtn" ${lootData ? '' : 'disabled'}>Roll Loot</button>`;
+
+            const resultsDiv = document.createElement('div');
+            resultsDiv.className = 'loot-results';
+            resultsDiv.id = 'lootResultsDiv';
+            if (!lootResults.length) {
+                resultsDiv.innerHTML = '<div class="loot-empty">Roll to generate loot.</div>';
+            } else {
+                lootResults.forEach((item, idx) => resultsDiv.appendChild(buildLootCard(item, idx)));
+            }
+
+            body.innerHTML = '';
+            body.append(controls, resultsDiv);
+
+            body.querySelector('#lootRollBtn').addEventListener('click', () => {
+                if (!lootData) return;
+                lootRarity  = document.getElementById('lootRarity').value;
+                lootType    = document.getElementById('lootType').value;
+                const count = parseInt(document.getElementById('lootCount').value, 10);
+                lootResults = lootUseHomebrew && lootHomebrew.length
+                    ? rollSetWithHomebrew(lootRarity, lootType, count, lootData, lootHomebrew)
+                    : rollSet(lootRarity, lootType, count, lootData);
+                const rd = document.getElementById('lootResultsDiv');
+                rd.innerHTML = '';
+                lootResults.forEach((item, idx) => rd.appendChild(buildLootCard(item, idx)));
+            });
+        }
+
+        function renderLootHbRow() {
+            const body = document.getElementById('lootPanelBody');
+            if (!body || body.querySelector('#lootHbRow')) return;
+            const row = document.createElement('div');
+            row.id = 'lootHbRow';
+            row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;';
+            row.innerHTML = `
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;">
+                    <input type="checkbox" id="lootHbToggle" style="accent-color:#c9a84c;cursor:pointer;">
+                    <span style="font-family:'Cinzel',serif;font-size:0.54em;letter-spacing:0.1em;text-transform:uppercase;color:#5a4e3e;">Include Homebrew</span>
+                </label>
+                <button id="lootHbPick" style="font-family:'Cinzel',serif;font-size:0.52em;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(232,220,200,0.4);padding:4px 10px;cursor:pointer;transition:all 0.12s;">Pick Item</button>`;
+            const rollBtn = body.querySelector('#lootRollBtn');
+            rollBtn.parentNode.insertBefore(row, rollBtn.nextSibling);
+
+            body.querySelector('#lootHbToggle').addEventListener('change', e => { lootUseHomebrew = e.target.checked; });
+            body.querySelector('#lootHbPick').addEventListener('click', openLootHbPicker);
+        }
+
+        function openLootHbPicker() {
+            // Reuse a simple inline list below results
+            const body = document.getElementById('lootPanelBody');
+            let picker = document.getElementById('lootHbPickerList');
+            if (picker) { picker.remove(); return; }
+
+            picker = document.createElement('div');
+            picker.id = 'lootHbPickerList';
+            picker.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:2px;max-height:200px;overflow-y:auto;';
+
+            lootHomebrew.forEach(hb => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding:6px 8px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);cursor:pointer;display:flex;align-items:center;gap:8px;';
+                item.innerHTML =
+                    `<span style="font-family:'Cinzel',serif;font-size:0.62em;color:#e8dcc8;flex:1;">${hb.name}</span>` +
+                    `<span style="font-family:'Cinzel',serif;font-size:0.5em;letter-spacing:0.06em;text-transform:uppercase;color:#5a4e3e;">${hb.data?.rarity || ''}</span>`;
+                item.addEventListener('mouseenter', () => { item.style.background = 'rgba(201,168,76,0.06)'; });
+                item.addEventListener('mouseleave', () => { item.style.background = 'rgba(255,255,255,0.02)'; });
+                item.addEventListener('click', () => {
+                    lootResults.push(pickHomebrew(hb));
+                    const rd = document.getElementById('lootResultsDiv');
+                    if (rd) {
+                        if (rd.querySelector('.loot-empty')) rd.innerHTML = '';
+                        rd.appendChild(buildLootCard(lootResults[lootResults.length - 1], lootResults.length - 1));
+                    }
+                    picker.remove();
+                });
+                picker.appendChild(item);
+            });
+
+            body.appendChild(picker);
+        }
+
+        function buildLootCard(item, idx) {
+            const card = document.createElement('div');
+            card.className = 'loot-result-card';
+
+            const main = document.createElement('div');
+            main.className = 'loot-result-main';
+            main.innerHTML =
+                `<div class="loot-result-name">${item.name}</div>` +
+                `<div class="loot-result-desc">${item.description}</div>` +
+                `<div class="loot-result-meta loot-r-${item.rarity}">${item.rarity} · ${item.type}${item.homebrew ? ' · homebrew' : ''}</div>`;
+
+            const rerollBtn = document.createElement('button');
+            rerollBtn.className = 'loot-reroll-btn';
+            rerollBtn.title = 'Re-roll';
+            rerollBtn.textContent = '↻';
+            rerollBtn.addEventListener('click', () => {
+                lootResults[idx] = lootUseHomebrew && lootHomebrew.length
+                    ? rollOneWithHomebrew(lootRarity, lootType, lootData, lootHomebrew)
+                    : rollOne(lootRarity, lootType, lootData);
+                card.replaceWith(buildLootCard(lootResults[idx], idx));
+            });
+
+            card.append(main, rerollBtn);
+            return card;
+        }
+
+        function initEncounterPanel() {
+            initPanelToggle('encounterPanel', 'btnEncounterPanel', { noPopOut: true });
+            renderEncounterPanel();
+        }
+
+        function renderEncounterPanel() {
+            const body = document.getElementById('encounterPanelBody');
+            if (!body) return;
+            body.innerHTML = '';
+            if (currentGmState.encounter) {
+                renderEncounterLive(body);
+            } else {
+                renderEncounterBrowse(body);
+            }
+        }
+
+        function renderEncounterBrowse(body) {
+            const section = document.createElement('div');
+            section.className = 'enc-panel-section';
+
+            const title = document.createElement('div');
+            title.className = 'enc-browse-title';
+            title.textContent = 'Load an Encounter';
+
+            const list = document.createElement('div');
+            list.className = 'enc-browse-list';
+
+            if (!gmEncounters.length) {
+                list.innerHTML = '<div class="enc-empty-note">No encounters yet. Build them in the Encounter Builder.</div>';
+            } else {
+                gmEncounters.forEach(enc => {
+                    const row = document.createElement('div');
+                    row.className = 'enc-browse-row';
+
+                    const info = document.createElement('div');
+                    info.className = 'enc-browse-info';
+                    info.innerHTML = `<div class="enc-browse-name">${escHtml(enc.name)}</div><div class="enc-browse-meta">${enc.entry_count} adversar${enc.entry_count !== 1 ? 'ies' : 'y'}</div>`;
+
+                    const loadBtn = document.createElement('button');
+                    loadBtn.className = 'enc-load-btn';
+                    loadBtn.textContent = 'Load';
+                    loadBtn.addEventListener('click', () => loadEncounterToRunner(enc.id, loadBtn));
+
+                    row.append(info, loadBtn);
+                    list.appendChild(row);
+                });
+            }
+
+            section.append(title, list);
+            body.appendChild(section);
+        }
+
+        function renderEncounterLive(body) {
+            const enc = currentGmState.encounter;
+
+            const header = document.createElement('div');
+            header.className = 'enc-live-header';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'enc-live-name';
+            nameEl.title = enc.name;
+            nameEl.textContent = enc.name;
+
+            const endBtn = document.createElement('button');
+            endBtn.className = 'enc-end-btn';
+            endBtn.textContent = 'End';
+            endBtn.addEventListener('click', applyEncounterEnd);
+
+            header.append(nameEl, endBtn);
+            body.appendChild(header);
+
+            const entries = document.createElement('div');
+            entries.className = 'enc-entries';
+
+            const entryList = enc.entries || [];
+            if (!entryList.length) {
+                entries.innerHTML = '<div class="enc-empty-note">No adversaries in this encounter.</div>';
+            } else {
+                entryList.forEach(e => entries.appendChild(buildEncounterEntryRow(e)));
+            }
+            body.appendChild(entries);
+
+            const addSection = document.createElement('div');
+            addSection.className = 'enc-add-section';
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'enc-panel-add-btn';
+            addBtn.textContent = encPickerVisible ? '− Close Picker' : '+ Add Adversary';
+            addBtn.addEventListener('click', () => {
+                encPickerVisible = !encPickerVisible;
+                encPickerSearch  = '';
+                renderEncounterPanel();
+            });
+            addSection.appendChild(addBtn);
+
+            if (encPickerVisible) addSection.appendChild(buildEncounterPicker());
+            body.appendChild(addSection);
+        }
+
+        function buildEncounterEntryRow(entry) {
+            const hasHp   = entry.hp_max != null;
+            const bloodied = hasHp && entry.hp_max > 0 && entry.hp_current <= entry.hp_max / 2;
+            const defeated = entry.defeated;
+
+            const row = document.createElement('div');
+            row.className = 'enc-entry-row' + (defeated ? ' defeated' : '') + (bloodied && !defeated ? ' bloodied' : '');
+
+            const top = document.createElement('div');
+            top.className = 'enc-entry-top';
+
+            const label = document.createElement('span');
+            label.className = 'enc-entry-label';
+            label.textContent = entry.label;
+            top.appendChild(label);
+
+            if (bloodied && !defeated) {
+                const badge = document.createElement('span');
+                badge.className = 'enc-bloodied-badge';
+                badge.textContent = 'Bloodied';
+                top.appendChild(badge);
+            }
+
+            const controls = document.createElement('div');
+            controls.className = 'enc-entry-controls';
+
+            const minus = document.createElement('button');
+            minus.className = 'enc-hp-btn';
+            minus.textContent = '−';
+            minus.addEventListener('click', () => applyEncounterHpChange(entry.encounter_entry_id, -1));
+
+            const hpEl = document.createElement('div');
+            hpEl.className = 'enc-hp-display';
+            hpEl.textContent = hasHp ? `${entry.hp_current}/${entry.hp_max}` : '—';
+
+            const plus = document.createElement('button');
+            plus.className = 'enc-hp-btn';
+            plus.textContent = '+';
+            plus.addEventListener('click', () => applyEncounterHpChange(entry.encounter_entry_id, +1));
+
+            const defeatBtn = document.createElement('button');
+            defeatBtn.className = 'enc-defeat-btn' + (defeated ? ' active' : '');
+            defeatBtn.title = defeated ? 'Mark active' : 'Mark defeated';
+            defeatBtn.textContent = defeated ? 'Revive' : 'Defeat';
+            defeatBtn.addEventListener('click', () => applyEncounterDefeat(entry.encounter_entry_id));
+
+            controls.append(minus, hpEl, plus, defeatBtn);
+            row.append(top, controls);
+            return row;
+        }
+
+        function buildEncounterPicker() {
+            const picker = document.createElement('div');
+            picker.className = 'enc-picker';
+
+            const search = document.createElement('input');
+            search.type = 'search';
+            search.className = 'enc-picker-search';
+            search.placeholder = 'Search adversaries…';
+            search.value = encPickerSearch;
+
+            const tabs = document.createElement('div');
+            tabs.className = 'enc-picker-tabs';
+
+            const offTab = document.createElement('button');
+            offTab.className = 'enc-picker-tab' + (encPickerTab === 'official' ? ' active' : '');
+            offTab.textContent = 'Official';
+
+            const custTab = document.createElement('button');
+            custTab.className = 'enc-picker-tab' + (encPickerTab === 'custom' ? ' active' : '');
+            custTab.textContent = 'Custom';
+
+            const list = document.createElement('div');
+            list.className = 'enc-picker-list';
+
+            const switchTab = tab => {
+                encPickerTab = tab;
+                encPickerSearch = '';
+                search.value = '';
+                offTab.classList.toggle('active', tab === 'official');
+                custTab.classList.toggle('active', tab === 'custom');
+                renderEncPickerList(list);
+            };
+            offTab.addEventListener('click',  () => switchTab('official'));
+            custTab.addEventListener('click', () => switchTab('custom'));
+
+            search.addEventListener('input', e => {
+                encPickerSearch = e.target.value;
+                renderEncPickerList(list);
+            });
+
+            tabs.append(offTab, custTab);
+            picker.append(search, tabs, list);
+
+            renderEncPickerList(list);
+            return picker;
+        }
+
+        function renderEncPickerList(list) {
+            list.innerHTML = '';
+            const q = encPickerSearch.toLowerCase();
+
+            if (encPickerTab === 'official') {
+                if (!encOfficialAdv) {
+                    list.innerHTML = '<div class="enc-picker-empty">Loading…</div>';
+                    getOfficialAdv().then(() => renderEncPickerList(list));
+                    return;
+                }
+                const filtered = encOfficialAdv
+                    .filter(a => !q || (a.name || '').toLowerCase().includes(q))
+                    .slice(0, 50);
+                if (!filtered.length) { list.innerHTML = '<div class="enc-picker-empty">No matches.</div>'; return; }
+                filtered.forEach(adv => list.appendChild(buildEncPickerItem(adv, false)));
+            } else {
+                if (!encCustomAdv) {
+                    list.innerHTML = '<div class="enc-picker-empty">Loading…</div>';
+                    getCustomAdv().then(() => renderEncPickerList(list));
+                    return;
+                }
+                const filtered = encCustomAdv.filter(a => !q || a.name.toLowerCase().includes(q));
+                if (!filtered.length) {
+                    list.innerHTML = `<div class="enc-picker-empty">${encCustomAdv.length === 0 ? 'No custom adversaries.' : 'No matches.'}</div>`;
+                    return;
+                }
+                filtered.forEach(adv => list.appendChild(buildEncPickerItem(adv, true)));
+            }
+        }
+
+        function buildEncPickerItem(adv, isCustom) {
+            const name = isCustom ? adv.name : adv.name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+            const item = document.createElement('div');
+            item.className = 'enc-picker-item';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'enc-picker-item-name';
+            nameEl.title = name;
+            nameEl.textContent = name;
+
+            const tierEl = document.createElement('div');
+            tierEl.className = 'enc-picker-item-tier';
+            tierEl.textContent = adv.tier ? `T${adv.tier}` : '';
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'enc-picker-add-btn';
+            addBtn.textContent = '+ Add';
+            addBtn.addEventListener('click', () => handleEncounterAddMid(adv, isCustom, addBtn));
+
+            item.append(nameEl, tierEl, addBtn);
+            return item;
+        }
+
+        // Lazy-load helpers
+        async function getOfficialAdv() {
+            if (!encOfficialAdv) encOfficialAdv = await fetch('/data/base/adversaries.json').then(r => r.json());
+            return encOfficialAdv;
+        }
+        async function getCustomAdv() {
+            if (!encCustomAdv) encCustomAdv = await getAdversaries(campaignId);
+            return encCustomAdv;
+        }
+
+        function lookupAdversaryHp(entry, official, custom) {
+            if (entry.adversary_id) return official.find(a => a.id === entry.adversary_id)?.hp ?? null;
+            if (entry.custom_adversary_id) return custom.find(a => a.id === entry.custom_adversary_id)?.hp ?? null;
+            return null;
+        }
+
+        async function loadEncounterToRunner(encounterId, btn) {
+            btn.disabled = true;
+            btn.textContent = 'Loading…';
+            try {
+                const [encData, official, custom] = await Promise.all([
+                    getEncounterWithEntries(encounterId),
+                    getOfficialAdv(),
+                    getCustomAdv(),
+                ]);
+                const entries = (encData.encounter_entries || [])
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map(e => {
+                        const hp = lookupAdversaryHp(e, official, custom);
+                        return {
+                            encounter_entry_id:   e.id,
+                            label:                e.label,
+                            adversary_id:         e.adversary_id,
+                            custom_adversary_id:  e.custom_adversary_id,
+                            token_definition_id:  e.token_definitions?.id,
+                            hp_max:               hp,
+                            hp_current:           hp,
+                            conditions:           [],
+                            defeated:             false,
+                        };
+                    });
+                const encounterState = { encounter_id: encData.id, name: encData.name, loaded_at: new Date().toISOString(), entries };
+                currentGmState = { ...currentGmState, encounter: encounterState };
+                renderEncounterPanel();
+                await updateGmState(session.id, { encounter: encounterState });
+            } catch (err) {
+                log.error('loadEncounterToRunner failed:', err);
+                btn.disabled = false;
+                btn.textContent = 'Load';
+            }
+        }
+
+        async function applyEncounterHpChange(entryId, delta) {
+            const enc     = currentGmState.encounter;
+            const entries = enc.entries.map(e => {
+                if (e.encounter_entry_id !== entryId) return e;
+                const maxHp  = e.hp_max ?? 99;
+                const newCur = Math.max(0, Math.min(maxHp, (e.hp_current ?? 0) + delta));
+                return { ...e, hp_current: newCur };
+            });
+            const updated = { ...enc, entries };
+            currentGmState = { ...currentGmState, encounter: updated };
+            renderEncounterPanel();
+            await updateGmState(session.id, { encounter: updated });
+        }
+
+        async function applyEncounterDefeat(entryId) {
+            const enc     = currentGmState.encounter;
+            const entries = enc.entries.map(e =>
+                e.encounter_entry_id === entryId ? { ...e, defeated: !e.defeated } : e
+            );
+            const updated = { ...enc, entries };
+            currentGmState = { ...currentGmState, encounter: updated };
+            renderEncounterPanel();
+            await updateGmState(session.id, { encounter: updated });
+        }
+
+        async function applyEncounterEnd() {
+            if (!confirm('End this encounter? Live HP tracking will be cleared.')) return;
+            const updated = { ...currentGmState };
+            delete updated.encounter;
+            currentGmState   = updated;
+            encPickerVisible = false;
+            renderEncounterPanel();
+            gmEncounters = await getEncounters(campaignId);
+            await updateGmState(session.id, { encounter: null });
+        }
+
+        async function handleEncounterAddMid(adv, isCustom, btn) {
+            btn.disabled = true;
+            btn.textContent = '…';
+            try {
+                const enc     = currentGmState.encounter;
+                const sceneId = currentDisplaySceneId();
+                const newEntry = await addEncounterEntry(currentUser.uid, {
+                    encounterId: enc.encounter_id,
+                    campaignId,
+                    sceneId,
+                    adversary: adv,
+                    isCustom,
+                });
+                const hp = adv.hp ?? null;
+                const liveEntry = {
+                    encounter_entry_id:  newEntry.id,
+                    label:               newEntry.label,
+                    adversary_id:        newEntry.adversary_id,
+                    custom_adversary_id: newEntry.custom_adversary_id,
+                    token_definition_id: newEntry.token_definition_id,
+                    hp_max:              hp,
+                    hp_current:          hp,
+                    conditions:          [],
+                    defeated:            false,
+                };
+                const entries = [...(enc.entries || []), liveEntry];
+                const updated = { ...enc, entries };
+                currentGmState   = { ...currentGmState, encounter: updated };
+                encPickerVisible = false;
+                encPickerSearch  = '';
+                renderEncounterPanel();
+                await updateGmState(session.id, { encounter: updated });
+                // Refresh token state so new token appears on canvas
+                allTokenDefs = await getTokenDefinitions(campaignId);
+                if (sceneId) {
+                    sceneTokens = await getSceneTokens(sceneId);
+                    syncTokenNodes(sceneTokens);
+                }
+                renderTokensPanel();
+            } catch (err) {
+                log.error('handleEncounterAddMid failed:', err);
+                alert('Failed to add adversary to encounter.');
+                btn.disabled = false;
+                btn.textContent = '+ Add';
+            }
+        }
+
+        // ── Player HUD ─────────────────────────────────────────────────────────
+
+        function renderPlayerHud() {
+            const hud    = document.getElementById('playerHud');
+            const fear   = currentGmState.fear        || 0;
+            const fVis   = currentGmState.fearVisible || false;
+            const clocks = (currentGmState.clocks     || []).filter(c => c.visible);
+            hud.classList.toggle('hidden', !fVis && !clocks.length);
+            hud.innerHTML = '';
+            if (fVis) hud.insertAdjacentHTML('beforeend', `<div class="hud-fear"><div class="hud-fear-label">Fear</div><div class="hud-fear-count">${fear}</div></div>`);
+            clocks.forEach(c => {
+                const pct = Math.round((c.filled / c.segments) * 100);
+                hud.insertAdjacentHTML('beforeend', `<div class="hud-clock"><div class="hud-clock-pie" style="background:conic-gradient(#c9a84c ${pct}%,#2a2318 ${pct}%);"></div><div class="hud-clock-name">${escHtml(c.name)}</div></div>`);
+            });
+        }
+
+        // ── Dice roller ────────────────────────────────────────────────────────
+
+        function initRollsPanel() {
+            const toggle = document.getElementById('rollsToggle');
+            const panel  = document.getElementById('rollsPanel');
+            toggle.addEventListener('click', () => {
+                const open = panel.classList.toggle('open');
+                toggle.classList.toggle('active', open);
+            });
+            onRollsChange(campaignId, session.id, renderRolls);
+        }
+
+        async function initDiceBox() {
+            const { default: DiceBox } = await import('/assets/dice-box/dice-box.es.min.js');
+            diceBox = new DiceBox({
+                assetPath: '/assets/dice-box/assets/',
+                container: '#canvasWrap',
+                gravity: 1,
+                mass: 1,
+                friction: 0.8,
+                restitution: 0.1,
+                angularDamping: 0.6,
+                linearDamping: 0.6,
+                throwForce: 3,
+                spinForce: 2,
+                startingHeight: 8,
+                settleTimeout: 5000,
+                offscreen: true,
+                scale: 6,
+                onRollComplete: handleRollComplete,
+            });
+            await diceBox.init();
+
+            // Enable tray now that dice-box is ready
+            document.getElementById('btnDuality').disabled = false;
+            document.getElementById('btnHope').disabled = false;
+            document.getElementById('btnFear').disabled = false;
+            document.querySelectorAll('.die-btn').forEach(b => b.disabled = false);
+
+            document.getElementById('btnDuality').addEventListener('click', rollDuality);
+            document.getElementById('btnHope').addEventListener('click', rollHope);
+            document.getElementById('btnFear').addEventListener('click', rollFear);
+            document.querySelectorAll('.die-btn').forEach(btn => {
+                btn.addEventListener('click', () => addDie(parseInt(btn.dataset.sides)));
+            });
+            document.getElementById('btnRollExecute').addEventListener('click', rollPending);
+        }
+
+        function addDie(sides) {
+            pendingDice[sides] = (pendingDice[sides] || 0) + 1;
+            renderPendingDisplay();
+        }
+
+        function renderPendingDisplay() {
+            const display = document.getElementById('dicePendingDisplay');
+            const btn = document.getElementById('btnRollExecute');
+            const entries = Object.entries(pendingDice)
+                .filter(([, n]) => n > 0)
+                .sort(([a], [b]) => parseInt(a) - parseInt(b));
+            if (!entries.length) {
+                display.textContent = '';
+                btn.disabled = true;
+                return;
+            }
+            display.textContent = entries.map(([s, n]) => `${n}d${s}`).join(' + ');
+            btn.disabled = false;
+        }
+
+        function myDicePrefs() {
+            const prefs = (profileMap[currentUser.uid] ?? {}).dice_prefs ?? {};
+            return {
+                standard_theme: prefs.standard_theme || 'smooth',
+                hope_theme:     prefs.hope_theme     || 'default',
+                fear_theme:     prefs.fear_theme     || 'rust',
+            };
+        }
+
+        function rollDuality() {
+            if (!diceBox) return;
+            diceBox.clear();
+            const prefs = myDicePrefs();
+            pendingRollType = 'duality';
+            pendingRollGroups = [
+                { qty: 1, sides: 12, theme: prefs.hope_theme },
+                { qty: 1, sides: 12, theme: prefs.fear_theme },
+            ];
+            diceBox.roll(pendingRollGroups);
+        }
+
+        function rollHope() {
+            if (!diceBox) return;
+            diceBox.clear();
+            const prefs = myDicePrefs();
+            pendingRollType = 'standard';
+            pendingRollGroups = [{ qty: 1, sides: 12, theme: prefs.hope_theme }];
+            diceBox.roll(pendingRollGroups);
+        }
+
+        function rollFear() {
+            if (!diceBox) return;
+            diceBox.clear();
+            const prefs = myDicePrefs();
+            pendingRollType = 'standard';
+            pendingRollGroups = [{ qty: 1, sides: 12, theme: prefs.fear_theme }];
+            diceBox.roll(pendingRollGroups);
+        }
+
+        function rollPending() {
+            if (!diceBox) return;
+            const entries = Object.entries(pendingDice).filter(([, n]) => n > 0);
+            if (!entries.length) return;
+            diceBox.clear();
+            const prefs = myDicePrefs();
+            pendingRollType = 'standard';
+            pendingRollGroups = entries
+                .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                .map(([s, n]) => ({ qty: n, sides: parseInt(s), theme: prefs.standard_theme }));
+            pendingDice = {};
+            renderPendingDisplay();
+            diceBox.roll(pendingRollGroups);
+        }
+
+        let _clearTimer = null;
+        function scheduleDiceClear() {
+            if (_clearTimer) clearTimeout(_clearTimer);
+            _clearTimer = setTimeout(() => { if (diceBox) diceBox.clear(); }, 12000);
+        }
+
+        function handleRollComplete(groups) {
+            const rollType   = pendingRollType;
+            const rollConfig = pendingRollGroups;
+            const profile    = profileMap[currentUser.uid] ?? {};
+            const name       = profile.display_name || 'Player';
+            const avatarColor = profile.avatar_color || '#888';
+
+            const rollData = {
+                uid: currentUser.uid,
+                display_name: name,
+                avatar_color: avatarColor,
+                roll_type: rollType,
+                groups: groups.map((g, i) => ({
+                    qty:    rollConfig[i]?.qty    ?? g.qty,
+                    sides:  rollConfig[i]?.sides,
+                    theme:  rollConfig[i]?.theme,
+                    values: (g.rolls || []).map(r => r.value),
+                })),
+                timestamp: new Date().toISOString(),
+            };
+            addSessionRoll(campaignId, session.id, rollData);
+            showRollAttribution(rollData);
+            scheduleDiceClear();
+        }
+
+        let _attribTimer = null;
+        function showRollAttribution(rollData) {
+            const overlay = document.getElementById('rollAttribOverlay');
+            let label = escHtml(rollData.display_name) + ' rolled';
+            if (rollData.roll_type === 'duality') {
+                const hopeVal = rollData.groups[0]?.values[0] ?? '?';
+                const fearVal = rollData.groups[1]?.values[0] ?? '?';
+                const withHope = hopeVal >= fearVal;
+                const critical = hopeVal === fearVal;
+                const outcome  = critical ? 'Critical!' : (withHope ? 'With Hope' : 'With Fear');
+                label += ` — Hope: ${hopeVal} | Fear: ${fearVal} — ${outcome}`;
+            } else {
+                const totals = rollData.groups.map(g => g.values.reduce((a, b) => a + b, 0));
+                label += ` ${totals.join(' + ')}`;
+                if (totals.length > 1) label += ` = ${totals.reduce((a, b) => a + b, 0)}`;
+            }
+            overlay.textContent = label;
+            overlay.style.display = 'block';
+            overlay.classList.remove('fading');
+            if (_attribTimer) clearTimeout(_attribTimer);
+            _attribTimer = setTimeout(() => {
+                overlay.classList.add('fading');
+                setTimeout(() => { overlay.style.display = 'none'; overlay.classList.remove('fading'); }, 650);
+            }, 4000);
+        }
+
+        function renderRolls(rolls) {
+            const feed = document.getElementById('rollsFeed');
+            feed.innerHTML = '';
+            if (!rolls.length) { feed.innerHTML = '<p class="rolls-empty">No rolls yet.</p>'; return; }
+            rolls.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'roll-card';
+                card.innerHTML = buildRollCard(r);
+                feed.appendChild(card);
+            });
+        }
+
+        function buildRollCard(r) {
+            const initials = (r.display_name || '?').charAt(0).toUpperCase();
+            const color    = escHtml(r.avatar_color || '#555');
+            const name     = escHtml(r.display_name || 'Player');
+            let diceHtml   = '';
+            let resultHtml = '';
+
+            if (r.roll_type === 'duality') {
+                const hopeVal  = r.groups[0]?.values[0] ?? '?';
+                const fearVal  = r.groups[1]?.values[0] ?? '?';
+                const withHope = hopeVal >= fearVal;
+                const critical = hopeVal === fearVal;
+                const resultClass = critical ? 'critical' : (withHope ? 'with-hope' : 'with-fear');
+                const resultText  = critical ? 'Critical!' : (withHope ? 'With Hope' : 'With Fear');
+                diceHtml = `
+                    <div class="roll-die"><div class="roll-die-label hope">Hope</div><div class="roll-die-value hope">${hopeVal}</div></div>
+                    <div class="roll-separator">+</div>
+                    <div class="roll-die"><div class="roll-die-label fear">Fear</div><div class="roll-die-value fear">${fearVal}</div></div>
+                    <div class="roll-total">${+hopeVal + +fearVal}</div>`;
+                resultHtml = `<div class="roll-result ${resultClass}">${resultText}</div>`;
+            } else {
+                const parts = (r.groups || []).map(g => {
+                    const label = `${g.qty}d${g.sides}`;
+                    const vals  = (g.values || []).join(', ');
+                    const total = (g.values || []).reduce((a, b) => a + b, 0);
+                    return `<div class="roll-die"><div class="roll-die-label">${escHtml(label)}</div><div class="roll-die-value">${total}</div></div>`;
+                });
+                const grand = (r.groups || []).flatMap(g => g.values || []).reduce((a, b) => a + b, 0);
+                diceHtml = parts.join('<div class="roll-separator">+</div>') + `<div class="roll-total">${grand}</div>`;
+            }
+
+            return `
+                <div class="roll-card-header">
+                    <div class="roll-card-avatar" style="background:${color}">${initials}</div>
+                    <div class="roll-card-name">${name}</div>
+                </div>
+                <div class="roll-card-dice">${diceHtml}</div>
+                ${resultHtml}`;
+        }
+
+        // ── Session listener (async — may need to fetch scene) ─────────────────
+
+        async function onSessionUpdate(updatedSession) {
+            if (!updatedSession || updatedSession.is_active === false) {
+                if (unsubscribe) unsubscribe();
+                window.location.href = `campaign.html?id=${campaignId}`;
+                return;
+            }
+
+            const prevSceneId    = currentGmState.active_scene_id;
+            const prevMoveLocked = playerMoveLocked;
+            const gs = updatedSession.gm_state || {};
+            currentGmState   = { mapUrl: '', fear: 0, fearVisible: false, clocks: [], active_scene_id: null, ...gs };
+            playerMoveLocked = updatedSession.player_move_locked ?? false;
+            const newSceneId = currentGmState.active_scene_id;
+
+            // Fetch scene if we haven't cached it yet (happens on player clients)
+            if (newSceneId && !scenesCache[newSceneId]) {
+                const scene = await getScene(newSceneId);
+                if (scene) scenesCache[scene.id] = scene;
+            }
+
+            // Redraw background only when the pushed scene changes
+            if (newSceneId !== prevSceneId) {
+                if (!isGM) {
+                    drawBackground(resolveBackground());
+                    applyFogState((newSceneId ? scenesCache[newSceneId] : null)?.fog_state);
+                    await loadSceneTokens(newSceneId);
+                }
+                updateSceneLabel();
+                if (isGM) renderScenes();
+            }
+
+            // Re-sync drag permissions if lock state changed
+            if (playerMoveLocked !== prevMoveLocked && tokenLayer) {
+                syncTokenNodes(sceneTokens);
+                if (isGM) renderMoveLockBtn();
+            }
+
+            if (isGM) { renderFear(); renderClocks(); renderEncounterPanel(); }
+            renderPlayerHud();
+        }
+    </script>
+</body>
+</html>

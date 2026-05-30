@@ -1,3 +1,13 @@
-# Environment-specific — each deployment keeps its own copy
+# Deployment-specific — each environment keeps its own copy
 firebase-init.js
 docker-compose.yml
+
+# Large vendor asset bundle — copy manually or serve from CDN
+assets/dice-box/
+
+# Node dependencies
+workers/r2-presign/node_modules/
+
+# Supabase local dev artifacts
+supabase/.temp/
+supabase/.branches/

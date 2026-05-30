@@ -9,47 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .auth-screen {
-            min-height: 60vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center; padding: 48px 24px;
-        }
-        .auth-screen h2 { font-family:'Cinzel',serif; font-size:1.5em; color:var(--ink); margin-bottom:12px; }
-        .auth-screen p  { color:var(--ink-muted); max-width:400px; margin-bottom:28px; line-height:1.7; }
-        .btn-google {
-            display:inline-flex; align-items:center; gap:10px;
-            background:#fff; color:#3c4043; border:1px solid #dadce0; border-radius:4px;
-            padding:10px 20px; font-size:0.95em; font-family:'EB Garamond',serif;
-            cursor:pointer; transition:box-shadow 0.15s;
-        }
-        .btn-google:hover { box-shadow:0 1px 4px rgba(0,0,0,0.2); }
-        .auth-tabs { display:flex; gap:0; margin-bottom:24px; border:1px solid var(--border); width:280px; }
-        .auth-tab {
-            flex:1; padding:8px 0; font-family:'Cinzel',serif; font-size:0.68em; letter-spacing:0.1em;
-            text-transform:uppercase; border:none; background:transparent; color:var(--ink-dim);
-            cursor:pointer; transition:all 0.15s;
-        }
-        .auth-tab.active { background:var(--gold); color:#f5edd8; }
-        .auth-tab:not(.active):hover { color:var(--ink); }
-        .auth-panel { display:none; width:100%; max-width:320px; }
-        .auth-panel.active { display:block; }
-        .auth-field { margin-bottom:14px; text-align:left; }
-        .auth-field label { display:block; font-family:'Cinzel',serif; font-size:0.65em; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:5px; }
-        .auth-field input {
-            width:100%; background:rgba(248,242,228,0.6); border:1px solid var(--border);
-            padding:9px 12px; font-family:'EB Garamond',serif; font-size:1em; color:var(--ink);
-            outline:none; box-sizing:border-box; transition:border-color 0.15s;
-        }
-        .auth-field input:focus { border-color:var(--border-gold); }
-        .auth-btn {
-            width:100%; font-family:'Cinzel',serif; font-size:0.72em; letter-spacing:0.1em;
-            text-transform:uppercase; padding:11px; border:1px solid var(--gold); background:var(--gold);
-            color:#f5edd8; cursor:pointer; transition:background 0.15s; margin-bottom:10px;
-        }
-        .auth-btn:hover { background:var(--gold-mid); border-color:var(--gold-mid); }
-        .auth-switch { font-size:0.82em; color:var(--ink-dim); cursor:pointer; background:none; border:none; padding:0; font-family:'EB Garamond',serif; }
-        .auth-switch:hover { color:var(--gold-mid); }
-
         .roster-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
         .roster-header h2 { font-family:'Cinzel',serif; font-size:1.3em; color:var(--ink); }
         .user-badge { display:flex; align-items:center; gap:10px; font-size:0.85em; color:var(--ink-muted); }
@@ -243,41 +202,38 @@
     <div id="view-loading" class="loading-msg">Loading…</div>
 
     <!-- ── Auth ──────────────────────────────────────────────────────── -->
-    <div id="view-auth" class="auth-screen" style="display:none;">
-        <h2>Sign In to Continue</h2>
-        <p>Your characters are saved to your account so you can access them from any device.</p>
+    <div id="view-auth" style="display:none;">
 
-        <div class="auth-tabs">
-            <button class="auth-tab active" id="tab-google" onclick="window.switchAuthTab('google')">Google</button>
-            <button class="auth-tab" id="tab-email" onclick="window.switchAuthTab('email')">Email</button>
+        <!-- Feature overview -->
+        <div style="max-width:800px;margin:0 auto;padding:48px 56px 0;">
+            <div class="pub-section-label">Character Builder & Sheet</div>
+            <h2 style="font-family:'Cinzel',serif;font-size:1.7em;font-weight:700;color:var(--h-gold-b);letter-spacing:0.04em;margin-bottom:12px;">Built for Daggerheart from the Ground Up</h2>
+            <p style="font-size:1em;color:var(--ink-muted);max-width:560px;line-height:1.75;margin-bottom:32px;">A 13-step guided builder walks you through every choice. Your character saves to your account and opens as a full live sheet — HP, stress, hope, conditions, domain cards, and inventory all tracked in one place.</p>
+
+            <div class="feature-grid" style="margin-bottom:48px;">
+                <div class="feature-card">
+                    <div class="feature-title">13-Step Guided Builder</div>
+                    <div class="feature-desc">Identity → Class → Subclass → Ancestry → Community → Traits → Domain Cards → Experiences → Equipment → Inventory → Background → Connections → Review. Every step, in order.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">Full Live Sheet</div>
+                    <div class="feature-desc">Track HP, stress, and hope. Exhaust and recall domain cards. Manage weapons, armor, and inventory. Record scars, conditions, and experiences. Level up with the built-in overlay.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">Saved to Your Account</div>
+                    <div class="feature-desc">Create as many characters as you need. Access them from any device. Link them to a campaign and your GM can view your sheet during sessions.</div>
+                </div>
+            </div>
+
+            <hr class="pub-divider" style="margin:0 0 40px;">
         </div>
 
-        <!-- Google panel -->
-        <div class="auth-panel active" id="panel-google">
-            <button class="btn-google" id="btn-google-signin">
-                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
-                Sign in with Google
-            </button>
+        <!-- Sign-in prompt -->
+        <div class="signin-prompt">
+            <a href="signin.html?redirect=character-builder.html" class="btn-sp btn-sp-primary">Sign In</a>
+            <a href="signin.html?redirect=character-builder.html&tab=register" class="btn-sp btn-sp-secondary">Create Account</a>
         </div>
-
-        <!-- Email panel -->
-        <div class="auth-panel" id="panel-email">
-            <div class="auth-field">
-                <label>Email</label>
-                <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
-            </div>
-            <div class="auth-field">
-                <label>Password</label>
-                <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
-            </div>
-            <button class="auth-btn" id="btn-email-submit">Sign In</button>
-            <div style="text-align:center;">
-                <button class="auth-switch" id="btn-auth-mode-switch">No account? Create one</button>
-            </div>
-        </div>
-
-        <p id="auth-error" style="margin-top:16px;font-size:0.85em;color:#8a2020;max-width:400px;display:none;"></p>
-    </div>
+    </div><!-- /view-auth -->
 
     <!-- ── Roster ─────────────────────────────────────────────────────── -->
     <div id="view-roster" style="display:none;">
@@ -460,7 +416,15 @@
 <footer><p>Brackenroll &middot; Daggerheart Resources &middot; 2026</p></footer>
 
 <script type="module">
-import { auth, signInWithGoogle, emailSignIn, emailRegister, signOutUser, onAuthChange, getUserRole, saveCharacter, loadCharacters, deleteCharacter } from './firebase-init.js';
+import { signOutUser, onAuthChange, getUserRole, saveCharacter, loadCharacters, deleteCharacter } from './supabase-client.js';
+import { makeLog } from './logger.js';
+const log = makeLog('data');
+
+const fetchJson = async url => {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
+    return r.json();
+};
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const CLASS_DOMAINS = {
@@ -492,7 +456,7 @@ let selectedChip  = null;
 
 function freshState() {
     return {
-        id:          Date.now().toString(36) + Math.random().toString(36).slice(2),
+        id:          null,
         name:'', pronouns:'', concept:'',
         classId:null, subclassName:null,
         ancestry:null, community:null,
@@ -528,14 +492,16 @@ function clearDraft() { localStorage.removeItem(DRAFT_KEY); }
 
 // ── Data loading ──────────────────────────────────────────────────────────────
 async function loadGameData() {
+    log.info('loading game data');
     const [classData, ancestryData, communityData, cardData, weaponData, armorData] = await Promise.all([
-        fetch('/data/base/classes.json').then(r => r.json()),
-        fetch('/data/base/ancestries.json').then(r => r.json()),
-        fetch('/data/base/communities.json').then(r => r.json()),
-        fetch('/data/base/domain-cards.json').then(r => r.json()),
-        fetch('/data/base/weapons.json?v=3').then(r => r.json()),
-        fetch('/data/base/armor.json?v=3').then(r => r.json()),
+        fetchJson('/data/base/classes.json'),
+        fetchJson('/data/base/ancestries.json'),
+        fetchJson('/data/base/communities.json'),
+        fetchJson('/data/base/domain-cards.json'),
+        fetchJson('/data/base/weapons.json?v=3'),
+        fetchJson('/data/base/armor.json?v=3'),
     ]);
+    log.info('game data loaded');
     CLASSES          = Array.isArray(classData)    ? classData    : Object.values(classData);
     ANCESTRIES       = Array.isArray(ancestryData)  ? ancestryData : Object.values(ancestryData);
     COMMUNITIES      = Array.isArray(communityData) ? communityData: Object.values(communityData);
@@ -550,7 +516,7 @@ onAuthChange(async user => {
     if (!user) { show('view-auth'); return; }
     userRole = await getUserRole(user.uid);
     applyRoleToNav();
-    document.getElementById('user-email').textContent = user.email || user.displayName || '';
+    document.getElementById('user-email').textContent = user.email || user.user_metadata?.full_name || '';
     await showRosterView();
 });
 
@@ -559,61 +525,6 @@ function applyRoleToNav() {
         el.style.display = el.dataset.role === userRole ? '' : 'none';
     });
 }
-
-// Auth tab switcher
-let emailAuthMode = 'signin'; // 'signin' | 'register'
-window.switchAuthTab = (tab) => {
-    document.getElementById('tab-google').classList.toggle('active', tab === 'google');
-    document.getElementById('tab-email').classList.toggle('active', tab === 'email');
-    document.getElementById('panel-google').classList.toggle('active', tab === 'google');
-    document.getElementById('panel-email').classList.toggle('active', tab === 'email');
-    document.getElementById('auth-error').style.display = 'none';
-};
-
-document.getElementById('btn-auth-mode-switch').addEventListener('click', () => {
-    emailAuthMode = emailAuthMode === 'signin' ? 'register' : 'signin';
-    document.getElementById('btn-email-submit').textContent = emailAuthMode === 'signin' ? 'Sign In' : 'Create Account';
-    document.getElementById('btn-auth-mode-switch').textContent = emailAuthMode === 'signin' ? 'No account? Create one' : 'Already have an account? Sign in';
-    document.getElementById('auth-error').style.display = 'none';
-});
-
-document.getElementById('btn-google-signin').addEventListener('click', async () => {
-    const errEl = document.getElementById('auth-error');
-    errEl.style.display = 'none';
-    try { await signInWithGoogle(); }
-    catch(e) {
-        errEl.textContent = e.code === 'auth/unauthorized-domain'
-            ? 'This domain is not authorized in Firebase. Add it under Authentication → Settings → Authorized Domains.'
-            : (e.message || 'Sign-in failed.');
-        errEl.style.display = '';
-    }
-});
-
-document.getElementById('btn-email-submit').addEventListener('click', async () => {
-    const errEl    = document.getElementById('auth-error');
-    const email    = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
-    errEl.style.display = 'none';
-    if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = ''; return; }
-    try {
-        if (emailAuthMode === 'register') {
-            await emailRegister(email, password);
-        } else {
-            await emailSignIn(email, password);
-        }
-    } catch(e) {
-        const msgs = {
-            'auth/email-already-in-use': 'An account with this email already exists. Try signing in.',
-            'auth/invalid-email':        'Please enter a valid email address.',
-            'auth/weak-password':        'Password must be at least 6 characters.',
-            'auth/user-not-found':       'No account found with this email.',
-            'auth/wrong-password':       'Incorrect password.',
-            'auth/invalid-credential':   'Incorrect email or password.',
-        };
-        errEl.textContent = msgs[e.code] || e.message || 'Authentication failed.';
-        errEl.style.display = '';
-    }
-});
 
 document.getElementById('btn-signout').onclick = () => signOutUser();
 
@@ -682,7 +593,7 @@ async function renderRoster() {
         }));
     } catch(e) {
         grid.innerHTML = '<div class="roster-empty">Error loading characters.</div>';
-        console.error(e);
+        log.error('renderRoster failed:', e);
     }
 }
 
@@ -743,8 +654,14 @@ async function editCharacter(charId) {
     startBuilder(1);
 }
 
+function isUUID(id) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+}
+
 function resumeDraft(draft) {
     state = { ...freshState(), ...draft.state };
+    // Strip any legacy non-UUID IDs — Supabase will assign a proper UUID on save
+    if (state.id && !isUUID(state.id)) state.id = null;
     state.domainCards = normalizeDomainCards(state.domainCards);
     if (!Array.isArray(state.backgroundAnswers)) state.backgroundAnswers = [];
     if (!Array.isArray(state.connectionAnswers)) state.connectionAnswers = [];
@@ -1273,11 +1190,11 @@ document.getElementById('btn-save-char').addEventListener('click', async () => {
             secondaryId: secondary?.id ?? null,
             armorId:     armor?.id     ?? null,
         };
-        await saveCharacter(currentUser.uid, saveData);
+        const savedId = await saveCharacter(currentUser.uid, saveData);
         clearDraft();
-        window.location.href = `character-sheet.html?id=${state.id}`;
+        window.location.href = `character-sheet.html?id=${savedId}`;
     } catch(e) {
-        console.error(e);
+        log.error('character save failed:', e);
         err.textContent = 'Save failed — check your connection.';
         btn.textContent = 'Save Character →';
         btn.disabled = false;

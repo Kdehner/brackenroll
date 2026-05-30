@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hb-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 56px 100px;
+        }
+
+        .hb-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .hb-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+        .hb-subtitle {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        /* ── Toolbar ── */
+        .hb-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .hb-search {
+            flex: 1;
+            min-width: 180px;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            padding: 9px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .hb-search:focus { border-color: var(--gold); }
+        .hb-search::placeholder { color: var(--ink-dim); }
+
+        .hb-new-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 9px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .hb-new-btn:hover { background: var(--h-gold-b); }
+
+        /* ── Type filter tabs ── */
+        .hb-types {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .hb-type-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .hb-type-btn:hover { border-color: var(--border-gold); color: var(--ink); }
+        .hb-type-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+
+        /* ── Grid ── */
+        .hb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2px;
+        }
+        .hb-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 18px 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .hb-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .hb-card-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+            flex: 1;
+        }
+        .hb-card-ver {
+            font-family: 'Cinzel', serif;
+            font-size: 0.52em;
+            letter-spacing: 0.1em;
+            color: var(--ink-dim);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .hb-card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+        .badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.55em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border: 1px solid;
+        }
+        .badge-weapon    { color: rgba(200,140,80,0.85);  border-color: rgba(200,140,80,0.3);  }
+        .badge-armor     { color: rgba(120,170,210,0.85); border-color: rgba(120,170,210,0.3); }
+        .badge-loot_item { color: rgba(120,190,120,0.85); border-color: rgba(120,190,120,0.3); }
+        .badge-domain_card { color: rgba(180,120,220,0.85); border-color: rgba(180,120,220,0.3); }
+        .badge-ancestry  { color: rgba(220,180,100,0.85); border-color: rgba(220,180,100,0.3); }
+        .badge-community { color: rgba(160,200,180,0.85); border-color: rgba(160,200,180,0.3); }
+        .badge-class     { color: var(--gold);            border-color: rgba(201,168,76,0.4);  }
+        .badge-domain    { color: rgba(180,120,220,0.85); border-color: rgba(180,120,220,0.3); }
+        .badge-adversary { color: rgba(200,80,80,0.85);   border-color: rgba(200,80,80,0.3);   }
+        .badge-rarity-common    { color: rgba(180,180,160,0.7); border-color: rgba(180,180,160,0.2); }
+        .badge-rarity-uncommon  { color: rgba(120,180,100,0.8); border-color: rgba(120,180,100,0.3); }
+        .badge-rarity-rare      { color: rgba(100,140,220,0.8); border-color: rgba(100,140,220,0.3); }
+        .badge-rarity-legendary { color: var(--gold); border-color: rgba(201,168,76,0.4); }
+
+        .hb-card-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            line-height: 1.45;
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .hb-card-actions { display: flex; gap: 6px; margin-top: 4px; }
+        .hb-card-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.56em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .hb-card-btn:hover { border-color: var(--border-gold); color: var(--ink); }
+        .hb-card-btn.danger:hover { color: rgba(192,96,96,0.9); border-color: rgba(192,96,96,0.3); }
+        .hb-card-btn.share:hover  { color: rgba(120,180,220,0.9); border-color: rgba(120,180,220,0.3); }
+
+        .hb-empty {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1em;
+            color: var(--ink-dim);
+            padding: 40px 0;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        /* ── New item modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.15s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal {
+            background: #1a1610;
+            border: 1px solid var(--border-gold);
+            padding: 32px 36px;
+            width: 480px;
+            max-width: 96vw;
+        }
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .modal-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .modal-type-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.66em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: left;
+        }
+        .modal-type-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+        .modal-type-icon { font-size: 1.1em; margin-bottom: 4px; display: block; }
+        .modal-cancel {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .modal-cancel:hover { color: var(--ink); }
+
+        /* ── Share modal ── */
+        .share-item-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            color: var(--ink);
+            margin-bottom: 20px;
+        }
+        .share-field { margin-bottom: 16px; }
+        .share-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .share-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            padding: 10px 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .share-input:focus { border-color: var(--gold); }
+        .share-note {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--ink-dim);
+            margin-bottom: 20px;
+        }
+        .share-actions { display: flex; align-items: center; gap: 16px; }
+        .share-msg {
+            font-size: 0.82em;
+            margin-top: 12px;
+            display: none;
+        }
+        .share-msg.ok  { color: #5a9e5a; }
+        .share-msg.err { color: #c04040; }
+
+        @media (max-width: 700px) {
+            .hb-wrap { padding: 28px 20px 60px; }
+            .hb-title { font-size: 1.7em; }
+            .hb-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"></nav>
+
+    <div class="hb-wrap" id="hbWrap" style="display:none;">
+        <div class="hb-header">
+            <div class="hb-title">My Library</div>
+            <div class="hb-subtitle">Your personal homebrew collection — available across all campaigns.</div>
+        </div>
+
+        <div class="hb-toolbar">
+            <input class="hb-search" id="hbSearch" type="search" placeholder="Search library…">
+            <button class="hb-new-btn" id="btnNew">+ New</button>
+        </div>
+
+        <div class="hb-types" id="hbTypes">
+            <button class="hb-type-btn active" data-type="">All</button>
+            <button class="hb-type-btn" data-type="weapon">Weapons</button>
+            <button class="hb-type-btn" data-type="armor">Armor</button>
+            <button class="hb-type-btn" data-type="loot_item">Loot Items</button>
+            <button class="hb-type-btn" data-type="domain_card">Domain Cards</button>
+            <button class="hb-type-btn" data-type="ancestry">Ancestries</button>
+            <button class="hb-type-btn" data-type="community">Communities</button>
+            <button class="hb-type-btn" data-type="class">Classes</button>
+            <button class="hb-type-btn" data-type="domain">Domains</button>
+            <button class="hb-type-btn" data-type="adversary">Adversaries</button>
+        </div>
+
+        <div class="hb-grid" id="hbGrid">
+            <p class="hb-empty">Loading…</p>
+        </div>
+    </div>
+
+    <!-- New item type picker modal -->
+    <div class="modal-overlay" id="newModal">
+        <div class="modal">
+            <div class="modal-title">Choose Content Type</div>
+            <div class="modal-types">
+                <button class="modal-type-btn" data-type="weapon">
+                    <span class="modal-type-icon">⚔</span>Weapon
+                </button>
+                <button class="modal-type-btn" data-type="armor">
+                    <span class="modal-type-icon">🛡</span>Armor
+                </button>
+                <button class="modal-type-btn" data-type="loot_item">
+                    <span class="modal-type-icon">✦</span>Loot Item
+                </button>
+                <button class="modal-type-btn" data-type="domain_card">
+                    <span class="modal-type-icon">🃏</span>Domain Card
+                </button>
+                <button class="modal-type-btn" data-type="ancestry">
+                    <span class="modal-type-icon">🌿</span>Ancestry
+                </button>
+                <button class="modal-type-btn" data-type="community">
+                    <span class="modal-type-icon">🏘</span>Community
+                </button>
+                <button class="modal-type-btn" data-type="class">
+                    <span class="modal-type-icon">⚜</span>Class
+                </button>
+                <button class="modal-type-btn" data-type="domain">
+                    <span class="modal-type-icon">◈</span>Domain
+                </button>
+                <button class="modal-type-btn" data-type="adversary">
+                    <span class="modal-type-icon">☠</span>Adversary
+                </button>
+            </div>
+            <button class="modal-cancel" id="modalCancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Share modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal">
+            <div class="modal-title">Share to Library</div>
+            <div class="share-item-label" id="shareItemLabel"></div>
+            <div class="share-field">
+                <label class="share-label" for="shareEmailInput">Recipient Email</label>
+                <input class="share-input" id="shareEmailInput" type="email" placeholder="player@example.com" autocomplete="off">
+            </div>
+            <p class="share-note">They'll receive a copy in their personal library.</p>
+            <div class="share-actions">
+                <button class="hb-new-btn" id="shareConfirmBtn">Send Share</button>
+                <button class="modal-cancel" id="shareCancel">Cancel</button>
+            </div>
+            <p class="share-msg" id="shareMsg"></p>
+        </div>
+    </div>
+
+    <script type="module" src="nav.js"></script>
+    <script type="module">
+        import { onAuthChange, getMyLibrary, deleteHomebrew, shareHomebrew } from './supabase-client.js';
+
+        let currentUser = null;
+        let allItems    = [];
+        let activeType  = '';
+        let searchQ     = '';
+        let shareTargetId = null;
+
+        onAuthChange(async user => {
+            if (!user) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(location.href)}`;
+                return;
+            }
+            currentUser = user;
+            document.getElementById('hbWrap').style.display = 'block';
+            await reload();
+        });
+
+        async function reload() {
+            allItems = await getMyLibrary(currentUser.uid);
+            render();
+        }
+
+        function render() {
+            const grid = document.getElementById('hbGrid');
+            const q    = searchQ.toLowerCase();
+            const list = allItems.filter(item =>
+                (!activeType || item.content_type === activeType) &&
+                (!q || item.name.toLowerCase().includes(q) || (item.player_description || '').toLowerCase().includes(q))
+            );
+
+            if (!list.length) {
+                grid.innerHTML = '<p class="hb-empty">Nothing here yet. Create something to add it to your library.</p>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            list.forEach(item => grid.appendChild(buildCard(item)));
+        }
+
+        function buildCard(item) {
+            const rarity = item.data?.rarity;
+            const typeLabel = {
+                weapon: 'Weapon', armor: 'Armor', loot_item: 'Loot Item',
+                domain_card: 'Domain Card', ancestry: 'Ancestry', community: 'Community',
+                class: 'Class', domain: 'Domain', adversary: 'Adversary',
+                environment: 'Environment', campaign_frame: 'Campaign Frame',
+            }[item.content_type] || item.content_type;
+
+            const card = document.createElement('div');
+            card.className = 'hb-card';
+            card.innerHTML = `
+                <div class="hb-card-top">
+                    <div class="hb-card-name">${esc(item.name)}</div>
+                    <div class="hb-card-ver">v${item.current_version}</div>
+                </div>
+                <div class="hb-card-badges">
+                    <span class="badge badge-${item.content_type}">${typeLabel}</span>
+                    ${rarity ? `<span class="badge badge-rarity-${rarity}">${rarity}</span>` : ''}
+                    ${item.based_on_source === 'global' ? `<span class="badge" style="color:var(--ink-dim);border-color:var(--border);">copy</span>` : ''}
+                </div>
+                ${item.player_description ? `<div class="hb-card-desc">${esc(item.player_description)}</div>` : ''}
+                <div class="hb-card-actions"></div>`;
+
+            const actions = card.querySelector('.hb-card-actions');
+
+            const editBtn = document.createElement('a');
+            editBtn.className = 'hb-card-btn';
+            editBtn.textContent = 'Edit';
+            editBtn.href = item.content_type === 'adversary'
+                ? `adversary-editor.html?scope=global&id=${item.id}`
+                : `homebrew-editor.html?id=${item.id}&scope=global`;
+            actions.appendChild(editBtn);
+
+            const shareBtn = document.createElement('button');
+            shareBtn.className = 'hb-card-btn share';
+            shareBtn.textContent = '↗ Share';
+            shareBtn.addEventListener('click', () => openShareModal(item));
+            actions.appendChild(shareBtn);
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'hb-card-btn danger';
+            delBtn.textContent = '✕ Delete';
+            delBtn.addEventListener('click', async () => {
+                if (!confirm(`Delete "${item.name}"? This cannot be undone.`)) return;
+                await deleteHomebrew(item.id);
+                await reload();
+            });
+            actions.appendChild(delBtn);
+
+            return card;
+        }
+
+        function openShareModal(item) {
+            shareTargetId = item.id;
+            document.getElementById('shareItemLabel').textContent = `"${item.name}"`;
+            document.getElementById('shareEmailInput').value = '';
+            const msg = document.getElementById('shareMsg');
+            msg.style.display = 'none';
+            msg.textContent = '';
+            document.getElementById('shareModal').classList.add('open');
+            document.getElementById('shareEmailInput').focus();
+        }
+
+        document.getElementById('shareConfirmBtn').addEventListener('click', async () => {
+            const email = document.getElementById('shareEmailInput').value.trim();
+            const msg   = document.getElementById('shareMsg');
+            const btn   = document.getElementById('shareConfirmBtn');
+            if (!email) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+            msg.style.display = 'none';
+
+            try {
+                const recipientName = await shareHomebrew(currentUser.uid, email, shareTargetId);
+                msg.className = 'share-msg ok';
+                msg.textContent = `Sent to ${recipientName}.`;
+                msg.style.display = 'block';
+                document.getElementById('shareEmailInput').value = '';
+                setTimeout(() => {
+                    document.getElementById('shareModal').classList.remove('open');
+                    msg.style.display = 'none';
+                }, 2000);
+            } catch (err) {
+                msg.className = 'share-msg err';
+                msg.textContent = err.message || 'Failed to send share.';
+                msg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Share';
+            }
+        });
+
+        document.getElementById('shareCancel').addEventListener('click', () => {
+            document.getElementById('shareModal').classList.remove('open');
+        });
+        document.getElementById('shareModal').addEventListener('click', e => {
+            if (e.target === document.getElementById('shareModal'))
+                document.getElementById('shareModal').classList.remove('open');
+        });
+
+        // Type filter
+        document.getElementById('hbTypes').addEventListener('click', e => {
+            const btn = e.target.closest('.hb-type-btn');
+            if (!btn) return;
+            document.querySelectorAll('.hb-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeType = btn.dataset.type;
+            render();
+        });
+
+        // Search
+        document.getElementById('hbSearch').addEventListener('input', e => {
+            searchQ = e.target.value;
+            render();
+        });
+
+        // New item modal
+        document.getElementById('btnNew').addEventListener('click', () => {
+            document.getElementById('newModal').classList.add('open');
+        });
+        document.getElementById('modalCancel').addEventListener('click', () => {
+            document.getElementById('newModal').classList.remove('open');
+        });
+        document.getElementById('newModal').addEventListener('click', e => {
+            if (e.target === document.getElementById('newModal'))
+                document.getElementById('newModal').classList.remove('open');
+        });
+        document.querySelectorAll('.modal-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.type === 'adversary') {
+                    window.location.href = 'adversary-editor.html?scope=global';
+                } else {
+                    window.location.href = `homebrew-editor.html?type=${btn.dataset.type}&scope=global`;
+                }
+            });
+        });
+
+        function esc(str) {
+            return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+    </script>
+</body>
+</html>

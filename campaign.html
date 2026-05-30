@@ -42,21 +42,21 @@
             letter-spacing: 0.04em;
             margin-bottom: 10px;
         }
-        .campaign-owner-badge {
+        .campaign-meta {
             font-family: 'Cinzel', serif;
             font-size: 0.68em;
             letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--ink-dim);
         }
-        .campaign-owner-badge span { color: var(--gold-mid); }
+        .campaign-meta span { color: var(--gold-mid); }
 
         /* Invite block */
         .invite-block {
             background: var(--card-bg);
             border: 1px solid var(--border);
             padding: 20px 24px;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -94,15 +94,15 @@
         .btn-copy:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
         .btn-copy.copied { color: #5a9e5a; border-color: rgba(90,158,90,0.4); }
 
-        /* Section */
-        .camp-section { margin-bottom: 48px; }
+        /* Sections */
+        .camp-section { margin-bottom: 52px; }
         .camp-section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-mid);
+            border-bottom: 1px solid var(--border-gold);
         }
         .camp-section-header h2 {
             font-family: 'Cinzel', serif;
@@ -113,46 +113,138 @@
             text-transform: uppercase;
         }
 
-        /* Member rows */
-        .member-row {
+        /* Member block */
+        .member-block { margin-bottom: 32px; }
+        .member-block:last-child { margin-bottom: 0; }
+        .member-header {
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
         }
-        .member-row:last-child { border-bottom: none; }
-        .member-info { flex: 1; min-width: 0; }
-        .member-name {
+        .member-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Cinzel', serif;
-            font-size: 0.88em;
+            font-size: 0.95em;
+            font-weight: 700;
+            color: rgba(0,0,0,0.6);
+            background: var(--border-mid);
+        }
+        .member-header-text {}
+        .member-display-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.92em;
             font-weight: 600;
             color: var(--ink);
-            margin-bottom: 4px;
+            line-height: 1.3;
         }
-        .member-role {
+        .member-role-label {
             font-family: 'Cinzel', serif;
-            font-size: 0.62em;
-            letter-spacing: 0.16em;
+            font-size: 0.6em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
         }
-        .member-role.gm { color: var(--gold); }
-        .member-role.player { color: var(--ink-dim); }
-        .member-chars { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
-        .char-chip {
-            font-size: 0.8em;
-            color: var(--ink-muted);
-            background: rgba(255,255,255,0.04);
+        .member-role-label.gm { color: var(--gold); }
+        .member-role-label.player { color: var(--ink-dim); }
+
+        /* Character cards */
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 2px;
+            margin-bottom: 12px;
+        }
+        .char-card {
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 2px 10px;
+            padding: 20px 22px 16px;
+            display: flex;
+            flex-direction: column;
             text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.22s;
+        }
+        .char-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.22s;
+        }
+        .char-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
+        .char-card:hover::after { opacity: 1; }
+        .char-card-class {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+        .char-card-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        .char-card-meta { font-size: 0.84em; color: var(--ink-dim); flex: 1; margin-bottom: 14px; }
+        .char-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .char-card-link {
+            font-family: 'Cinzel', serif;
+            font-size: 0.66em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            transition: color 0.2s;
+        }
+        .char-card:hover .char-card-link { color: var(--gold); }
+        .btn-unlink {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.65);
+            border: 1px solid rgba(180,60,60,0.22);
+            background: transparent;
+            padding: 3px 9px;
+            cursor: pointer;
             transition: all 0.18s;
         }
-        .char-chip:hover { border-color: var(--border-gold); color: var(--gold-mid); }
+        .btn-unlink:hover { border-color: rgba(180,60,60,0.55); color: rgba(180,60,60,0.9); }
 
-        /* Link character section */
-        .link-char-wrap { margin-top: 8px; }
+        /* Link character control */
+        .link-char-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .link-char-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            flex-basis: 100%;
+            margin-bottom: 6px;
+        }
         .link-char-select {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--border-mid);
@@ -162,7 +254,6 @@
             padding: 8px 12px;
             outline: none;
             transition: border-color 0.2s;
-            margin-right: 8px;
         }
         .link-char-select:focus { border-color: var(--gold); }
         .btn-link {
@@ -178,41 +269,139 @@
             transition: all 0.2s;
         }
         .btn-link:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
-        .btn-unlink {
-            font-family: 'Cinzel', serif;
-            font-size: 0.62em;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(180,60,60,0.7);
-            border: 1px solid rgba(180,60,60,0.25);
-            background: transparent;
-            padding: 2px 8px;
-            cursor: pointer;
-            transition: all 0.18s;
-            margin-left: 4px;
+
+        /* Session block */
+        .session-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
         }
-        .btn-unlink:hover { border-color: rgba(180,60,60,0.6); color: rgba(180,60,60,0.9); }
-
-        .empty-note { color: var(--ink-dim); font-style: italic; font-size: 0.88em; padding: 6px 0; }
-
-        /* Table button */
-        .btn-table {
+        .session-live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5a9e5a;
+            margin-right: 8px;
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.35; }
+        }
+        .session-status-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+        .session-status-text.active { color: #5a9e5a; }
+        .session-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-open-table {
             font-family: 'Cinzel', serif;
             font-size: 0.72em;
             letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--ink-dim);
-            border: 1px dashed var(--border-mid);
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 10px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-open-table:hover { background: var(--h-gold-b); }
+        .btn-open-table:disabled { opacity: 0.5; cursor: default; }
+        .btn-join-table {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.5);
             background: transparent;
             padding: 10px 24px;
-            opacity: 0.5;
-            cursor: default;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .btn-join-table:hover { background: rgba(201,168,76,0.09); border-color: var(--gold); }
+        .btn-close-table {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.7);
+            border: 1px solid rgba(180,60,60,0.25);
+            background: transparent;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-close-table:hover { border-color: rgba(180,60,60,0.6); color: rgba(180,60,60,0.9); }
+
+        .empty-note { color: var(--ink-dim); font-style: italic; font-size: 0.88em; padding: 4px 0 12px; }
+        .section-empty { color: var(--ink-dim); font-style: italic; font-size: 0.88em; padding: 12px 0; }
+
+        /* GM Tools */
+        .gm-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2px;
+        }
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px 22px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.22s;
+        }
+        .tool-card:hover { background: var(--card-hover); border-color: var(--border-gold); }
+        .tool-card:hover::after { opacity: 1; }
+        .tool-card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--gold-mid);
+            margin-bottom: 6px;
+            letter-spacing: 0.06em;
+        }
+        .tool-card-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-dim);
         }
 
         @media (max-width: 700px) {
             .campaign-wrap { padding: 28px 20px 60px; }
             .campaign-title { font-size: 1.7em; }
             .invite-block { flex-direction: column; align-items: flex-start; }
+            .char-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -224,7 +413,13 @@
         <div class="campaign-header">
             <a href="index.html" class="campaign-back">← All Campaigns</a>
             <div class="campaign-title" id="campaignTitle">Loading…</div>
-            <div class="campaign-owner-badge" id="campaignOwnerBadge"></div>
+            <div class="campaign-meta" id="campaignMeta"></div>
+        </div>
+
+        <!-- Session block -->
+        <div class="session-block" id="sessionBlock">
+            <div id="sessionStatus"></div>
+            <div class="session-actions" id="sessionActions"></div>
         </div>
 
         <div class="invite-block">
@@ -235,21 +430,36 @@
             <button class="btn-copy" id="copyInviteBtn">Copy Link</button>
         </div>
 
-        <!-- Members -->
-        <div class="camp-section">
+        <!-- Resources (shown to all members) -->
+        <div class="camp-section" id="resourcesSection" style="display:none;">
             <div class="camp-section-header">
-                <h2>Members</h2>
-                <button class="btn-table" disabled title="Coming in V3">Open Table</button>
+                <h2>Resources</h2>
             </div>
-            <div id="membersList"><p class="empty-note">Loading…</p></div>
+            <div class="gm-tools-grid" id="resourcesGrid"></div>
         </div>
 
-        <!-- My characters in this campaign -->
-        <div class="camp-section" id="myCharSection">
+        <!-- GM Tools (shown only to GM) -->
+        <div class="camp-section" id="gmToolsSection" style="display:none;">
             <div class="camp-section-header">
-                <h2>My Characters</h2>
+                <h2>GM Tools</h2>
             </div>
-            <div id="myCharContent"></div>
+            <div class="gm-tools-grid" id="gmToolsGrid"></div>
+        </div>
+
+        <!-- Game Master -->
+        <div class="camp-section">
+            <div class="camp-section-header">
+                <h2>Game Master</h2>
+            </div>
+            <div id="gmContent"><p class="section-empty">Loading…</p></div>
+        </div>
+
+        <!-- Players -->
+        <div class="camp-section">
+            <div class="camp-section-header">
+                <h2>Players</h2>
+            </div>
+            <div id="playersContent"><p class="section-empty">Loading…</p></div>
         </div>
 
     </div>
@@ -259,62 +469,179 @@
         <a href="index.html" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.8em;letter-spacing:0.1em;">← Back to Campaigns</a>
     </div>
 
+    <!-- Promo: shown when no campaign ID in URL -->
+    <div class="promo-wrap" id="promoWrap" style="display:none;">
+
+        <div class="page-hero" style="padding:0;margin-bottom:40px;border-bottom:1px solid var(--border-gold);">
+            <div class="pub-section-label" style="margin-bottom:12px;">Campaigns</div>
+            <h1 style="font-family:'Cinzel',serif;font-size:2em;font-weight:700;color:var(--h-gold-b);letter-spacing:0.04em;margin-bottom:12px;">Your Story, Your Table</h1>
+            <p style="font-size:1.05em;color:var(--ink-muted);max-width:580px;line-height:1.75;margin-bottom:24px;">Create a campaign as GM and invite your players with a single link. Everything your group needs — sessions, characters, encounters, and eventually homebrew — lives in one place.</p>
+            <a href="index.html" class="promo-cta">Sign In to Get Started</a>
+        </div>
+
+        <div class="pub-section-label">What You Get</div>
+        <div class="feature-grid" style="margin-bottom:56px;">
+            <div class="feature-card">
+                <div class="feature-icon">⚔</div>
+                <div class="feature-title">GM & Player Seats</div>
+                <div class="feature-desc">One GM owns the campaign. Players join with an invite link and link their characters. Roles are clear, access is scoped.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">◉</div>
+                <div class="feature-title">Live Sessions</div>
+                <div class="feature-desc">Open a session and your players see it instantly. A live indicator shows everyone when the table is active. Close it when you're done — the history stays.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺</div>
+                <div class="feature-title">Campaign Table</div>
+                <div class="feature-desc">Drop a map, place tokens, and run encounters in real time. Fog of war, adversary HP, and loot distribution — all from the GM seat.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📜</div>
+                <div class="feature-title">Homebrew System <span style="font-size:0.75em;color:var(--ink-dim);font-family:'EB Garamond',serif;font-style:italic;">(coming soon)</span></div>
+                <div class="feature-desc">Create campaign-scoped homebrew — classes, ancestries, domain cards, loot items. Version and share across campaigns. Players opt in or pin to a version.</div>
+            </div>
+        </div>
+
+        <hr class="pub-divider">
+
+        <div class="pub-section">
+            <div class="pub-section-label">How Campaigns Work</div>
+            <div class="about-body">
+                <p>The GM creates a campaign and shares the invite link. Players sign in, click the link, and they're in — no codes to type, no approval queue. Each player links one or more characters to the campaign, which the GM can view during sessions.</p>
+                <p>Sessions are opened and closed by the GM. While a session is active, all players see the live indicator and can join the table. The GM controls the map, tokens, and encounter state. Players see what the GM reveals — nothing more.</p>
+            </div>
+        </div>
+
+    </div>
+
     <script type="module" src="nav.js"></script>
     <script type="module">
         import {
             onAuthChange,
             getCampaign, getCampaignMembers,
-            loadCharacters,
-            linkCharacterToCampaign, unlinkCharacterFromCampaign
-        } from './firebase-init.js';
+            getUserProfile, getCharacter, loadCharacters,
+            linkCharacterToCampaign, unlinkCharacterFromCampaign,
+            createSession, getActiveSession, closeSession,
+            getCharactersByCampaign
+        } from './supabase-client.js';
 
         const params     = new URLSearchParams(window.location.search);
         const campaignId = params.get('id');
 
         if (!campaignId) {
-            window.location.href = 'index.html';
+            document.getElementById('promoWrap').style.display = 'block';
         }
 
-        let currentUser  = null;
-        let campaign     = null;
-        let myChars      = [];
-        let members      = [];
+        let currentUser   = null;
+        let campaign      = null;
+        let members       = [];
+        let profileMap    = {}; // uid → profile
+        let charMap       = {}; // uid → [character]
+        let myAllChars    = []; // current user's full character list
+        let activeSession = null;
 
         onAuthChange(async user => {
+            if (!campaignId) return; // promo mode — no auth required
             if (!user) { window.location.href = 'index.html'; return; }
             currentUser = user;
             await loadCampaign();
         });
 
         async function loadCampaign() {
-            [campaign, members, myChars] = await Promise.all([
+            [campaign, members, activeSession] = await Promise.all([
                 getCampaign(campaignId),
                 getCampaignMembers(campaignId),
-                loadCharacters(currentUser.uid)
+                getActiveSession(campaignId)
             ]);
 
-            if (!campaign || !campaign.memberUids.includes(currentUser.uid)) {
+            if (!campaign || !members.some(m => m.uid === currentUser.uid)) {
                 document.getElementById('errorWrap').style.display = 'block';
                 return;
             }
 
+            // Fetch all member profiles + chars + current user's full char list in parallel
+            const [profileResults, campaignChars] = await Promise.all([
+                Promise.all(members.map(m => getUserProfile(m.uid))),
+                getCharactersByCampaign(campaignId),
+                (async () => { myAllChars = await loadCharacters(currentUser.uid); })()
+            ]);
+            profileResults.forEach((p, i) => {
+                if (p) profileMap[members[i].uid] = p;
+            });
+            charMap = campaignChars;
+
             document.title = `${campaign.name} — Brackenroll`;
             document.getElementById('campaignWrap').style.display = 'block';
             renderHeader();
+            renderSession();
             renderInvite();
-            renderMembers();
-            renderMyChars();
+            renderResources();
+            renderGmTools();
+            renderGM();
+            renderPlayers();
         }
 
         function renderHeader() {
             document.getElementById('campaignTitle').textContent = campaign.name;
-            const isOwner = campaign.ownerUid === currentUser.uid;
-            document.getElementById('campaignOwnerBadge').innerHTML =
-                `Owned by <span>${isOwner ? 'you' : 'GM'}</span> · ${campaign.memberUids.length} member${campaign.memberUids.length !== 1 ? 's' : ''}`;
+            const count = members.length;
+            document.getElementById('campaignMeta').innerHTML =
+                `<span>${count}</span> member${count !== 1 ? 's' : ''}`;
+        }
+
+        function renderSession() {
+            const isGM      = campaign.gm_id === currentUser.uid;
+            const statusEl  = document.getElementById('sessionStatus');
+            const actionsEl = document.getElementById('sessionActions');
+            actionsEl.innerHTML = '';
+
+            const tableUrl = `table.html?campaign=${campaignId}`;
+
+            if (activeSession) {
+                statusEl.innerHTML =
+                    `<span class="session-live-dot"></span>` +
+                    `<span class="session-status-text active">Session Live</span>`;
+
+                const joinBtn = document.createElement('a');
+                joinBtn.className = 'btn-join-table';
+                joinBtn.href = tableUrl;
+                joinBtn.textContent = 'Join Table';
+                actionsEl.appendChild(joinBtn);
+
+                if (isGM) {
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'btn-close-table';
+                    closeBtn.textContent = 'Close Table';
+                    closeBtn.addEventListener('click', async () => {
+                        closeBtn.disabled = true;
+                        closeBtn.textContent = 'Closing…';
+                        await closeSession(campaignId, activeSession.id);
+                        activeSession = null;
+                        renderSession();
+                    });
+                    actionsEl.appendChild(closeBtn);
+                }
+            } else {
+                statusEl.innerHTML =
+                    `<span class="session-status-text">No active session</span>`;
+
+                if (isGM) {
+                    const openBtn = document.createElement('button');
+                    openBtn.className = 'btn-open-table';
+                    openBtn.textContent = 'Open Table';
+                    openBtn.addEventListener('click', async () => {
+                        openBtn.disabled = true;
+                        openBtn.textContent = 'Opening…';
+                        const sessionId = await createSession(campaignId, currentUser.uid);
+                        window.location.href = `table.html?campaign=${campaignId}&session=${sessionId}`;
+                    });
+                    actionsEl.appendChild(openBtn);
+                }
+            }
         }
 
         function renderInvite() {
-            const link = `${window.location.origin}/join.html?code=${campaign.inviteCode}`;
+            const link = `${window.location.origin}/join.html?code=${campaign.invite_code}`;
             document.getElementById('inviteLinkText').textContent = link;
             const btn = document.getElementById('copyInviteBtn');
             btn.addEventListener('click', () => {
@@ -326,98 +653,175 @@
             });
         }
 
-        function renderMembers() {
-            const el = document.getElementById('membersList');
-            el.innerHTML = '';
-            if (members.length === 0) {
-                el.innerHTML = '<p class="empty-note">No members yet.</p>';
-                return;
-            }
+        function renderResources() {
+            document.getElementById('resourcesSection').style.display = 'block';
+            const grid = document.getElementById('resourcesGrid');
+            grid.innerHTML = '';
+            const a = document.createElement('a');
+            a.className = 'tool-card';
+            a.href = `primer.html?campaign=${campaignId}`;
+            a.innerHTML = `<div class="tool-card-title">The World</div><div class="tool-card-desc">World primer, factions, lore, and GM-authored handouts for this campaign</div>`;
+            grid.appendChild(a);
+        }
 
-            const myMember = members.find(m => m.uid === currentUser.uid);
-            const others   = members.filter(m => m.uid !== currentUser.uid);
-            const sorted   = myMember ? [myMember, ...others] : others;
-
-            sorted.forEach(m => {
-                const isMe    = m.uid === currentUser.uid;
-                const isOwner = campaign.ownerUid === m.uid;
-                const row = document.createElement('div');
-                row.className = 'member-row';
-
-                const info = document.createElement('div');
-                info.className = 'member-info';
-
-                const name = document.createElement('div');
-                name.className = 'member-name';
-                name.textContent = isMe ? 'You' : (m.displayName ?? 'Player');
-
-                const role = document.createElement('div');
-                role.className = `member-role ${isOwner ? 'gm' : 'player'}`;
-                role.textContent = isOwner ? 'Game Master' : 'Player';
-
-                info.append(name, role);
-
-                // Linked characters
-                const charIds = m.characterIds ?? [];
-                if (charIds.length > 0) {
-                    const chips = document.createElement('div');
-                    chips.className = 'member-chars';
-                    charIds.forEach(cid => {
-                        const ch = myChars.find(c => c.id === cid);
-                        if (isMe && ch) {
-                            const chip = document.createElement('a');
-                            chip.className = 'char-chip';
-                            chip.href = `character-sheet.html?id=${cid}`;
-                            chip.textContent = ch.name ?? 'Character';
-
-                            const unlink = document.createElement('button');
-                            unlink.className = 'btn-unlink';
-                            unlink.textContent = '×';
-                            unlink.title = 'Unlink from campaign';
-                            unlink.addEventListener('click', async e => {
-                                e.preventDefault();
-                                await unlinkCharacterFromCampaign(currentUser.uid, campaignId, cid);
-                                await loadCampaign();
-                            });
-                            chips.append(chip, unlink);
-                        } else {
-                            const chip = document.createElement('span');
-                            chip.className = 'char-chip';
-                            chip.textContent = isMe && ch ? ch.name : cid.substring(0, 8) + '…';
-                            chips.appendChild(chip);
-                        }
-                    });
-                    info.appendChild(chips);
-                }
-
-                row.appendChild(info);
-                el.appendChild(row);
+        function renderGmTools() {
+            if (campaign.gm_id !== currentUser.uid) return;
+            document.getElementById('gmToolsSection').style.display = 'block';
+            const grid = document.getElementById('gmToolsGrid');
+            grid.innerHTML = '';
+            [
+                { label: 'World Pages', desc: 'Author world-building content and player handouts for this campaign', href: `page-editor.html?campaign=${campaignId}` },
+                { label: 'Encounters', desc: 'Build encounter rosters and track them at the table', href: `encounter-builder.html?campaign=${campaignId}` },
+                { label: 'Homebrew', desc: 'Create custom weapons, armor, loot, domain cards, adversaries, and more', href: `homebrew.html?campaign=${campaignId}` },
+                { label: 'Loot Generator', desc: 'Roll for items and consumables to award or stock shops and caches', href: `loot-generator.html?campaign=${campaignId}` },
+            ].forEach(({ label, desc, href }) => {
+                const a = document.createElement('a');
+                a.className = 'tool-card';
+                a.href = href;
+                a.innerHTML = `<div class="tool-card-title">${label}</div><div class="tool-card-desc">${desc}</div>`;
+                grid.appendChild(a);
             });
         }
 
-        function renderMyChars() {
-            const el = document.getElementById('myCharContent');
+        function renderGM() {
+            const el  = document.getElementById('gmContent');
+            const gm  = members.find(m => m.uid === campaign.gm_id);
+            if (!gm) { el.innerHTML = '<p class="section-empty">No game master found.</p>'; return; }
             el.innerHTML = '';
+            el.appendChild(buildMemberBlock(gm, 'gm'));
+        }
 
-            const myMember  = members.find(m => m.uid === currentUser.uid);
-            const linkedIds = myMember?.characterIds ?? [];
-            const unlinked  = myChars.filter(c => !linkedIds.includes(c.id));
-
-            if (myChars.length === 0) {
-                el.innerHTML = `<p class="empty-note">You have no characters. <a href="character-builder.html" style="color:var(--gold);">Create one →</a></p>`;
+        function renderPlayers() {
+            const el      = document.getElementById('playersContent');
+            const players = members.filter(m => m.uid !== campaign.gm_id);
+            el.innerHTML  = '';
+            if (players.length === 0) {
+                el.innerHTML = '<p class="section-empty">No players have joined yet. Share the invite link above.</p>';
                 return;
             }
+            players.forEach(m => el.appendChild(buildMemberBlock(m, 'player')));
+        }
 
-            if (unlinked.length === 0) {
-                el.innerHTML = '<p class="empty-note">All your characters are linked to this campaign.</p>';
-                return;
+        function buildMemberBlock(member, roleKey) {
+            const profile  = profileMap[member.uid] ?? {};
+            const isMe     = member.uid === currentUser.uid;
+            const name     = profile.display_name || (isMe ? 'You' : 'Unknown Player');
+            const color    = profile.avatar_color  || 'var(--border-mid)';
+            const initial  = name.charAt(0).toUpperCase();
+            const chars    = charMap[member.uid]  ?? [];
+            const linkedIds = chars.map(c => c.id);
+
+            const block = document.createElement('div');
+            block.className = 'member-block';
+
+            // Member header
+            const header = document.createElement('div');
+            header.className = 'member-header';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'member-avatar';
+            avatar.style.background = color;
+            avatar.textContent = initial;
+
+            const textWrap = document.createElement('div');
+            textWrap.className = 'member-header-text';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'member-display-name';
+            nameEl.textContent = isMe ? `${name} (you)` : name;
+
+            const roleEl = document.createElement('div');
+            roleEl.className = `member-role-label ${roleKey}`;
+            roleEl.textContent = roleKey === 'gm' ? 'Game Master' : 'Player';
+
+            textWrap.append(nameEl, roleEl);
+            header.append(avatar, textWrap);
+            block.appendChild(header);
+
+            // Character cards
+            if (chars.length > 0) {
+                const grid = document.createElement('div');
+                grid.className = 'char-grid';
+                chars.forEach(ch => {
+                    const isLinked = linkedIds.includes(ch.id);
+                    grid.appendChild(buildCharCard(ch, member.uid, isMe && isLinked));
+                });
+                block.appendChild(grid);
+            } else {
+                const note = document.createElement('p');
+                note.className = 'empty-note';
+                note.textContent = roleKey === 'gm' ? 'No characters linked.' : (isMe ? 'You have no characters linked to this campaign.' : 'No characters linked yet.');
+                block.appendChild(note);
             }
 
+            // Link control — players only (GMs manage, not play)
+            if (isMe && roleKey === 'player') {
+                const unlinked = myAllChars.filter(c => !charMap[currentUser.uid]?.some(lc => lc.id === c.id));
+                if (unlinked.length > 0) {
+                    block.appendChild(buildLinkControl(unlinked));
+                } else if (myAllChars.length === 0) {
+                    const note = document.createElement('p');
+                    note.className = 'empty-note';
+                    note.innerHTML = '<a href="character-builder.html" style="color:var(--gold);">Create a character →</a>';
+                    block.appendChild(note);
+                }
+            }
+
+            return block;
+        }
+
+        function buildCharCard(ch, ownerUid, showUnlink) {
+            const card = document.createElement('a');
+            card.className = 'char-card';
+            card.href = `character-sheet.html?id=${ch.id}&uid=${ownerUid}`;
+
+            const classEl = document.createElement('div');
+            classEl.className = 'char-card-class';
+            classEl.textContent = ch.className || 'Unknown Class';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'char-card-name';
+            nameEl.textContent = ch.name || 'Unnamed Character';
+
+            const meta = document.createElement('div');
+            meta.className = 'char-card-meta';
+            const level    = ch.level ?? 1;
+            const ancestry = ch.ancestry || ch.heritage || '';
+            meta.textContent = ancestry ? `Level ${level} · ${ancestry}` : `Level ${level}`;
+
+            const footer = document.createElement('div');
+            footer.className = 'char-card-footer';
+
+            const viewLink = document.createElement('span');
+            viewLink.className = 'char-card-link';
+            viewLink.textContent = 'View Sheet →';
+
+            footer.appendChild(viewLink);
+
+            if (showUnlink) {
+                const unlinkBtn = document.createElement('button');
+                unlinkBtn.className = 'btn-unlink';
+                unlinkBtn.textContent = 'Unlink';
+                unlinkBtn.addEventListener('click', async e => {
+                    e.preventDefault();
+                    unlinkBtn.textContent = '…';
+                    unlinkBtn.disabled = true;
+                    await unlinkCharacterFromCampaign(currentUser.uid, campaignId, ch.id);
+                    await loadCampaign();
+                });
+                footer.appendChild(unlinkBtn);
+            }
+
+            card.append(classEl, nameEl, meta, footer);
+            return card;
+        }
+
+        function buildLinkControl(unlinked) {
             const wrap = document.createElement('div');
             wrap.className = 'link-char-wrap';
 
             const label = document.createElement('div');
-            label.style.cssText = 'font-family:Cinzel,serif;font-size:0.72em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px;';
+            label.className = 'link-char-label';
             label.textContent = 'Link a character to this campaign';
 
             const select = document.createElement('select');
@@ -429,7 +833,7 @@
             unlinked.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.id;
-                opt.textContent = `${c.name ?? 'Unnamed'} (${c.className ?? 'Unknown'}, Lv ${c.sheetState?.level ?? 1})`;
+                opt.textContent = `${c.name ?? 'Unnamed'} · ${c.className ?? 'Unknown'} Lv ${c.level ?? 1}`;
                 select.appendChild(opt);
             });
 
@@ -437,16 +841,15 @@
             btn.className = 'btn-link';
             btn.textContent = 'Link';
             btn.addEventListener('click', async () => {
-                const charId = select.value;
-                if (!charId) return;
+                if (!select.value) return;
                 btn.disabled = true;
                 btn.textContent = 'Linking…';
-                await linkCharacterToCampaign(currentUser.uid, campaignId, charId);
+                await linkCharacterToCampaign(currentUser.uid, campaignId, select.value);
                 await loadCampaign();
             });
 
             wrap.append(label, select, btn);
-            el.appendChild(wrap);
+            return wrap;
         }
     </script>
 </body>

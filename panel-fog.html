@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fog of War — Brackenroll GM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #14110d;
+            color: #e8dcc8;
+            font-family: 'Cinzel', serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+            gap: 14px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 0.62em;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #c9a84c;
+            flex-shrink: 0;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .row-label {
+            font-size: 0.62em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #8a7860;
+        }
+        .toggle-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 6px 18px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.22);
+            color: #5a4e3e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toggle-btn.on  { border-color: rgba(90,158,90,0.5); color: #5a9e5a; background: rgba(90,158,90,0.08); }
+        .toggle-btn:hover { border-color: rgba(201,168,76,0.6); color: #c9a84c; }
+        .toggle-btn:disabled { opacity: 0.3; cursor: default; }
+        .shape-count {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.85em;
+            color: #5a4e3e;
+        }
+        .actions { display: flex; gap: 8px; }
+        .act-btn {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 8px 6px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.22);
+            color: #6a5a40;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        .act-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .act-btn.danger:hover:not(:disabled) { border-color: rgba(192,96,96,0.5); color: #c06060; }
+        .act-btn:disabled { opacity: 0.3; cursor: default; }
+        .divider { height: 1px; background: rgba(201,168,76,0.1); }
+        .note {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.82em;
+            color: #4a3e2e;
+            line-height: 1.5;
+        }
+        .waiting {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: #4a3e2e;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fog of War</h1>
+
+    <div class="row">
+        <span class="row-label">Fog</span>
+        <button class="toggle-btn" id="btnToggle" disabled>Off</button>
+    </div>
+
+    <div class="shape-count" id="shapeCount">—</div>
+
+    <div class="divider"></div>
+
+    <div class="actions">
+        <button class="act-btn" id="btnRevealAll" disabled>Reveal All</button>
+        <button class="act-btn danger" id="btnReset" disabled>Reset</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="note">Drawing tools (circle, rect, erase) are only available in the main table window.</p>
+
+    <p class="waiting" id="waiting">Waiting for table connection…</p>
+
+    <script>
+        const bc = new BroadcastChannel('brackenroll-gm-panels');
+        let connected = false;
+        let fogEnabled = false, fogShapeCount = 0, fogHasScene = false;
+
+        bc.onmessage = e => {
+            const d = e.data;
+            if (d.type !== 'state_update') return;
+            fogEnabled    = d.payload.fogEnabled    ?? false;
+            fogShapeCount = d.payload.fogShapeCount ?? 0;
+            fogHasScene   = d.payload.fogHasScene   ?? false;
+            if (!connected) {
+                connected = true;
+                document.getElementById('waiting').style.display = 'none';
+            }
+            render();
+        };
+
+        document.getElementById('btnToggle').addEventListener('click', () => {
+            bc.postMessage({ type: 'fog_toggle' });
+        });
+        document.getElementById('btnRevealAll').addEventListener('click', () => {
+            bc.postMessage({ type: 'fog_reveal_all' });
+        });
+        document.getElementById('btnReset').addEventListener('click', () => {
+            bc.postMessage({ type: 'fog_reset' });
+        });
+
+        function render() {
+            const toggleBtn = document.getElementById('btnToggle');
+            toggleBtn.textContent = fogEnabled ? 'On' : 'Off';
+            toggleBtn.classList.toggle('on', fogEnabled);
+            toggleBtn.disabled = !fogHasScene;
+
+            document.getElementById('shapeCount').textContent =
+                fogEnabled ? `${fogShapeCount} reveal area${fogShapeCount !== 1 ? 's' : ''}` : 'Fog disabled';
+
+            document.getElementById('btnRevealAll').disabled = !fogEnabled;
+            document.getElementById('btnReset').disabled = !fogEnabled;
+        }
+
+        bc.postMessage({ type: 'panel_ready' });
+    </script>
+</body>
+</html>

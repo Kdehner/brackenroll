@@ -1,0 +1,9 @@
+{
+  "allowedTools": [
+    "Bash(SUPABASE_ACCESS_TOKEN=$(cat ~/.config/supabase/access-token) ~/.local/share/supabase/supabase migration new *)",
+    "Bash(SUPABASE_ACCESS_TOKEN=$(cat ~/.config/supabase/access-token) ~/.local/share/supabase/supabase migration repair *)",
+    "Bash(SUPABASE_ACCESS_TOKEN=$(cat ~/.config/supabase/access-token) ~/.local/share/supabase/supabase db push *)",
+    "Bash(SUPABASE_ACCESS_TOKEN=$(cat ~/.config/supabase/access-token) ~/.local/share/supabase/supabase migration list *)",
+    "Bash(SUPABASE_ACCESS_TOKEN=$(cat ~/.config/supabase/access-token) ~/.local/share/supabase/supabase link *)"
+  ]
+}

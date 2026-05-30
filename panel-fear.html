@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fear Tracker — Brackenroll GM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #14110d;
+            color: #e8dcc8;
+            font-family: 'Cinzel', serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+            gap: 16px;
+        }
+        h1 {
+            font-size: 0.62em;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #c9a84c;
+        }
+        .pips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .pip {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(201,168,76,0.25);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .pip.filled { background: #c9a84c; border-color: #c9a84c; }
+        .pip:hover  { border-color: #c9a84c; }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
+        .adj {
+            width: 54px;
+            height: 54px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.3);
+            color: #c9a84c;
+            font-family: 'Cinzel', serif;
+            font-size: 1.6em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .adj:hover { background: rgba(201,168,76,0.1); border-color: #c9a84c; }
+        .num {
+            font-size: 3.6em;
+            font-weight: 700;
+            color: #e8dcc8;
+            line-height: 1;
+            text-align: center;
+            min-width: 60px;
+        }
+        .vis-btn {
+            width: 100%;
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.22);
+            color: #6a5a40;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .vis-btn.visible { border-color: rgba(90,158,90,0.5); color: #5a9e5a; }
+        .vis-btn:hover   { border-color: #c9a84c; color: #c9a84c; }
+        .waiting {
+            color: #4a3e2e;
+            font-style: italic;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fear Tracker</h1>
+    <div class="pips" id="pips"></div>
+    <div class="controls">
+        <button class="adj" id="btnMinus">−</button>
+        <div class="num" id="num">—</div>
+        <button class="adj" id="btnPlus">+</button>
+    </div>
+    <button class="vis-btn" id="visBtn">—</button>
+    <p class="waiting" id="waiting">Waiting for table connection…</p>
+
+    <script>
+        const bc = new BroadcastChannel('brackenroll-gm-panels');
+        let fear = 0, fearVisible = false, connected = false;
+
+        bc.onmessage = e => {
+            const d = e.data;
+            if (d.type !== 'state_update') return;
+            fear = d.payload.fear || 0;
+            fearVisible = d.payload.fearVisible || false;
+            if (!connected) {
+                connected = true;
+                document.getElementById('waiting').style.display = 'none';
+            }
+            render();
+        };
+
+        document.getElementById('btnMinus').onclick = () => bc.postMessage({ type: 'fear_minus' });
+        document.getElementById('btnPlus' ).onclick = () => bc.postMessage({ type: 'fear_plus' });
+        document.getElementById('visBtn'  ).onclick = () => bc.postMessage({ type: 'fear_toggle_visible' });
+
+        function render() {
+            document.getElementById('num').textContent = fear;
+
+            const pipsEl = document.getElementById('pips');
+            pipsEl.innerHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                const pip = document.createElement('div');
+                pip.className = 'pip' + (i <= fear ? ' filled' : '');
+                pip.onclick = () => bc.postMessage({ type: 'fear_set', value: i });
+                pipsEl.appendChild(pip);
+            }
+
+            const visBtn = document.getElementById('visBtn');
+            visBtn.textContent = fearVisible ? 'Shown to Players' : 'Hidden from Players';
+            visBtn.className = 'vis-btn' + (fearVisible ? ' visible' : '');
+        }
+
+        // Announce to main window that this panel is open and ready
+        bc.postMessage({ type: 'panel_ready' });
+    </script>
+</body>
+</html>

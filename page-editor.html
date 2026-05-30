@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Pages — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .pe-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 56px 80px;
+        }
+
+        /* ── Header ── */
+        .pe-header {
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .pe-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            transition: color 0.2s;
+        }
+        .pe-back:hover { color: var(--gold); }
+        .pe-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+        .pe-subtitle {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        /* ── Body split ── */
+        .pe-body {
+            display: flex;
+            gap: 0;
+            align-items: flex-start;
+        }
+
+        /* ── Sidebar ── */
+        .pe-sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-gold);
+            padding-right: 24px;
+        }
+        .pe-new-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        .pe-new-btn:hover { background: var(--h-gold-b); }
+
+        .pe-page-list { display: flex; flex-direction: column; gap: 2px; }
+
+        .pe-page-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .pe-page-item:hover { background: var(--card-hover); border-color: var(--border-gold); }
+        .pe-page-item.active { background: var(--card-hover); border-color: var(--gold); }
+
+        .pe-page-item-inner {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+        .pe-page-icon { font-size: 0.9em; flex-shrink: 0; }
+        .pe-page-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pe-page-item.active .pe-page-name { color: var(--gold-mid); }
+        .pe-vis-lock { font-size: 0.7em; opacity: 0.5; flex-shrink: 0; }
+
+        .pe-page-controls {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .pe-ctrl-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            color: var(--ink-dim);
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 2px 5px;
+            cursor: pointer;
+            transition: all 0.15s;
+            line-height: 1.4;
+        }
+        .pe-ctrl-btn:hover:not(:disabled) { color: var(--gold); border-color: var(--border-gold); }
+        .pe-ctrl-btn:disabled { opacity: 0.3; cursor: default; }
+        .pe-ctrl-del { color: rgba(180,60,60,0.6); }
+        .pe-ctrl-del:hover:not(:disabled) { color: rgba(180,60,60,0.9); border-color: rgba(180,60,60,0.4); }
+
+        /* ── Main editor ── */
+        .pe-main {
+            flex: 1;
+            padding-left: 36px;
+            min-width: 0;
+        }
+
+        .pe-editor-empty {
+            padding: 60px 0;
+            text-align: center;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        /* ── Form fields ── */
+        .pe-form-section {
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .pe-form-row { margin-bottom: 14px; }
+        .pe-form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .pe-form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .pe-label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 6px;
+        }
+        .pe-input,
+        .pe-select,
+        .pe-textarea {
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            padding: 9px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .pe-input:focus,
+        .pe-select:focus,
+        .pe-textarea:focus { border-color: var(--gold); }
+        .pe-input::placeholder,
+        .pe-textarea::placeholder { color: var(--ink-dim); }
+        .pe-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+        .pe-select { appearance: none; background-image: none; cursor: pointer; }
+
+        /* ── Blocks ── */
+        .pe-blocks-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-gold);
+            margin-bottom: 16px;
+        }
+
+        .pe-blocks { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .pe-blocks-empty {
+            font-style: italic;
+            color: var(--ink-dim);
+            font-size: 0.9em;
+            padding: 16px 0;
+        }
+
+        .pe-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+        .pe-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.04);
+        }
+        .pe-block-type-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+        }
+        .pe-block-btns { display: flex; gap: 4px; }
+        .pe-block-body { padding: 14px 16px; }
+        .pe-block-body .pe-form-row:last-child { margin-bottom: 0; }
+
+        /* Card grid block: per-card items */
+        .pe-card-list { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+        .pe-card-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+        }
+        .pe-card-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 10px;
+        }
+        .pe-card-item .pe-input,
+        .pe-card-item .pe-textarea { margin-bottom: 8px; }
+        .pe-card-item .pe-input:last-child,
+        .pe-card-item .pe-textarea:last-child { margin-bottom: 0; }
+        .pe-card-accent-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pe-card-accent-row .pe-label { margin-bottom: 0; white-space: nowrap; }
+        .pe-card-accent-row .pe-input { margin-bottom: 0; }
+        .pe-add-card-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 4px;
+        }
+        .pe-add-card-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+
+        /* ── Add block row ── */
+        .pe-add-block {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .pe-add-block .pe-select { flex: 1; }
+        .pe-add-block-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.4);
+            background: transparent;
+            padding: 9px 18px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .pe-add-block-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+
+        /* ── Actions ── */
+        .pe-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        .pe-save-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 11px 28px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .pe-save-btn:hover { background: var(--h-gold-b); }
+        .pe-save-btn:disabled { opacity: 0.5; cursor: default; }
+
+        .pe-delete-page-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.66em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.65);
+            border: 1px solid rgba(180,60,60,0.22);
+            background: transparent;
+            padding: 11px 18px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .pe-delete-page-btn:hover { border-color: rgba(180,60,60,0.55); color: rgba(180,60,60,0.9); }
+
+        .pe-save-status {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+        .pe-save-status.ok { color: #5a9e5a; }
+        .pe-save-status.err { color: rgba(180,60,60,0.8); }
+
+        /* ── Preview link ── */
+        .pe-preview-link {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            margin-left: auto;
+            transition: color 0.2s;
+        }
+        .pe-preview-link:hover { color: var(--gold); }
+
+        @media (max-width: 800px) {
+            .pe-wrap { padding: 28px 20px 60px; }
+            .pe-body { flex-direction: column; }
+            .pe-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-gold); padding-right: 0; padding-bottom: 24px; margin-bottom: 28px; }
+            .pe-main { padding-left: 0; }
+            .pe-form-row-2,
+            .pe-form-row-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav"></nav>
+
+    <div class="pe-wrap" id="peWrap" style="display:none;">
+
+        <div class="pe-header">
+            <a id="backLink" href="campaign.html" class="pe-back">← Campaign</a>
+            <div class="pe-title">Campaign Pages</div>
+            <div class="pe-subtitle">Author world-building content for your players</div>
+        </div>
+
+        <div class="pe-body">
+            <div class="pe-sidebar">
+                <button class="pe-new-btn" id="newPageBtn">+ New Page</button>
+                <div class="pe-page-list" id="pageList"></div>
+            </div>
+            <div class="pe-main" id="peMain">
+                <div class="pe-editor-empty">Select a page to edit, or create a new one.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container" id="errorWrap" style="display:none;">
+        <p style="color:var(--ink-dim);font-style:italic;padding:80px 0;text-align:center;">
+            Campaign not found or you don't have access to this page.
+        </p>
+    </div>
+
+    <script type="module">
+        import {
+            onAuthChange,
+            getCampaign,
+            getCampaignPages,
+            saveCampaignPage,
+            deleteCampaignPage,
+            reorderCampaignPages
+        } from './supabase-client.js';
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+
+        if (!campaignId) window.location.href = 'index.html';
+
+        let currentUser = null;
+        let campaign    = null;
+        let pages       = [];
+        let activePage  = null; // deep copy being edited
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+
+        onAuthChange(async user => {
+            if (!user) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(window.location.href)}`;
+                return;
+            }
+            currentUser = user;
+            await init();
+        });
+
+        async function init() {
+            [campaign, pages] = await Promise.all([
+                getCampaign(campaignId),
+                getCampaignPages(campaignId)
+            ]);
+
+            if (!campaign || campaign.gm_id !== currentUser.uid) {
+                document.getElementById('errorWrap').style.display = 'block';
+                return;
+            }
+
+            document.title   = `Campaign Pages — ${campaign.name}`;
+            document.getElementById('backLink').href = `campaign.html?id=${campaignId}`;
+            document.getElementById('peWrap').style.display = 'block';
+
+            renderPageList();
+            if (pages.length > 0) selectPage(pages[0]);
+        }
+
+        // ── Page list ─────────────────────────────────────────────────────────
+
+        function renderPageList() {
+            const list = document.getElementById('pageList');
+            list.innerHTML = '';
+            pages.forEach((page, i) => {
+                const item = document.createElement('div');
+                item.className = 'pe-page-item' + (activePage?.id === page.id || activePage?._isNew === page._isNew ? ' active' : '');
+                item.innerHTML =
+                    `<div class="pe-page-item-inner">` +
+                        `<span class="pe-page-icon">${esc(page.icon || '')}</span>` +
+                        `<span class="pe-page-name">${esc(page.title || 'Untitled')}</span>` +
+                        (page.visibility === 'gm_only' ? `<span class="pe-vis-lock" title="GM Only">🔒</span>` : '') +
+                    `</div>` +
+                    `<div class="pe-page-controls">` +
+                        `<button class="pe-ctrl-btn" data-action="up" data-idx="${i}" title="Move up" ${i === 0 ? 'disabled' : ''}>↑</button>` +
+                        `<button class="pe-ctrl-btn" data-action="down" data-idx="${i}" title="Move down" ${i === pages.length - 1 ? 'disabled' : ''}>↓</button>` +
+                    `</div>`;
+
+                item.addEventListener('click', e => {
+                    if (!e.target.closest('.pe-page-controls')) selectPage(page);
+                });
+                item.querySelectorAll('[data-action]').forEach(btn => {
+                    btn.addEventListener('click', async e => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.idx);
+                        if (btn.dataset.action === 'up'   && idx > 0)                  await movePage(idx, idx - 1);
+                        if (btn.dataset.action === 'down' && idx < pages.length - 1)   await movePage(idx, idx + 1);
+                    });
+                });
+                list.appendChild(item);
+            });
+        }
+
+        async function movePage(fromIdx, toIdx) {
+            [pages[fromIdx], pages[toIdx]] = [pages[toIdx], pages[fromIdx]];
+            pages.forEach((p, i) => { p.sort_order = i; });
+            await reorderCampaignPages(pages.map(p => ({ id: p.id, sort_order: p.sort_order })));
+            renderPageList();
+        }
+
+        document.getElementById('newPageBtn').addEventListener('click', () => {
+            const newPage = {
+                _isNew: true,
+                title: '',
+                slug: '',
+                icon: '',
+                visibility: 'players',
+                sort_order: pages.length,
+                blocks: []
+            };
+            selectPage(newPage, true);
+        });
+
+        function selectPage(page, isNew = false) {
+            activePage = JSON.parse(JSON.stringify(page));
+            if (isNew) activePage._isNew = true;
+            renderPageList();
+            renderEditor();
+        }
+
+        // ── Editor ────────────────────────────────────────────────────────────
+
+        function renderEditor() {
+            const main = document.getElementById('peMain');
+            if (!activePage) {
+                main.innerHTML = '<div class="pe-editor-empty">Select a page to edit, or create a new one.</div>';
+                return;
+            }
+
+            main.innerHTML =
+                `<div class="pe-form-section">` +
+                    `<div class="pe-form-row">` +
+                        `<label class="pe-label">Title</label>` +
+                        `<input type="text" id="pageTitle" class="pe-input" placeholder="e.g. World Primer" value="${esc(activePage.title)}">` +
+                    `</div>` +
+                    `<div class="pe-form-row-2">` +
+                        `<div>` +
+                            `<label class="pe-label">Slug</label>` +
+                            `<input type="text" id="pageSlug" class="pe-input" placeholder="world-primer" value="${esc(activePage.slug)}">` +
+                        `</div>` +
+                        `<div>` +
+                            `<label class="pe-label">Icon (emoji)</label>` +
+                            `<input type="text" id="pageIcon" class="pe-input" placeholder="🌍" maxlength="8" value="${esc(activePage.icon || '')}">` +
+                        `</div>` +
+                    `</div>` +
+                    `<div class="pe-form-row">` +
+                        `<label class="pe-label">Visibility</label>` +
+                        `<select id="pageVisibility" class="pe-select">` +
+                            `<option value="players" ${activePage.visibility === 'players'  ? 'selected' : ''}>Players — visible to all campaign members</option>` +
+                            `<option value="gm_only" ${activePage.visibility === 'gm_only' ? 'selected' : ''}>GM Only — hidden from players</option>` +
+                        `</select>` +
+                    `</div>` +
+                `</div>` +
+
+                `<div class="pe-blocks-label">Blocks</div>` +
+                `<div class="pe-blocks" id="blocksContainer"></div>` +
+
+                `<div class="pe-add-block">` +
+                    `<select id="addBlockType" class="pe-select">` +
+                        `<option value="">Add a block…</option>` +
+                        `<option value="prose">Prose — paragraphs of text</option>` +
+                        `<option value="heading">Heading — section title</option>` +
+                        `<option value="callout">Callout — highlighted box</option>` +
+                        `<option value="list">List — dashed bullet list</option>` +
+                        `<option value="card_grid">Card Grid — 2 or 3 column cards</option>` +
+                        `<option value="image">Image — with optional caption</option>` +
+                    `</select>` +
+                    `<button id="addBlockBtn" class="pe-add-block-btn">Add</button>` +
+                `</div>` +
+
+                `<div class="pe-actions">` +
+                    `<button id="savePageBtn" class="pe-save-btn">Save Page</button>` +
+                    (activePage.id ? `<button id="deletePageBtn" class="pe-delete-page-btn">Delete Page</button>` : '') +
+                    `<span id="saveStatus" class="pe-save-status"></span>` +
+                    `<a href="primer.html?campaign=${campaignId}" target="_blank" class="pe-preview-link">Preview →</a>` +
+                `</div>`;
+
+            // Auto-slug from title
+            document.getElementById('pageTitle').addEventListener('input', e => {
+                const slugEl = document.getElementById('pageSlug');
+                if (!activePage.id || !activePage.slug) {
+                    slugEl.value = slugify(e.target.value);
+                }
+            });
+
+            document.getElementById('addBlockBtn').addEventListener('click', () => {
+                const type = document.getElementById('addBlockType').value;
+                if (!type) return;
+                syncBlockFields();
+                activePage.blocks.push({ type, data: newBlockData(type) });
+                document.getElementById('addBlockType').value = '';
+                renderBlocks();
+            });
+
+            document.getElementById('savePageBtn').addEventListener('click', save);
+
+            const delBtn = document.getElementById('deletePageBtn');
+            if (delBtn) delBtn.addEventListener('click', deletePage);
+
+            renderBlocks();
+        }
+
+        function renderBlocks() {
+            const container = document.getElementById('blocksContainer');
+            if (!container) return;
+
+            if (!activePage.blocks.length) {
+                container.innerHTML = '<p class="pe-blocks-empty">No blocks yet. Add one below.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            activePage.blocks.forEach((block, i) => {
+                container.appendChild(buildBlockEditor(block, i));
+            });
+        }
+
+        function buildBlockEditor(block, i) {
+            const isFirst = i === 0;
+            const isLast  = i === activePage.blocks.length - 1;
+
+            const div = document.createElement('div');
+            div.className = 'pe-block';
+            div.dataset.blockIdx = i;
+
+            div.innerHTML =
+                `<div class="pe-block-header">` +
+                    `<span class="pe-block-type-badge">${block.type.replace(/_/g, ' ')}</span>` +
+                    `<div class="pe-block-btns">` +
+                        `<button class="pe-ctrl-btn" data-baction="up"  ${isFirst ? 'disabled' : ''} title="Move up">↑</button>` +
+                        `<button class="pe-ctrl-btn" data-baction="down" ${isLast  ? 'disabled' : ''} title="Move down">↓</button>` +
+                        `<button class="pe-ctrl-btn pe-ctrl-del" data-baction="del" title="Remove block">×</button>` +
+                    `</div>` +
+                `</div>` +
+                `<div class="pe-block-body">${buildBlockBodyHtml(block)}</div>`;
+
+            // Block control buttons
+            div.querySelectorAll('[data-baction]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    syncBlockFields();
+                    const action = btn.dataset.baction;
+                    if (action === 'up'  && i > 0)                          [activePage.blocks[i-1], activePage.blocks[i]] = [activePage.blocks[i], activePage.blocks[i-1]];
+                    else if (action === 'down' && i < activePage.blocks.length - 1) [activePage.blocks[i], activePage.blocks[i+1]] = [activePage.blocks[i+1], activePage.blocks[i]];
+                    else if (action === 'del')                               activePage.blocks.splice(i, 1);
+                    renderBlocks();
+                });
+            });
+
+            // Card grid: add/remove card buttons
+            if (block.type === 'card_grid') {
+                const addCardBtn = div.querySelector('.pe-add-card-btn');
+                if (addCardBtn) {
+                    addCardBtn.addEventListener('click', () => {
+                        syncBlockFields();
+                        activePage.blocks[i].data.cards.push({ title: '', badge: '', body: '', accent: '' });
+                        renderBlocks();
+                    });
+                }
+                div.querySelectorAll('[data-card-del]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const ci = parseInt(btn.dataset.cardDel);
+                        syncBlockFields();
+                        activePage.blocks[i].data.cards.splice(ci, 1);
+                        renderBlocks();
+                    });
+                });
+            }
+
+            return div;
+        }
+
+        function buildBlockBodyHtml(block) {
+            const d = block.data || {};
+            switch (block.type) {
+                case 'heading':
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Heading text</label>` +
+                        `<input type="text" class="pe-input" data-f="text" placeholder="Section title" value="${esc(d.text || '')}">` +
+                        `</div>`;
+
+                case 'prose':
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Text — blank line = new paragraph</label>` +
+                        `<textarea class="pe-textarea" data-f="text" rows="6" placeholder="Paragraph text here…">${esc(d.text || '')}</textarea>` +
+                        `</div>`;
+
+                case 'callout': {
+                    const style = d.style || 'info';
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Style</label>` +
+                        `<select class="pe-select" data-f="style">` +
+                            `<option value="info"    ${style === 'info'    ? 'selected' : ''}>Info — parchment box</option>` +
+                            `<option value="warning" ${style === 'warning' ? 'selected' : ''}>Warning — centered, gold border</option>` +
+                            `<option value="quote"   ${style === 'quote'   ? 'selected' : ''}>Quote — italic, left border</option>` +
+                            `<option value="flavor"  ${style === 'flavor'  ? 'selected' : ''}>Flavor — italic, minimal</option>` +
+                        `</select>` +
+                        `</div>` +
+                        `<div class="pe-form-row">` +
+                        `<label class="pe-label">Title (optional)</label>` +
+                        `<input type="text" class="pe-input" data-f="title" placeholder="Leave blank for no title" value="${esc(d.title || '')}">` +
+                        `</div>` +
+                        `<div class="pe-form-row">` +
+                        `<label class="pe-label">Text — blank line = new paragraph</label>` +
+                        `<textarea class="pe-textarea" data-f="text" rows="4" placeholder="Callout text…">${esc(d.text || '')}</textarea>` +
+                        `</div>`;
+                }
+
+                case 'list':
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Items — one per line</label>` +
+                        `<textarea class="pe-textarea" data-f="items" rows="5" placeholder="Item one\nItem two\nItem three">${esc((d.items || []).join('\n'))}</textarea>` +
+                        `</div>`;
+
+                case 'card_grid': {
+                    const cols  = d.cols  || 2;
+                    const cards = d.cards || [];
+                    let cardsHtml = '';
+                    cards.forEach((card, ci) => {
+                        cardsHtml +=
+                            `<div class="pe-card-item">` +
+                                `<div class="pe-card-item-header">Card ${ci + 1}<button class="pe-ctrl-btn pe-ctrl-del" data-card-del="${ci}">×</button></div>` +
+                                `<input type="text" class="pe-input" data-cf="title" placeholder="Card title" value="${esc(card.title || '')}">` +
+                                `<input type="text" class="pe-input" data-cf="badge" placeholder="Badge label (optional)" value="${esc(card.badge || '')}">` +
+                                `<textarea class="pe-textarea" data-cf="body" rows="3" placeholder="Card body text">${esc(card.body || '')}</textarea>` +
+                                `<div class="pe-card-accent-row">` +
+                                    `<label class="pe-label">Accent color</label>` +
+                                    `<input type="text" class="pe-input" data-cf="accent" placeholder="#5a5040 (optional)" value="${esc(card.accent || '')}">` +
+                                `</div>` +
+                            `</div>`;
+                    });
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Columns</label>` +
+                        `<select class="pe-select" data-f="cols">` +
+                            `<option value="2" ${cols === 2 ? 'selected' : ''}>2 columns</option>` +
+                            `<option value="3" ${cols === 3 ? 'selected' : ''}>3 columns</option>` +
+                        `</select>` +
+                        `</div>` +
+                        `<div class="pe-card-list">${cardsHtml}</div>` +
+                        `<button class="pe-add-card-btn">+ Add Card</button>`;
+                }
+
+                case 'image':
+                    return `<div class="pe-form-row">` +
+                        `<label class="pe-label">Image URL</label>` +
+                        `<input type="text" class="pe-input" data-f="url" placeholder="https://…" value="${esc(d.url || '')}">` +
+                        `</div>` +
+                        `<div class="pe-form-row-2">` +
+                        `<div>` +
+                            `<label class="pe-label">Alt text</label>` +
+                            `<input type="text" class="pe-input" data-f="alt" placeholder="Describe the image" value="${esc(d.alt || '')}">` +
+                        `</div>` +
+                        `<div>` +
+                            `<label class="pe-label">Caption (optional)</label>` +
+                            `<input type="text" class="pe-input" data-f="caption" placeholder="Caption shown below image" value="${esc(d.caption || '')}">` +
+                        `</div>` +
+                        `</div>`;
+
+                default:
+                    return `<p style="color:var(--ink-dim);font-style:italic;font-size:0.9em;">Unknown block type: ${esc(block.type)}</p>`;
+            }
+        }
+
+        // ── State sync ────────────────────────────────────────────────────────
+
+        function syncBlockFields() {
+            const container = document.getElementById('blocksContainer');
+            if (!container) return;
+
+            container.querySelectorAll('.pe-block').forEach(blockEl => {
+                const i     = parseInt(blockEl.dataset.blockIdx);
+                const block = activePage.blocks[i];
+                if (!block) return;
+                const body = blockEl.querySelector('.pe-block-body');
+
+                switch (block.type) {
+                    case 'heading':
+                        block.data.text = body.querySelector('[data-f="text"]')?.value ?? '';
+                        break;
+                    case 'prose':
+                        block.data.text = body.querySelector('[data-f="text"]')?.value ?? '';
+                        break;
+                    case 'callout':
+                        block.data.style = body.querySelector('[data-f="style"]')?.value ?? 'info';
+                        block.data.title = body.querySelector('[data-f="title"]')?.value ?? '';
+                        block.data.text  = body.querySelector('[data-f="text"]')?.value  ?? '';
+                        break;
+                    case 'list':
+                        block.data.items = (body.querySelector('[data-f="items"]')?.value ?? '')
+                            .split('\n').map(s => s.trim()).filter(Boolean);
+                        break;
+                    case 'card_grid': {
+                        block.data.cols  = parseInt(body.querySelector('[data-f="cols"]')?.value ?? '2');
+                        block.data.cards = [];
+                        body.querySelectorAll('.pe-card-item').forEach(cardEl => {
+                            block.data.cards.push({
+                                title:  cardEl.querySelector('[data-cf="title"]')?.value  ?? '',
+                                badge:  cardEl.querySelector('[data-cf="badge"]')?.value  ?? '',
+                                body:   cardEl.querySelector('[data-cf="body"]')?.value   ?? '',
+                                accent: cardEl.querySelector('[data-cf="accent"]')?.value ?? '',
+                            });
+                        });
+                        break;
+                    }
+                    case 'image':
+                        block.data.url     = body.querySelector('[data-f="url"]')?.value     ?? '';
+                        block.data.alt     = body.querySelector('[data-f="alt"]')?.value     ?? '';
+                        block.data.caption = body.querySelector('[data-f="caption"]')?.value ?? '';
+                        break;
+                }
+            });
+        }
+
+        function syncPageMeta() {
+            activePage.title      = document.getElementById('pageTitle')?.value.trim()     ?? activePage.title;
+            activePage.slug       = document.getElementById('pageSlug')?.value.trim()      ?? activePage.slug;
+            activePage.icon       = document.getElementById('pageIcon')?.value.trim()      ?? activePage.icon;
+            activePage.visibility = document.getElementById('pageVisibility')?.value        ?? activePage.visibility;
+        }
+
+        // ── Save ──────────────────────────────────────────────────────────────
+
+        async function save() {
+            syncBlockFields();
+            syncPageMeta();
+
+            if (!activePage.title) {
+                setStatus('Title is required.', 'err');
+                return;
+            }
+            if (!activePage.slug) {
+                activePage.slug = slugify(activePage.title);
+                const slugEl = document.getElementById('pageSlug');
+                if (slugEl) slugEl.value = activePage.slug;
+            }
+
+            const saveBtn = document.getElementById('savePageBtn');
+            saveBtn.disabled    = true;
+            saveBtn.textContent = 'Saving…';
+
+            try {
+                const payload = {
+                    id:         activePage.id,
+                    title:      activePage.title,
+                    slug:       activePage.slug,
+                    icon:       activePage.icon || null,
+                    visibility: activePage.visibility,
+                    sort_order: activePage.sort_order ?? pages.length,
+                    blocks:     activePage.blocks,
+                };
+
+                const savedId = await saveCampaignPage(currentUser.uid, campaignId, payload);
+
+                if (!activePage.id) {
+                    // New page — add to list
+                    activePage.id    = savedId;
+                    activePage._isNew = false;
+                    pages.push({ ...activePage });
+                } else {
+                    // Update existing entry in pages list
+                    const idx = pages.findIndex(p => p.id === activePage.id);
+                    if (idx >= 0) pages[idx] = { ...activePage };
+                }
+
+                renderPageList();
+                setStatus('Saved.', 'ok');
+                // Refresh delete button now page has an id
+                const actions = document.querySelector('.pe-actions');
+                if (actions && !document.getElementById('deletePageBtn')) {
+                    const delBtn = document.createElement('button');
+                    delBtn.id        = 'deletePageBtn';
+                    delBtn.className = 'pe-delete-page-btn';
+                    delBtn.textContent = 'Delete Page';
+                    delBtn.addEventListener('click', deletePage);
+                    const saveBtn2 = document.getElementById('savePageBtn');
+                    saveBtn2.after(delBtn);
+                }
+            } catch (err) {
+                console.error(err);
+                setStatus(err.message?.includes('duplicate') ? 'A page with that slug already exists.' : 'Save failed.', 'err');
+            } finally {
+                saveBtn.disabled    = false;
+                saveBtn.textContent = 'Save Page';
+            }
+        }
+
+        async function deletePage() {
+            if (!activePage?.id) return;
+            if (!confirm(`Delete "${activePage.title}"? This cannot be undone.`)) return;
+
+            await deleteCampaignPage(activePage.id);
+            pages = pages.filter(p => p.id !== activePage.id);
+            activePage = null;
+            renderPageList();
+            document.getElementById('peMain').innerHTML =
+                '<div class="pe-editor-empty">Select a page to edit, or create a new one.</div>';
+        }
+
+        function setStatus(msg, type = '') {
+            const el = document.getElementById('saveStatus');
+            if (!el) return;
+            el.textContent = msg;
+            el.className   = 'pe-save-status' + (type ? ` ${type}` : '');
+            if (type === 'ok') setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3000);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────
+
+        function newBlockData(type) {
+            switch (type) {
+                case 'heading':   return { text: '' };
+                case 'prose':     return { text: '' };
+                case 'callout':   return { style: 'info', title: '', text: '' };
+                case 'list':      return { items: [] };
+                case 'card_grid': return { cols: 2, cards: [{ title: '', badge: '', body: '', accent: '' }] };
+                case 'image':     return { url: '', alt: '', caption: '' };
+                default:          return {};
+            }
+        }
+
+        function slugify(text) {
+            return text.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        function esc(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+
+    <script type="module" src="nav.js"></script>
+</body>
+</html>

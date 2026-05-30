@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loot Generator — Brackenroll GM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #14110d;
+            color: #e8dcc8;
+            font-family: 'Cinzel', serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 16px;
+            gap: 12px;
+        }
+        h1 {
+            font-size: 0.62em;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #c9a84c;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .ctrl-row {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 8px;
+            align-items: center;
+        }
+        .ctrl-label {
+            font-size: 0.58em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(232,220,200,0.5);
+        }
+        select {
+            appearance: none;
+            background: rgba(255,255,255,0.05);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #e8dcc8;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            padding: 6px 24px 6px 10px;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        select:focus { border-color: #c9a84c; }
+        .btn-roll {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: #c9a84c;
+            color: #0c0a07;
+            border: none;
+            padding: 9px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 4px;
+        }
+        .btn-roll:hover { background: #e0c070; }
+        .btn-roll:disabled { opacity: 0.4; cursor: default; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .results { display: flex; flex-direction: column; gap: 6px; }
+        .result-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 10px 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .result-main { flex: 1; min-width: 0; }
+        .result-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            font-weight: 600;
+            color: #e8dcc8;
+            margin-bottom: 4px;
+        }
+        .result-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            color: rgba(232,220,200,0.65);
+            line-height: 1.4;
+        }
+        .result-meta {
+            font-family: 'Cinzel', serif;
+            font-size: 0.52em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .r-common    { color: rgba(180,180,160,0.7); }
+        .r-uncommon  { color: rgba(120,180,100,0.8); }
+        .r-rare      { color: rgba(100,140,220,0.8); }
+        .r-legendary { color: #c9a84c; }
+        .btn-reroll {
+            flex-shrink: 0;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(232,220,200,0.45);
+            font-size: 0.95em;
+            line-height: 1;
+            padding: 5px 7px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 1px;
+        }
+        .btn-reroll:hover { border-color: #c9a84c; color: #c9a84c; }
+        .empty {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            color: rgba(232,220,200,0.4);
+            font-style: italic;
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Loot Generator</h1>
+
+    <div class="controls">
+        <div class="ctrl-row">
+            <span class="ctrl-label">Rarity</span>
+            <select id="ctrlRarity">
+                <option value="common">Common (2d12)</option>
+                <option value="uncommon">Uncommon (3d12)</option>
+                <option value="rare">Rare (4d12)</option>
+                <option value="legendary">Legendary (5d12)</option>
+            </select>
+        </div>
+        <div class="ctrl-row">
+            <span class="ctrl-label">Type</span>
+            <select id="ctrlType">
+                <option value="items">Items</option>
+                <option value="consumables">Consumables</option>
+                <option value="both">Both (mixed)</option>
+            </select>
+        </div>
+        <div class="ctrl-row">
+            <span class="ctrl-label">Count</span>
+            <select id="ctrlCount">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </div>
+        <button class="btn-roll" id="btnRoll" disabled>Roll Loot</button>
+    </div>
+
+    <hr class="divider">
+
+    <div class="results" id="results">
+        <div class="empty">Roll to generate loot.</div>
+    </div>
+
+    <script type="module">
+        import { loadLootData, rollSet, rollOne } from './loot-roller.js';
+
+        let lootData  = null;
+        let results   = [];
+        let curRarity = 'common';
+        let curType   = 'items';
+
+        loadLootData().then(data => {
+            lootData = data;
+            document.getElementById('btnRoll').disabled = false;
+        });
+
+        document.getElementById('btnRoll').addEventListener('click', () => {
+            if (!lootData) return;
+            curRarity = document.getElementById('ctrlRarity').value;
+            curType   = document.getElementById('ctrlType').value;
+            const count = parseInt(document.getElementById('ctrlCount').value, 10);
+            results = rollSet(curRarity, curType, count, lootData);
+            render();
+        });
+
+        function render() {
+            const container = document.getElementById('results');
+            container.innerHTML = '';
+            results.forEach((item, idx) => container.appendChild(buildCard(item, idx)));
+        }
+
+        function buildCard(item, idx) {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+
+            const main = document.createElement('div');
+            main.className = 'result-main';
+
+            const name = document.createElement('div');
+            name.className = 'result-name';
+            name.textContent = item.name;
+
+            const desc = document.createElement('div');
+            desc.className = 'result-desc';
+            desc.textContent = item.description;
+
+            const meta = document.createElement('div');
+            meta.className = `result-meta r-${item.rarity}`;
+            meta.textContent = `${item.rarity} · ${item.type}`;
+
+            main.append(name, desc, meta);
+
+            const rerollBtn = document.createElement('button');
+            rerollBtn.className = 'btn-reroll';
+            rerollBtn.title = 'Re-roll';
+            rerollBtn.textContent = '↻';
+            rerollBtn.addEventListener('click', () => {
+                results[idx] = rollOne(curRarity, curType, lootData);
+                card.replaceWith(buildCard(results[idx], idx));
+            });
+
+            card.append(main, rerollBtn);
+            return card;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversaries — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .adv-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 56px 100px;
+        }
+
+        /* ── Header ── */
+        .adv-header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .adv-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .adv-back:hover { color: var(--gold); }
+        .adv-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+        .adv-subtitle {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        /* ── Section header ── */
+        .sect-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .sect-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--gold-mid);
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        /* ── Adversary card grid ── */
+        .adv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2px;
+            margin-bottom: 24px;
+        }
+        .adv-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 18px 20px 14px;
+        }
+        .adv-card-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        .adv-card-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+        }
+        .badge-tier {
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.3);
+        }
+        .badge-role {
+            color: var(--ink-dim);
+            border: 1px solid var(--border);
+        }
+        .adv-card-stats {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-muted);
+            margin-bottom: 14px;
+        }
+        .adv-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 10px 28px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--h-gold-b); }
+        .btn-primary:disabled { opacity: 0.5; cursor: default; }
+        .btn-secondary {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 10px 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-sm {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.3);
+            background: transparent;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .btn-sm:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-danger-sm {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.7);
+            border: 1px solid rgba(180,60,60,0.25);
+            background: transparent;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .btn-danger-sm:hover { border-color: rgba(180,60,60,0.6); color: rgba(180,60,60,0.9); }
+        .btn-add-row {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            border: 1px solid var(--border-mid);
+            background: transparent;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add-row:hover { border-color: var(--gold); color: var(--gold); }
+        .btn-remove-row {
+            background: transparent;
+            border: none;
+            color: rgba(180,60,60,0.55);
+            font-size: 1.1em;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 2px;
+            transition: color 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-remove-row:hover { color: rgba(180,60,60,0.9); }
+
+        /* ── Form section ── */
+        .form-section {
+            border-top: 1px solid var(--border-gold);
+            padding-top: 40px;
+            margin-top: 48px;
+        }
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-input, .form-select, .form-textarea {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--gold);
+        }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+        }
+        .form-textarea { resize: vertical; }
+        .form-group { margin-bottom: 20px; }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .form-grid-5 {
+            display: grid;
+            grid-template-columns: 70px 1fr 1fr 1fr 100px;
+            gap: 12px;
+        }
+        .form-subsection {
+            margin-top: 32px;
+            margin-bottom: 8px;
+        }
+        .form-subsection-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ── Feature & experience rows ── */
+        .feature-row {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+        .feature-row-top {
+            display: grid;
+            grid-template-columns: 1fr 148px 64px 28px;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .exp-row {
+            display: grid;
+            grid-template-columns: 1fr 90px 28px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        /* ── Portrait ── */
+        .portrait-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .portrait-preview {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border: 1px solid var(--border-mid);
+            display: none;
+        }
+        .portrait-upload-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 9px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .portrait-upload-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        #portraitInput { display: none; }
+
+        /* ── Form actions ── */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── Misc ── */
+        .section-empty {
+            color: var(--ink-dim);
+            font-style: italic;
+            font-size: 0.9em;
+            padding: 12px 0;
+        }
+        .form-hint {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.82em;
+            color: var(--ink-dim);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* ── Template picker overlay ── */
+        .tpl-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.72);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .tpl-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            width: 100%;
+            max-width: 520px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .tpl-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border-gold);
+            flex-shrink: 0;
+        }
+        .tpl-card-header span {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+        }
+        .tpl-close {
+            background: transparent;
+            border: none;
+            color: var(--ink-dim);
+            font-size: 1.4em;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.15s;
+        }
+        .tpl-close:hover { color: var(--ink); }
+        .tpl-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .tpl-tab {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .tpl-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .tpl-tier-row {
+            display: flex;
+            gap: 4px;
+            padding: 10px 14px 8px;
+            flex-shrink: 0;
+        }
+        .tpl-tier-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            border: 1px solid var(--border);
+            background: transparent;
+            padding: 3px 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .tpl-tier-btn.active {
+            color: var(--gold);
+            border-color: rgba(201,168,76,0.5);
+            background: rgba(201,168,76,0.06);
+        }
+        .tpl-search {
+            background: rgba(255,255,255,0.04);
+            border: none;
+            border-bottom: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            padding: 9px 14px;
+            outline: none;
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .tpl-search:focus { border-bottom-color: var(--gold); }
+        .tpl-results { overflow-y: auto; flex: 1; min-height: 0; }
+        .tpl-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .tpl-row:hover { background: rgba(201,168,76,0.06); }
+        .tpl-row-name {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            color: var(--ink);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tpl-row-meta {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.08em;
+            color: var(--ink-dim);
+            white-space: nowrap;
+        }
+        .tpl-empty {
+            padding: 24px 16px;
+            text-align: center;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        @media (max-width: 700px) {
+            .adv-wrap { padding: 28px 20px 60px; }
+            .adv-title { font-size: 1.7em; }
+            .adv-grid { grid-template-columns: 1fr; }
+            .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+            .form-grid-5 { grid-template-columns: 1fr 1fr; }
+            .feature-row-top { grid-template-columns: 1fr 120px 28px; }
+            .feature-row-top .feat-uses { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"></nav>
+
+    <div class="adv-wrap" id="advWrap" style="display:none;">
+
+        <div class="adv-header">
+            <a href="#" class="adv-back" id="backLink">← Campaign</a>
+            <div class="adv-title">Adversaries</div>
+            <div class="adv-subtitle" id="campaignNameSub"></div>
+        </div>
+
+        <!-- List -->
+        <div id="listSection">
+            <div class="sect-header">
+                <h2>Custom Adversaries</h2>
+                <button class="btn-secondary" id="newAdvBtn">+ New Adversary</button>
+            </div>
+            <div class="adv-grid" id="advGrid"></div>
+            <div id="emptyNote" style="display:none;">
+                <p class="section-empty">No custom adversaries yet. Create one to get started.</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section" id="formSection" style="display:none;">
+            <div class="sect-header">
+                <h2 id="formTitle">New Adversary</h2>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn-sm" id="useTemplateBtn" style="display:none;">From Template…</button>
+                    <button class="btn-danger-sm" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+
+            <form id="advForm" novalidate>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label class="form-label" for="fName">Name <span style="color:rgba(180,60,60,0.7)">*</span></label>
+                    <input type="text" id="fName" class="form-input" placeholder="e.g. Briarcrest Guard Captain" required />
+                </div>
+
+                <!-- Tier / Role / Difficulty -->
+                <div class="form-group">
+                    <div class="form-grid-3">
+                        <div>
+                            <label class="form-label" for="fTier">Tier</label>
+                            <select id="fTier" class="form-select">
+                                <option value="1">Tier 1</option>
+                                <option value="2">Tier 2</option>
+                                <option value="3">Tier 3</option>
+                                <option value="4">Tier 4</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="fRole">Role</label>
+                            <select id="fRole" class="form-select">
+                                <option>Standard</option>
+                                <option>Solo</option>
+                                <option>Bruiser</option>
+                                <option>Ranged</option>
+                                <option>Skulk</option>
+                                <option>Leader</option>
+                                <option>Support</option>
+                                <option>Social</option>
+                                <option>Minion</option>
+                                <option>Horde (1/HP)</option>
+                                <option>Horde (2/HP)</option>
+                                <option>Horde (3/HP)</option>
+                                <option>Horde (5/HP)</option>
+                                <option>Horde (10/HP)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="fDifficulty">Difficulty</label>
+                            <input type="number" id="fDifficulty" class="form-input" placeholder="e.g. 14" min="1" max="30" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HP / Stress -->
+                <div class="form-group">
+                    <div class="form-grid-2">
+                        <div>
+                            <label class="form-label" for="fHp">HP <span style="color:rgba(180,60,60,0.7)">*</span></label>
+                            <input type="number" id="fHp" class="form-input" placeholder="e.g. 8" min="1" required />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fStress">Stress</label>
+                            <input type="number" id="fStress" class="form-input" placeholder="e.g. 3" min="0" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thresholds -->
+                <div class="form-group">
+                    <label class="form-label">Damage Thresholds</label>
+                    <div class="form-grid-3">
+                        <div>
+                            <label class="form-label" for="fThreshMinor" style="font-size:0.6em;opacity:0.7;">Minor</label>
+                            <input type="number" id="fThreshMinor" class="form-input" placeholder="e.g. 8" min="1" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fThreshMajor" style="font-size:0.6em;opacity:0.7;">Major</label>
+                            <input type="number" id="fThreshMajor" class="form-input" placeholder="e.g. 15" min="1" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fThreshSevere" style="font-size:0.6em;opacity:0.7;">Severe</label>
+                            <input type="number" id="fThreshSevere" class="form-input" placeholder="e.g. 24" min="1" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack -->
+                <div class="form-subsection">
+                    <div class="form-subsection-title">Attack</div>
+                    <div class="form-grid-5">
+                        <div>
+                            <label class="form-label" for="fAttkBonus">Bonus</label>
+                            <input type="text" id="fAttkBonus" class="form-input" placeholder="+3" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fAttkWeapon">Weapon</label>
+                            <input type="text" id="fAttkWeapon" class="form-input" placeholder="e.g. Longsword" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fAttkRange">Range</label>
+                            <input type="text" id="fAttkRange" class="form-input" placeholder="Close" list="rangeList" />
+                            <datalist id="rangeList">
+                                <option value="Melee">
+                                <option value="Very Close">
+                                <option value="Close">
+                                <option value="Far">
+                                <option value="Very Far">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="form-label" for="fAttkDamage">Damage</label>
+                            <input type="text" id="fAttkDamage" class="form-input" placeholder="1d10+3" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="fAttkType">Type</label>
+                            <select id="fAttkType" class="form-select">
+                                <option value="phy">Physical</option>
+                                <option value="mag">Magic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lore -->
+                <div class="form-group" style="margin-top:20px;">
+                    <label class="form-label" for="fLore">Lore</label>
+                    <textarea id="fLore" class="form-textarea" placeholder="A brief description of this adversary…" rows="3"></textarea>
+                </div>
+
+                <!-- Features -->
+                <div class="form-subsection">
+                    <div class="form-subsection-title">
+                        <span>Features</span>
+                        <button type="button" class="btn-add-row" id="addFeatureBtn">+ Add Feature</button>
+                    </div>
+                    <div id="featuresContainer"></div>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-subsection">
+                    <div class="form-subsection-title">
+                        <span>Experiences</span>
+                        <button type="button" class="btn-add-row" id="addExpBtn">+ Add Experience</button>
+                    </div>
+                    <div id="expContainer"></div>
+                    <p class="form-hint">Experiences give the adversary bonus dice on relevant rolls, e.g. "Ambush Tactics +2".</p>
+                </div>
+
+                <!-- Portrait -->
+                <div class="form-subsection">
+                    <div class="form-subsection-title">Portrait</div>
+                    <div class="portrait-area">
+                        <img id="portraitPreview" class="portrait-preview" alt="Portrait" />
+                        <div>
+                            <label class="portrait-upload-btn" id="portraitUploadLabel">
+                                Upload Portrait
+                                <input type="file" id="portraitInput" accept="image/*" />
+                            </label>
+                            <p class="form-hint" style="margin-top:8px;">Optional. Used as the adversary's token image.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change notes -->
+                <div class="form-group" style="margin-top:24px;">
+                    <label class="form-label" for="fChangeNotes">Change Notes <span style="font-size:0.85em;opacity:0.6;font-family:'EB Garamond',serif;text-transform:none;letter-spacing:0;">(optional, saved with version history)</span></label>
+                    <input type="text" id="fChangeNotes" class="form-input" placeholder="e.g. Increased HP for later sessions" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="saveBtn">Save Adversary</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn2">Cancel</button>
+                    <div id="formError" style="color:rgba(180,60,60,0.8);font-family:'EB Garamond',serif;font-size:0.9em;margin-left:auto;display:none;"></div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Template picker overlay -->
+    <div class="tpl-overlay" id="templateOverlay" style="display:none;">
+        <div class="tpl-card">
+            <div class="tpl-card-header">
+                <span>Choose a Template</span>
+                <button class="tpl-close" id="tplCloseBtn" aria-label="Close">×</button>
+            </div>
+            <div class="tpl-tabs">
+                <button class="tpl-tab active" id="tplTabOfficial">Official (173)</button>
+                <button class="tpl-tab" id="tplTabCustom">Homebrew</button>
+            </div>
+            <div class="tpl-tier-row" id="tplTierRow">
+                <button class="tpl-tier-btn active" data-tier="0">All</button>
+                <button class="tpl-tier-btn" data-tier="1">T1</button>
+                <button class="tpl-tier-btn" data-tier="2">T2</button>
+                <button class="tpl-tier-btn" data-tier="3">T3</button>
+                <button class="tpl-tier-btn" data-tier="4">T4</button>
+            </div>
+            <input type="search" class="tpl-search" id="tplSearch" placeholder="Search by name…" autocomplete="off" />
+            <div class="tpl-results" id="tplResults"></div>
+        </div>
+    </div>
+
+    <script type="module" src="nav.js"></script>
+    <script type="module">
+        import {
+            onAuthChange, getCampaign, getAdversaries, getMyLibrary, saveAdversary, deleteAdversary, uploadAsset
+        } from './supabase-client.js';
+        import { makeLog } from './logger.js';
+
+        const log = makeLog('data');
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+        const deepLinkId = params.get('id');
+        const isGlobal   = params.get('scope') === 'global';
+        const autoNew    = params.get('new') === '1';
+
+        let currentUser      = null;
+        let adversaries      = [];
+        let editingId        = null;
+        let pendingPortraitUrl = null;
+
+        // Template picker state
+        let officialAdvCache = null;
+        let tplTab           = 'official';
+        let tplTier          = 0;
+        let tplSearch        = '';
+
+        function titleCase(str) {
+            return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        async function loadOfficialAdv() {
+            if (officialAdvCache) return officialAdvCache;
+            const r = await fetch('/data/base/adversaries.json');
+            officialAdvCache = await r.json();
+            return officialAdvCache;
+        }
+
+        async function openTemplatePicker() {
+            const overlay = document.getElementById('templateOverlay');
+            overlay.style.display = 'flex';
+            document.getElementById('tplSearch').value = '';
+            tplSearch = '';
+            tplTier   = 0;
+            document.querySelectorAll('.tpl-tier-btn').forEach(b => b.classList.toggle('active', b.dataset.tier === '0'));
+            await renderTemplatePicker();
+            document.getElementById('tplSearch').focus();
+        }
+
+        function closeTemplatePicker() {
+            document.getElementById('templateOverlay').style.display = 'none';
+        }
+
+        async function renderTemplatePicker() {
+            const results = document.getElementById('tplResults');
+            results.innerHTML = '<div class="tpl-empty">Loading…</div>';
+
+            if (tplTab === 'official') {
+                document.getElementById('tplTierRow').style.display = 'flex';
+                const all = await loadOfficialAdv();
+                let list = tplTier ? all.filter(a => a.tier === tplTier) : all;
+                if (tplSearch) {
+                    const q = tplSearch.toLowerCase();
+                    list = list.filter(a => a.name.toLowerCase().includes(q));
+                }
+                if (!list.length) { results.innerHTML = '<div class="tpl-empty">No results.</div>'; return; }
+                results.innerHTML = '';
+                list.slice(0, 80).forEach(adv => {
+                    const row = document.createElement('div');
+                    row.className = 'tpl-row';
+                    row.innerHTML =
+                        `<span class="tpl-row-name">${titleCase(adv.name)}</span>` +
+                        `<span class="tpl-row-meta">T${adv.tier} · ${adv.role || ''}</span>`;
+                    row.addEventListener('click', () => applyTemplate(adv, true));
+                    results.appendChild(row);
+                });
+            } else {
+                document.getElementById('tplTierRow').style.display = 'none';
+                let list = adversaries;
+                if (tplSearch) {
+                    const q = tplSearch.toLowerCase();
+                    list = list.filter(a => a.name.toLowerCase().includes(q));
+                }
+                if (!list.length) {
+                    results.innerHTML = '<div class="tpl-empty">No homebrew adversaries yet.</div>';
+                    return;
+                }
+                results.innerHTML = '';
+                list.forEach(adv => {
+                    const row = document.createElement('div');
+                    row.className = 'tpl-row';
+                    row.innerHTML =
+                        `<span class="tpl-row-name">${adv.name}</span>` +
+                        `<span class="tpl-row-meta">T${adv.tier || '?'} · ${adv.role || ''}</span>`;
+                    row.addEventListener('click', () => applyTemplate(adv, false));
+                    results.appendChild(row);
+                });
+            }
+        }
+
+        function applyTemplate(source, isOfficial) {
+            const templateAdv = {
+                ...source,
+                id:   null,
+                name: 'Copy of ' + (isOfficial ? titleCase(source.name) : source.name),
+            };
+            clearForm();
+            populateForm(templateAdv);
+            // Don't inherit portrait — let user upload their own
+            pendingPortraitUrl = null;
+            document.getElementById('portraitPreview').style.display = 'none';
+            document.getElementById('portraitPreview').src = '';
+            document.getElementById('portraitUploadLabel').textContent = 'Upload Portrait';
+            closeTemplatePicker();
+            document.getElementById('fName').focus();
+            document.getElementById('fName').select();
+        }
+
+        onAuthChange(async user => {
+            if (!user) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(location.href)}`;
+                return;
+            }
+            currentUser = user;
+
+            if (isGlobal) {
+                document.getElementById('backLink').href = 'library.html';
+                document.getElementById('campaignNameSub').textContent = 'My Library';
+            } else {
+                if (!campaignId) { window.location.href = 'index.html'; return; }
+                const campaign = await getCampaign(campaignId);
+                if (!campaign || campaign.gm_id !== user.uid) {
+                    window.location.href = `campaign.html?id=${campaignId}`;
+                    return;
+                }
+                document.getElementById('backLink').href = `campaign.html?id=${campaignId}`;
+                document.getElementById('campaignNameSub').textContent = campaign.name;
+            }
+
+            document.getElementById('advWrap').style.display = 'block';
+
+            await loadAdversaries();
+            if (deepLinkId) {
+                const target = adversaries.find(a => a.id === deepLinkId);
+                if (target) showForm(target);
+            } else if (autoNew) {
+                showForm();
+            }
+        });
+
+        async function loadAdversaries() {
+            if (isGlobal) {
+                const raw = await getMyLibrary(currentUser.uid, 'adversary');
+                // getMyLibrary returns raw homebrew_content rows; flatten data jsonb so
+                // populateForm can read adv.tier, adv.hp, etc. at the top level
+                adversaries = raw.map(row => ({ ...row, ...(row.data || {}) }));
+            } else {
+                adversaries = await getAdversaries(campaignId);
+            }
+            renderList();
+        }
+
+        function renderList() {
+            const grid = document.getElementById('advGrid');
+            const empty = document.getElementById('emptyNote');
+            grid.innerHTML = '';
+            if (adversaries.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            adversaries.forEach(adv => grid.appendChild(buildAdvCard(adv)));
+        }
+
+        function buildAdvCard(adv) {
+            const card = document.createElement('div');
+            card.className = 'adv-card';
+
+            const name = document.createElement('div');
+            name.className = 'adv-card-name';
+            name.textContent = adv.name;
+
+            const badges = document.createElement('div');
+            badges.className = 'adv-card-badges';
+            badges.innerHTML =
+                `<span class="badge badge-tier">Tier ${adv.tier || '?'}</span>` +
+                `<span class="badge badge-role">${adv.role || 'Standard'}</span>`;
+
+            const stats = document.createElement('div');
+            stats.className = 'adv-card-stats';
+            const parts = [];
+            if (adv.hp != null)     parts.push(`HP ${adv.hp}`);
+            if (adv.stress != null) parts.push(`Stress ${adv.stress}`);
+            if (adv.difficulty != null) parts.push(`Diff ${adv.difficulty}`);
+            stats.textContent = parts.join(' · ') || '—';
+
+            const actions = document.createElement('div');
+            actions.className = 'adv-card-actions';
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn-sm';
+            editBtn.textContent = 'Edit';
+            editBtn.addEventListener('click', () => showForm(adv));
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-danger-sm';
+            delBtn.textContent = 'Delete';
+            delBtn.addEventListener('click', () => handleDelete(adv.id, adv.name));
+
+            actions.append(editBtn, delBtn);
+            card.append(name, badges, stats, actions);
+            return card;
+        }
+
+        // ── Form ──────────────────────────────────────────────────────────────
+
+        function showForm(adv = null) {
+            editingId        = adv?.id || null;
+            pendingPortraitUrl = null;
+            clearForm();
+            if (adv) populateForm(adv);
+            document.getElementById('formTitle').textContent = adv ? 'Edit Adversary' : 'New Adversary';
+            document.getElementById('useTemplateBtn').style.display = adv ? 'none' : 'inline-block';
+            document.getElementById('formSection').style.display = 'block';
+            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function hideForm() {
+            editingId = null;
+            pendingPortraitUrl = null;
+            clearForm();
+            document.getElementById('formSection').style.display = 'none';
+        }
+
+        function clearForm() {
+            document.getElementById('advForm').reset();
+            document.getElementById('featuresContainer').innerHTML = '';
+            document.getElementById('expContainer').innerHTML = '';
+            document.getElementById('portraitPreview').style.display = 'none';
+            document.getElementById('portraitPreview').src = '';
+            document.getElementById('portraitUploadLabel').textContent = 'Upload Portrait';
+            document.getElementById('formError').style.display = 'none';
+        }
+
+        function populateForm(adv) {
+            document.getElementById('fName').value       = adv.name || '';
+            document.getElementById('fTier').value       = adv.tier || '1';
+            document.getElementById('fRole').value       = adv.role || 'Standard';
+            document.getElementById('fLore').value       = adv.lore || '';
+            document.getElementById('fDifficulty').value = adv.difficulty ?? '';
+            document.getElementById('fHp').value         = adv.hp ?? '';
+            document.getElementById('fStress').value     = adv.stress ?? '';
+            document.getElementById('fThreshMinor').value  = adv.thresholds?.minor  ?? '';
+            document.getElementById('fThreshMajor').value  = adv.thresholds?.major  ?? '';
+            document.getElementById('fThreshSevere').value = adv.thresholds?.severe ?? '';
+            document.getElementById('fAttkBonus').value  = adv.attack?.bonus        || '';
+            document.getElementById('fAttkWeapon').value = adv.attack?.weapon       || '';
+            document.getElementById('fAttkRange').value  = adv.attack?.range        || '';
+            document.getElementById('fAttkDamage').value = adv.attack?.damage       || '';
+            document.getElementById('fAttkType').value   = adv.attack?.damage_type  || 'phy';
+
+            const featCont = document.getElementById('featuresContainer');
+            (adv.features || []).forEach(f => featCont.appendChild(buildFeatureRow(f)));
+
+            const expCont = document.getElementById('expContainer');
+            (adv.experience || []).forEach(e => expCont.appendChild(buildExpRow(e)));
+
+            if (adv.image_url) {
+                pendingPortraitUrl = adv.image_url;
+                const preview = document.getElementById('portraitPreview');
+                preview.src = adv.image_url;
+                preview.style.display = 'block';
+                document.getElementById('portraitUploadLabel').textContent = 'Change Portrait';
+            }
+        }
+
+        function buildFeatureRow(feat = {}) {
+            const row = document.createElement('div');
+            row.className = 'feature-row';
+
+            const top = document.createElement('div');
+            top.className = 'feature-row-top';
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.className = 'form-input feat-name';
+            nameInput.placeholder = 'Feature name';
+            nameInput.value = feat.name || '';
+
+            const typeSelect = document.createElement('select');
+            typeSelect.className = 'form-select feat-type';
+            ['Passive', 'Action', 'Reaction', 'Free Action'].forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                if (feat.type === t) opt.selected = true;
+                typeSelect.appendChild(opt);
+            });
+
+            const usesInput = document.createElement('input');
+            usesInput.type = 'number';
+            usesInput.className = 'form-input feat-uses';
+            usesInput.placeholder = 'Uses';
+            usesInput.min = '1';
+            if (feat.uses != null) usesInput.value = feat.uses;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn-remove-row';
+            removeBtn.setAttribute('aria-label', 'Remove feature');
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', () => row.remove());
+
+            top.append(nameInput, typeSelect, usesInput, removeBtn);
+
+            const desc = document.createElement('textarea');
+            desc.className = 'form-textarea feat-desc';
+            desc.placeholder = 'Description…';
+            desc.rows = 2;
+            desc.value = feat.description || '';
+
+            row.append(top, desc);
+            return row;
+        }
+
+        function buildExpRow(exp = {}) {
+            const row = document.createElement('div');
+            row.className = 'exp-row';
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.className = 'form-input exp-name';
+            nameInput.placeholder = 'Experience name';
+            nameInput.value = exp.name || '';
+
+            const bonusInput = document.createElement('input');
+            bonusInput.type = 'text';
+            bonusInput.className = 'form-input exp-bonus';
+            bonusInput.placeholder = '+2';
+            bonusInput.value = exp.bonus || '';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn-remove-row';
+            removeBtn.setAttribute('aria-label', 'Remove experience');
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', () => row.remove());
+
+            row.append(nameInput, bonusInput, removeBtn);
+            return row;
+        }
+
+        function collectFeatures() {
+            return [...document.querySelectorAll('.feature-row')].reduce((acc, row) => {
+                const name  = row.querySelector('.feat-name').value.trim();
+                const type  = row.querySelector('.feat-type').value;
+                const uses  = row.querySelector('.feat-uses').value.trim();
+                const desc  = row.querySelector('.feat-desc').value.trim();
+                if (!name && !desc) return acc;
+                const feat = { name, type, description: desc };
+                if (uses) feat.uses = parseInt(uses, 10);
+                acc.push(feat);
+                return acc;
+            }, []);
+        }
+
+        function collectExperiences() {
+            return [...document.querySelectorAll('.exp-row')].reduce((acc, row) => {
+                const name  = row.querySelector('.exp-name').value.trim();
+                const bonus = row.querySelector('.exp-bonus').value.trim();
+                if (!name && !bonus) return acc;
+                acc.push({ name, bonus });
+                return acc;
+            }, []);
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('fName').value.trim();
+            const hp   = parseInt(document.getElementById('fHp').value, 10);
+            const errorEl = document.getElementById('formError');
+            errorEl.style.display = 'none';
+
+            if (!name) { showError('Name is required.'); return; }
+            if (!hp)   { showError('HP is required.'); return; }
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving…';
+
+            try {
+                const minor  = intOrNull('fThreshMinor');
+                const major  = intOrNull('fThreshMajor');
+                const severe = intOrNull('fThreshSevere');
+
+                const bonus  = document.getElementById('fAttkBonus').value.trim();
+                const weapon = document.getElementById('fAttkWeapon').value.trim();
+                const range  = document.getElementById('fAttkRange').value.trim();
+                const damage = document.getElementById('fAttkDamage').value.trim();
+                const dtype  = document.getElementById('fAttkType').value;
+
+                const features   = collectFeatures();
+                const experience = collectExperiences();
+
+                const data = {
+                    id: editingId,
+                    campaign_id: campaignId,
+                    name,
+                    tier:       parseInt(document.getElementById('fTier').value, 10),
+                    role:       document.getElementById('fRole').value,
+                    lore:       document.getElementById('fLore').value.trim() || null,
+                    difficulty: intOrNull('fDifficulty'),
+                    thresholds: (minor || major || severe) ? { minor, major, severe } : null,
+                    hp,
+                    stress:     intOrNull('fStress'),
+                    attack:     (bonus || weapon || range || damage)
+                                    ? { bonus, weapon, range, damage, damage_type: dtype }
+                                    : null,
+                    features:   features.length ? features : null,
+                    experience: experience.length ? experience : null,
+                    image_url: pendingPortraitUrl || null,
+                    change_notes: document.getElementById('fChangeNotes').value.trim() || null,
+                };
+
+                await saveAdversary(currentUser.uid, data);
+                hideForm();
+                await loadAdversaries();
+            } catch (err) {
+                log.error('handleSubmit failed:', err);
+                showError('Failed to save. Please try again.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Adversary';
+            }
+        }
+
+        async function handleDelete(advId, advName) {
+            if (!confirm(`Delete "${advName}"? This cannot be undone.`)) return;
+            try {
+                await deleteAdversary(advId);
+                if (editingId === advId) hideForm();
+                await loadAdversaries();
+            } catch (err) {
+                log.error('deleteAdversary failed:', err);
+                alert('Cannot delete — this adversary is referenced by an encounter. Remove it from all encounters first.');
+            }
+        }
+
+        async function handlePortraitUpload(file) {
+            if (!file) return;
+            const label = document.getElementById('portraitUploadLabel');
+            label.textContent = 'Uploading…';
+            try {
+                const { publicUrl } = await uploadAsset(isGlobal ? null : campaignId, 'portrait', file);
+                pendingPortraitUrl = publicUrl;
+                const preview = document.getElementById('portraitPreview');
+                preview.src = publicUrl;
+                preview.style.display = 'block';
+                label.textContent = 'Change Portrait';
+                log.info('portrait uploaded');
+            } catch (err) {
+                log.error('portrait upload failed:', err);
+                alert('Portrait upload failed. Please try again.');
+                label.textContent = 'Upload Portrait';
+            }
+        }
+
+        function intOrNull(id) {
+            const v = parseInt(document.getElementById(id).value, 10);
+            return isNaN(v) ? null : v;
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('formError');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        // ── Event wiring ──────────────────────────────────────────────────────
+
+        document.getElementById('newAdvBtn').addEventListener('click', () => showForm());
+        document.getElementById('cancelBtn').addEventListener('click', hideForm);
+        document.getElementById('cancelBtn2').addEventListener('click', hideForm);
+        document.getElementById('advForm').addEventListener('submit', handleSubmit);
+        document.getElementById('addFeatureBtn').addEventListener('click', () => {
+            document.getElementById('featuresContainer').appendChild(buildFeatureRow());
+        });
+        document.getElementById('addExpBtn').addEventListener('click', () => {
+            document.getElementById('expContainer').appendChild(buildExpRow());
+        });
+        document.getElementById('portraitInput').addEventListener('change', e => {
+            handlePortraitUpload(e.target.files[0]);
+        });
+
+        // Template picker
+        document.getElementById('useTemplateBtn').addEventListener('click', openTemplatePicker);
+        document.getElementById('tplCloseBtn').addEventListener('click', closeTemplatePicker);
+        document.getElementById('templateOverlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('templateOverlay')) closeTemplatePicker();
+        });
+        document.getElementById('tplTabOfficial').addEventListener('click', async () => {
+            tplTab = 'official';
+            document.getElementById('tplTabOfficial').classList.add('active');
+            document.getElementById('tplTabCustom').classList.remove('active');
+            await renderTemplatePicker();
+        });
+        document.getElementById('tplTabCustom').addEventListener('click', async () => {
+            tplTab = 'custom';
+            document.getElementById('tplTabCustom').classList.add('active');
+            document.getElementById('tplTabOfficial').classList.remove('active');
+            await renderTemplatePicker();
+        });
+        document.querySelectorAll('.tpl-tier-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                tplTier = parseInt(btn.dataset.tier, 10);
+                document.querySelectorAll('.tpl-tier-btn').forEach(b => b.classList.toggle('active', b === btn));
+                await renderTemplatePicker();
+            });
+        });
+        document.getElementById('tplSearch').addEventListener('input', async e => {
+            tplSearch = e.target.value.trim();
+            await renderTemplatePicker();
+        });
+    </script>
+</body>
+</html>

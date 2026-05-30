@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homebrew Editor — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hbe-wrap {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 48px 56px 120px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 48px;
+            align-items: start;
+        }
+        .hbe-main {}
+
+        .hbe-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .hbe-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            transition: color 0.2s;
+        }
+        .hbe-back:hover { color: var(--gold); }
+        .hbe-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+        .hbe-type-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+        }
+
+        /* ── Form fields ── */
+        .form-section {
+            margin-bottom: 28px;
+        }
+        .form-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .field { margin-bottom: 16px; }
+        .field-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 6px;
+            display: block;
+        }
+        .field-input, .field-select, .field-textarea {
+            width: 100%;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            padding: 9px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .field-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            padding-right: 28px;
+            cursor: pointer;
+        }
+        .field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--gold); }
+        .field-input::placeholder, .field-textarea::placeholder { color: var(--ink-dim); }
+        .field-textarea { resize: vertical; min-height: 100px; line-height: 1.55; }
+
+        .field-row { display: grid; gap: 12px; }
+        .field-row.col2 { grid-template-columns: 1fr 1fr; }
+        .field-row.col3 { grid-template-columns: 1fr 1fr 1fr; }
+
+        /* ── Feature list (ancestry / community) ── */
+        .feature-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .feature-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            position: relative;
+        }
+        .feature-item-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.08em;
+            color: var(--ink);
+            margin-bottom: 6px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            width: 100%;
+            padding: 3px 0;
+            color: var(--ink);
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            outline: none;
+        }
+        .feature-item-name:focus { border-color: var(--gold); }
+        .feature-item-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            background: transparent;
+            border: none;
+            width: 100%;
+            resize: vertical;
+            min-height: 60px;
+            line-height: 1.5;
+            outline: none;
+        }
+        .feature-item-desc:focus { outline: 1px solid rgba(201,168,76,0.3); }
+        .feature-remove {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: transparent;
+            border: none;
+            color: rgba(192,96,96,0.5);
+            cursor: pointer;
+            font-size: 0.9em;
+            line-height: 1;
+            padding: 2px 4px;
+            transition: color 0.15s;
+        }
+        .feature-remove:hover { color: rgba(192,96,96,0.9); }
+        .btn-add-feature {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: transparent;
+            border: 1px dashed var(--border-mid);
+            color: var(--ink-dim);
+            padding: 8px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-add-feature:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* ── Image upload ── */
+        .upload-zone {
+            border: 1px dashed var(--border-mid);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .upload-zone:hover { border-color: var(--border-gold); background: rgba(201,168,76,0.03); }
+        .upload-zone-text {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: var(--ink-dim);
+        }
+        .upload-preview {
+            max-width: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            border: 1px solid var(--border);
+            display: none;
+            margin: 0 auto;
+        }
+
+        /* ── Save row ── */
+        .save-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        .save-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 10px 28px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .save-btn:hover { background: var(--h-gold-b); }
+        .save-btn:disabled { opacity: 0.4; cursor: default; }
+        .change-notes-input {
+            flex: 1;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .change-notes-input:focus { border-color: var(--gold); }
+        .change-notes-input::placeholder { color: var(--ink-dim); }
+
+        .status-msg {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: rgba(100,180,100,0.9);
+            min-height: 1.4em;
+            margin-top: 10px;
+        }
+        .status-msg.err { color: rgba(192,96,96,0.9); }
+
+        /* ── Version history sidebar ── */
+        .hbe-sidebar {}
+        .sidebar-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .ver-list { display: flex; flex-direction: column; gap: 4px; }
+        .ver-item {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .ver-item:hover { background: rgba(201,168,76,0.04); border-color: var(--border-gold); }
+        .ver-item.current { border-color: rgba(201,168,76,0.4); }
+        .ver-number {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin-bottom: 3px;
+        }
+        .ver-notes {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.82em;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+        .ver-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.52em;
+            letter-spacing: 0.06em;
+            color: var(--ink-dim);
+            margin-top: 2px;
+        }
+        .ver-empty {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: var(--ink-dim);
+        }
+
+        /* ── Subclass blocks (class type) ── */
+        .subclass-block {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            padding: 18px 18px 12px;
+            margin-bottom: 12px;
+        }
+        .subclass-tier {
+            background: rgba(0,0,0,0.12);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+        .subclass-tier-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .inline-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+            margin: 20px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        @media (max-width: 800px) {
+            .hbe-wrap { grid-template-columns: 1fr; gap: 32px; padding: 28px 20px 80px; }
+            .hbe-title { font-size: 1.5em; }
+            .field-row.col3 { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ── Template picker ── */
+        .tpl-trigger-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+            transition: all 0.15s;
+        }
+        .tpl-trigger-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.4); }
+        .tpl-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.72);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .tpl-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            width: 100%;
+            max-width: 520px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .tpl-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border-gold);
+            flex-shrink: 0;
+        }
+        .tpl-card-header span {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+        }
+        .tpl-close {
+            background: transparent;
+            border: none;
+            color: var(--ink-dim);
+            font-size: 1.4em;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.15s;
+        }
+        .tpl-close:hover { color: var(--ink); }
+        .tpl-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .tpl-tab {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .tpl-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .tpl-search {
+            background: rgba(255,255,255,0.04);
+            border: none;
+            border-bottom: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            padding: 9px 14px;
+            outline: none;
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .tpl-search:focus { border-bottom-color: var(--gold); }
+        .tpl-results { overflow-y: auto; flex: 1; min-height: 0; }
+        .tpl-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .tpl-row:hover { background: rgba(201,168,76,0.06); }
+        .tpl-row-name {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            color: var(--ink);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tpl-row-meta {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.08em;
+            color: var(--ink-dim);
+            white-space: nowrap;
+        }
+        .tpl-empty {
+            padding: 24px 16px;
+            text-align: center;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"></nav>
+
+    <div id="hbeOuter" style="display:none;">
+        <div class="hbe-wrap">
+            <div class="hbe-main">
+                <div class="hbe-header">
+                    <a href="#" class="hbe-back" id="backLink">← Homebrew</a>
+                    <div class="hbe-title" id="hbeTitle">New Homebrew</div>
+                    <div class="hbe-type-badge" id="hbeTypeBadge"></div>
+                    <button type="button" class="tpl-trigger-btn" id="tplTriggerBtn">Use Template</button>
+                </div>
+
+                <!-- Common fields -->
+                <div class="form-section">
+                    <div class="form-section-title">Identity</div>
+                    <div class="field">
+                        <label class="field-label">Name</label>
+                        <input class="field-input" id="fName" type="text" placeholder="e.g. Thornwood Shortbow" maxlength="100">
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Player Description <span style="opacity:0.5;">(visible to players)</span></label>
+                        <textarea class="field-textarea" id="fPlayerDesc" placeholder="What the players see and read…" rows="3"></textarea>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">GM Notes <span style="opacity:0.5;">(private)</span></label>
+                        <textarea class="field-textarea" id="fNotes" placeholder="Origin, lore, campaign context…" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Type-specific fields (injected by JS) -->
+                <div class="form-section" id="typeSection">
+                    <div class="form-section-title" id="typeSectionTitle">Stats</div>
+                    <div id="typeFields"></div>
+                </div>
+
+                <!-- Image -->
+                <div class="form-section">
+                    <div class="form-section-title">Image <span style="font-size:0.75em;font-weight:400;color:var(--ink-dim);text-transform:none;letter-spacing:0;">(optional)</span></div>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="imageFile" accept="image/*" style="display:none;">
+                        <img class="upload-preview" id="imgPreview" alt="">
+                        <div class="upload-zone-text" id="uploadZoneText">Click to upload an image</div>
+                    </div>
+                </div>
+
+                <!-- Save -->
+                <div class="save-row">
+                    <button class="save-btn" id="btnSave">Save</button>
+                    <input class="change-notes-input" id="changeNotes" type="text" placeholder="Change notes (optional)…" maxlength="200">
+                </div>
+                <div class="status-msg" id="statusMsg"></div>
+            </div>
+
+            <!-- Version history sidebar -->
+            <div class="hbe-sidebar" id="verSidebar" style="display:none;">
+                <div class="sidebar-title">Version History</div>
+                <div class="ver-list" id="verList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template picker overlay -->
+    <div class="tpl-overlay" id="templateOverlay" style="display:none;">
+        <div class="tpl-card">
+            <div class="tpl-card-header">
+                <span>Choose a Template</span>
+                <button class="tpl-close" id="tplCloseBtn" aria-label="Close">×</button>
+            </div>
+            <div class="tpl-tabs">
+                <button class="tpl-tab active" id="tplTabOfficial">Official</button>
+                <button class="tpl-tab" id="tplTabHomebrew">Homebrew</button>
+            </div>
+            <input type="search" class="tpl-search" id="tplSearch" placeholder="Search by name…" autocomplete="off" />
+            <div class="tpl-results" id="tplResults"></div>
+        </div>
+    </div>
+
+    <script type="module" src="nav.js"></script>
+    <script type="module">
+        import { onAuthChange, getHomebrewItem, getHomebrewVersions, getHomebrew, getMyLibrary, saveHomebrew, uploadAsset } from './supabase-client.js';
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+        const editId     = params.get('id');
+        const typeParam  = params.get('type');
+        const isGlobal   = params.get('scope') === 'global';
+
+        let currentUser     = null;
+        let existingItem    = null;
+        let contentType     = typeParam || 'weapon';
+        let uploadedUrl     = null;
+        let homebrewDomains = [];
+
+        // Template picker state
+        const officialDataCache = {};
+        let homebrewForTpl = [];
+        let tplTab = 'official';
+        let tplSearch = '';
+
+        const TYPE_LABELS = {
+            weapon: 'Weapon', armor: 'Armor', loot_item: 'Loot Item',
+            domain_card: 'Domain Card', ancestry: 'Ancestry', community: 'Community',
+            class: 'Class', domain: 'Domain',
+        };
+        const DOMAINS = ['Arcana','Blade','Bone','Codex','Grace','Midnight','Sage','Splendor','Valley'];
+        const RARITIES = ['common','uncommon','rare','legendary'];
+
+        onAuthChange(async user => {
+            if (!user) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(location.href)}`;
+                return;
+            }
+            currentUser = user;
+
+            if (!campaignId && !isGlobal) { window.location.href = 'index.html'; return; }
+            document.getElementById('backLink').href = isGlobal
+                ? 'library.html'
+                : `homebrew.html?campaign=${campaignId}`;
+            document.getElementById('hbeOuter').style.display = 'block';
+
+            if (editId) {
+                existingItem = await getHomebrewItem(editId);
+                if (existingItem) {
+                    contentType = existingItem.content_type;
+                    populateForm(existingItem);
+                    loadVersionHistory();
+                }
+            }
+
+            if (contentType === 'domain_card' || contentType === 'class') {
+                homebrewDomains = isGlobal
+                    ? await getMyLibrary(currentUser.uid, 'domain')
+                    : await getHomebrew(campaignId, 'domain');
+            }
+
+            document.getElementById('hbeTitle').textContent   = editId ? (existingItem?.name || 'Edit Homebrew') : `New ${TYPE_LABELS[contentType] || contentType}`;
+            document.getElementById('hbeTypeBadge').textContent = TYPE_LABELS[contentType] || contentType;
+            buildTypeFields(contentType, existingItem?.data);
+        });
+
+        // ── Type-specific fields ──────────────────────────────────────────────
+
+        function buildTypeFields(type, data = {}) {
+            const section = document.getElementById('typeSection');
+            const title   = document.getElementById('typeSectionTitle');
+            const fields  = document.getElementById('typeFields');
+            fields.innerHTML = '';
+
+            if (type === 'weapon') {
+                title.textContent = 'Weapon Stats';
+                fields.innerHTML = `
+                    <div class="field-row col3">
+                        <div class="field">
+                            <label class="field-label">Trait</label>
+                            <select class="field-select" id="fTrait">
+                                ${['One-handed','Two-handed','Off-hand','None'].map(v =>
+                                    `<option value="${v}" ${data?.trait === v ? 'selected' : ''}>${v}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Category</label>
+                            <select class="field-select" id="fCategory">
+                                ${['Melee','Ranged','Thrown'].map(v =>
+                                    `<option value="${v}" ${data?.category === v ? 'selected' : ''}>${v}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Rarity</label>
+                            <select class="field-select" id="fRarity">
+                                ${RARITIES.map(r => `<option value="${r}" ${data?.rarity === r ? 'selected' : ''}>${cap(r)}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field-row col3">
+                        <div class="field">
+                            <label class="field-label">Range</label>
+                            <input class="field-input" id="fRange" type="text" value="${esc(data?.range || 'Melee')}" placeholder="e.g. Melee">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Damage</label>
+                            <input class="field-input" id="fDamage" type="text" value="${esc(data?.damage_dice || '')}" placeholder="e.g. 2d6+5">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Burden</label>
+                            <input class="field-input" id="fBurden" type="text" value="${esc(data?.burden || '1')}" placeholder="1">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Features <span style="opacity:0.5;">(comma-separated)</span></label>
+                        <input class="field-input" id="fFeatures" type="text" value="${esc((data?.features || []).join(', '))}" placeholder="e.g. Riposte (2), True Strike">
+                    </div>`;
+
+            } else if (type === 'armor') {
+                title.textContent = 'Armor Stats';
+                fields.innerHTML = `
+                    <div class="field-row col3">
+                        <div class="field">
+                            <label class="field-label">Base Score</label>
+                            <input class="field-input" id="fBaseScore" type="number" min="0" max="20" value="${data?.base_score ?? 2}">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Armor Slots</label>
+                            <input class="field-input" id="fArmorSlots" type="number" min="0" max="10" value="${data?.armor_slots ?? 2}">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Rarity</label>
+                            <select class="field-select" id="fRarity">
+                                ${RARITIES.map(r => `<option value="${r}" ${data?.rarity === r ? 'selected' : ''}>${cap(r)}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Features <span style="opacity:0.5;">(comma-separated)</span></label>
+                        <input class="field-input" id="fFeatures" type="text" value="${esc((data?.features || []).join(', '))}" placeholder="e.g. Heavy, Integrated">
+                    </div>`;
+
+            } else if (type === 'loot_item') {
+                title.textContent = 'Loot Item Stats';
+                fields.innerHTML = `
+                    <div class="field-row col3">
+                        <div class="field">
+                            <label class="field-label">Rarity</label>
+                            <select class="field-select" id="fRarity">
+                                ${RARITIES.map(r => `<option value="${r}" ${data?.rarity === r ? 'selected' : ''}>${cap(r)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Value</label>
+                            <select class="field-select" id="fValue">
+                                ${['handful','bag','chest'].map(v =>
+                                    `<option value="${v}" ${data?.value === v ? 'selected' : ''}>${cap(v)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Consumable</label>
+                            <select class="field-select" id="fConsumable">
+                                <option value="true"  ${data?.consumable === true  ? 'selected' : ''}>Yes</option>
+                                <option value="false" ${data?.consumable === false ? 'selected' : ''}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Effect</label>
+                        <textarea class="field-textarea" id="fEffect" placeholder="What does it do?">${esc(data?.effect || '')}</textarea>
+                    </div>`;
+
+            } else if (type === 'domain_card') {
+                title.textContent = 'Domain Card Stats';
+                const domainOpts = [
+                    ...DOMAINS.map(d => `<option value="${d}" ${data?.domain === d ? 'selected' : ''}>${d}</option>`),
+                    ...(homebrewDomains.length
+                        ? ['<option disabled>──────────</option>',
+                           ...homebrewDomains.map(d => `<option value="${d.name}" ${data?.domain === d.name ? 'selected' : ''}>${d.name} ✦</option>`)]
+                        : []),
+                ].join('');
+                fields.innerHTML = `
+                    <div class="field-row col2">
+                        <div class="field">
+                            <label class="field-label">Domain</label>
+                            <select class="field-select" id="fDomain">
+                                ${domainOpts}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Card Type</label>
+                            <input class="field-input" id="fCardType" type="text" value="${esc(data?.card_type || 'Ability')}" placeholder="e.g. Spell, Ability">
+                        </div>
+                    </div>
+                    <div class="field-row col2">
+                        <div class="field">
+                            <label class="field-label">Level</label>
+                            <input class="field-input" id="fLevel" type="number" min="1" max="9" value="${data?.level ?? 1}">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Recall Cost</label>
+                            <input class="field-input" id="fRecallCost" type="number" min="0" max="10" value="${data?.recall_cost ?? 2}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Effect</label>
+                        <textarea class="field-textarea" id="fEffect" placeholder="Card effect text…">${esc(data?.effect || '')}</textarea>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Remembrance <span style="opacity:0.5;">(optional)</span></label>
+                        <textarea class="field-textarea" id="fRemembrance" placeholder="Flavour text when recalled…" rows="2">${esc(data?.remembrance || '')}</textarea>
+                    </div>`;
+
+            } else if (type === 'ancestry' || type === 'community') {
+                title.textContent = type === 'ancestry' ? 'Ancestry Features' : 'Community Features';
+                const list = document.createElement('div');
+                list.className = 'feature-list';
+                list.id = 'featureList';
+                (data?.features || [{ name: '', description: '' }]).forEach(f => addFeatureRow(list, f));
+                fields.appendChild(list);
+
+                const addBtn = document.createElement('button');
+                addBtn.type = 'button';
+                addBtn.className = 'btn-add-feature';
+                addBtn.textContent = '+ Add Feature';
+                addBtn.addEventListener('click', () => addFeatureRow(list));
+                fields.appendChild(addBtn);
+
+            } else if (type === 'domain') {
+                title.textContent = 'Domain Details';
+                fields.innerHTML = `
+                    <div class="field">
+                        <label class="field-label">Flavour Text <span style="opacity:0.5;">(optional)</span></label>
+                        <textarea class="field-textarea" id="fFlavour" placeholder="Evocative description of what this domain represents…" rows="3">${esc(data?.flavour || '')}</textarea>
+                    </div>
+                    <p style="font-family:'EB Garamond',serif;font-size:0.85em;color:var(--ink-dim);font-style:italic;margin-top:4px;">Domain Cards referencing this domain can be created separately as homebrew Domain Cards.</p>`;
+
+            } else if (type === 'class') {
+                title.textContent = 'Class Details';
+                const allDomains = [...DOMAINS, ...homebrewDomains.map(d => d.name)];
+                const sel1 = data?.domains?.[0] || '';
+                const sel2 = data?.domains?.[1] || '';
+                const domainOpts1 = ['<option value="">— Select —</option>', ...allDomains.map(d =>
+                    `<option value="${d}" ${sel1 === d ? 'selected' : ''}>${d}</option>`)].join('');
+                const domainOpts2 = ['<option value="">— Select —</option>', ...allDomains.map(d =>
+                    `<option value="${d}" ${sel2 === d ? 'selected' : ''}>${d}</option>`)].join('');
+
+                fields.innerHTML = `
+                    <div class="field-row col3">
+                        <div class="field">
+                            <label class="field-label">Starting HP</label>
+                            <input class="field-input" id="fStartingHp" type="number" min="1" max="20" value="${data?.starting_hp ?? 6}">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Starting Evasion</label>
+                            <input class="field-input" id="fStartingEvasion" type="number" min="1" max="20" value="${data?.starting_evasion ?? 10}">
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Spellcast Trait <span style="opacity:0.5;">(if any)</span></label>
+                            <select class="field-select" id="fSpellcastTrait">
+                                <option value="">— None —</option>
+                                ${['Agility','Strength','Finesse','Instinct','Presence','Knowledge'].map(t =>
+                                    `<option value="${t}" ${data?.spellcast_trait === t ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Class Items</label>
+                        <input class="field-input" id="fClassItems" type="text" value="${esc(data?.class_items || '')}" placeholder="e.g. A sharpening stone or drawing of a loved one">
+                    </div>
+                    <div class="field-row col2">
+                        <div class="field">
+                            <label class="field-label">Domain 1</label>
+                            <select class="field-select" id="fDomain1">${domainOpts1}</select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label">Domain 2</label>
+                            <select class="field-select" id="fDomain2">${domainOpts2}</select>
+                        </div>
+                    </div>`;
+
+                // Hope Feature
+                fields.insertAdjacentHTML('beforeend', `
+                    <div class="inline-section-title">Hope Feature</div>
+                    <div class="subclass-tier">
+                        <input class="feature-item-name" id="fHopeName" type="text" placeholder="Feature name…" value="${esc(data?.hope_feature?.name || '')}">
+                        <textarea class="feature-item-desc" id="fHopeDesc" placeholder="What happens when the player spends Hope…">${esc(data?.hope_feature?.description || '')}</textarea>
+                    </div>`);
+
+                // Subclasses
+                [1, 2].forEach(n => {
+                    const sub = data?.subclasses?.[n - 1] || {};
+                    fields.insertAdjacentHTML('beforeend', `
+                        <div class="inline-section-title">Subclass ${n}</div>
+                        <div class="subclass-block">
+                            <div class="field">
+                                <label class="field-label">Subclass Name</label>
+                                <input class="field-input" id="fSub${n}Name" type="text" placeholder="e.g. Call of the Brave" value="${esc(sub.name || '')}">
+                            </div>
+                            <div class="field">
+                                <label class="field-label">Description</label>
+                                <textarea class="field-textarea" id="fSub${n}Desc" rows="2" placeholder="When to play this subclass…">${esc(sub.description || '')}</textarea>
+                            </div>
+                            <div class="subclass-tier">
+                                <span class="subclass-tier-label">Foundation</span>
+                                <input class="feature-item-name" id="fSub${n}FoundName" type="text" placeholder="Feature name…" value="${esc(sub.foundation?.name || '')}">
+                                <textarea class="feature-item-desc" id="fSub${n}FoundDesc" placeholder="Feature description…">${esc(sub.foundation?.description || '')}</textarea>
+                            </div>
+                            <div class="subclass-tier">
+                                <span class="subclass-tier-label">Specialization</span>
+                                <input class="feature-item-name" id="fSub${n}SpecName" type="text" placeholder="Feature name…" value="${esc(sub.specialization?.name || '')}">
+                                <textarea class="feature-item-desc" id="fSub${n}SpecDesc" placeholder="Feature description…">${esc(sub.specialization?.description || '')}</textarea>
+                            </div>
+                            <div class="subclass-tier">
+                                <span class="subclass-tier-label">Mastery</span>
+                                <input class="feature-item-name" id="fSub${n}MastName" type="text" placeholder="Feature name…" value="${esc(sub.mastery?.name || '')}">
+                                <textarea class="feature-item-desc" id="fSub${n}MastDesc" placeholder="Feature description…">${esc(sub.mastery?.description || '')}</textarea>
+                            </div>
+                        </div>`);
+                });
+
+                // Class Features
+                fields.insertAdjacentHTML('beforeend', '<div class="inline-section-title">Class Features</div>');
+                const featList = document.createElement('div');
+                featList.className = 'feature-list';
+                featList.id = 'featureList';
+                (data?.class_features || [{ name: '', description: '' }]).forEach(f => addFeatureRow(featList, f));
+                fields.appendChild(featList);
+                const addFeatBtn = document.createElement('button');
+                addFeatBtn.type = 'button';
+                addFeatBtn.className = 'btn-add-feature';
+                addFeatBtn.textContent = '+ Add Class Feature';
+                addFeatBtn.addEventListener('click', () => addFeatureRow(featList));
+                fields.appendChild(addFeatBtn);
+
+                setupDomainDedup();
+            }
+        }
+
+        function addFeatureRow(list, feat = { name: '', description: '' }) {
+            const item = document.createElement('div');
+            item.className = 'feature-item';
+            item.innerHTML = `
+                <input class="feature-item-name" type="text" placeholder="Feature name…" value="${esc(feat.name)}">
+                <textarea class="feature-item-desc" placeholder="Feature description…">${esc(feat.description)}</textarea>
+                <button type="button" class="feature-remove" title="Remove">✕</button>`;
+            item.querySelector('.feature-remove').addEventListener('click', () => item.remove());
+            list.appendChild(item);
+        }
+
+        function setupDomainDedup() {
+            const d1 = document.getElementById('fDomain1');
+            const d2 = document.getElementById('fDomain2');
+            if (!d1 || !d2) return;
+            function sync() {
+                const v1 = d1.value;
+                const v2 = d2.value;
+                [...d2.options].forEach(o => { o.disabled = o.value !== '' && o.value === v1; });
+                [...d1.options].forEach(o => { o.disabled = o.value !== '' && o.value === v2; });
+            }
+            d1.addEventListener('change', sync);
+            d2.addEventListener('change', sync);
+            sync();
+        }
+
+        // ── Populate form on edit ─────────────────────────────────────────────
+
+        function populateForm(item) {
+            document.getElementById('fName').value = item.name || '';
+            document.getElementById('fPlayerDesc').value = item.player_description || '';
+            document.getElementById('fNotes').value = item.notes || '';
+            if (item.image_url) {
+                uploadedUrl = item.image_url;
+                document.getElementById('imgPreview').src = item.image_url;
+                document.getElementById('imgPreview').style.display = 'block';
+                document.getElementById('uploadZoneText').style.display = 'none';
+            }
+        }
+
+        // ── Version history ───────────────────────────────────────────────────
+
+        async function loadVersionHistory() {
+            const sidebar = document.getElementById('verSidebar');
+            const list    = document.getElementById('verList');
+            const versions = await getHomebrewVersions(editId);
+            if (!versions.length) { sidebar.style.display = 'none'; return; }
+            sidebar.style.display = 'block';
+            list.innerHTML = '';
+            versions.forEach(v => {
+                const item = document.createElement('div');
+                item.className = `ver-item${v.version_number === existingItem?.current_version ? ' current' : ''}`;
+                const d = new Date(v.created_at);
+                item.innerHTML =
+                    `<div class="ver-number">v${v.version_number}${v.version_number === existingItem?.current_version ? ' — current' : ''}</div>` +
+                    `<div class="ver-notes">${v.change_notes ? esc(v.change_notes) : '<em>No notes</em>'}</div>` +
+                    `<div class="ver-date">${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
+                list.appendChild(item);
+            });
+        }
+
+        // ── Image upload ──────────────────────────────────────────────────────
+
+        document.getElementById('uploadZone').addEventListener('click', () => document.getElementById('imageFile').click());
+        document.getElementById('uploadZone').addEventListener('dragover', e => { e.preventDefault(); });
+        document.getElementById('uploadZone').addEventListener('drop', e => {
+            e.preventDefault();
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
+        document.getElementById('imageFile').addEventListener('change', () => {
+            if (document.getElementById('imageFile').files[0])
+                handleFile(document.getElementById('imageFile').files[0]);
+        });
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('imgPreview').src = e.target.result;
+                document.getElementById('imgPreview').style.display = 'block';
+                document.getElementById('uploadZoneText').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ── Collect form data ─────────────────────────────────────────────────
+
+        function collectData() {
+            const d = existingItem?.data || {};
+            const t = contentType;
+
+            if (t === 'weapon') return {
+                trait:       document.getElementById('fTrait')?.value    || d.trait,
+                category:    document.getElementById('fCategory')?.value || d.category,
+                rarity:      document.getElementById('fRarity')?.value   || d.rarity,
+                range:       document.getElementById('fRange')?.value    || d.range,
+                damage_dice: document.getElementById('fDamage')?.value   || d.damage_dice,
+                burden:      document.getElementById('fBurden')?.value   || d.burden,
+                features:    parseFeatureTags(document.getElementById('fFeatures')?.value || ''),
+            };
+            if (t === 'armor') return {
+                base_score:  parseInt(document.getElementById('fBaseScore')?.value  || 2),
+                armor_slots: parseInt(document.getElementById('fArmorSlots')?.value || 2),
+                rarity:      document.getElementById('fRarity')?.value,
+                features:    parseFeatureTags(document.getElementById('fFeatures')?.value || ''),
+            };
+            if (t === 'loot_item') return {
+                rarity:     document.getElementById('fRarity')?.value,
+                value:      document.getElementById('fValue')?.value,
+                consumable: document.getElementById('fConsumable')?.value === 'true',
+                effect:     document.getElementById('fEffect')?.value || '',
+            };
+            if (t === 'domain_card') return {
+                domain:      document.getElementById('fDomain')?.value,
+                card_type:   document.getElementById('fCardType')?.value,
+                level:       parseInt(document.getElementById('fLevel')?.value || 1),
+                recall_cost: parseInt(document.getElementById('fRecallCost')?.value || 2),
+                effect:      document.getElementById('fEffect')?.value || '',
+                remembrance: document.getElementById('fRemembrance')?.value || '',
+            };
+            if (t === 'ancestry' || t === 'community') {
+                const features = [...document.querySelectorAll('#featureList .feature-item')].map(el => ({
+                    name:        el.querySelector('.feature-item-name').value.trim(),
+                    description: el.querySelector('.feature-item-desc').value.trim(),
+                })).filter(f => f.name);
+                return { features };
+            }
+            if (t === 'domain') return {
+                flavour: document.getElementById('fFlavour')?.value.trim() || '',
+            };
+            if (t === 'class') {
+                const class_features = [...document.querySelectorAll('#featureList .feature-item')].map(el => ({
+                    name:        el.querySelector('.feature-item-name').value.trim(),
+                    description: el.querySelector('.feature-item-desc').value.trim(),
+                })).filter(f => f.name);
+                return {
+                    starting_hp:      parseInt(document.getElementById('fStartingHp')?.value || 6),
+                    starting_evasion: parseInt(document.getElementById('fStartingEvasion')?.value || 10),
+                    spellcast_trait:  document.getElementById('fSpellcastTrait')?.value || null,
+                    class_items:      document.getElementById('fClassItems')?.value.trim() || '',
+                    domains:          [document.getElementById('fDomain1')?.value, document.getElementById('fDomain2')?.value].filter(Boolean),
+                    hope_feature: {
+                        name:        document.getElementById('fHopeName')?.value.trim() || '',
+                        description: document.getElementById('fHopeDesc')?.value.trim() || '',
+                    },
+                    subclasses: [1, 2].map(n => ({
+                        name:        document.getElementById(`fSub${n}Name`)?.value.trim() || '',
+                        description: document.getElementById(`fSub${n}Desc`)?.value.trim() || '',
+                        foundation:     { name: document.getElementById(`fSub${n}FoundName`)?.value.trim() || '', description: document.getElementById(`fSub${n}FoundDesc`)?.value.trim() || '' },
+                        specialization: { name: document.getElementById(`fSub${n}SpecName`)?.value.trim()  || '', description: document.getElementById(`fSub${n}SpecDesc`)?.value.trim()  || '' },
+                        mastery:        { name: document.getElementById(`fSub${n}MastName`)?.value.trim()  || '', description: document.getElementById(`fSub${n}MastDesc`)?.value.trim()  || '' },
+                    })),
+                    class_features,
+                };
+            }
+            return {};
+        }
+
+        function parseFeatureTags(str) {
+            return str.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        // ── Save ──────────────────────────────────────────────────────────────
+
+        document.getElementById('btnSave').addEventListener('click', async () => {
+            if (!currentUser) return;
+            const name = document.getElementById('fName').value.trim();
+            if (!name) { document.getElementById('fName').focus(); return; }
+
+            const btn    = document.getElementById('btnSave');
+            const status = document.getElementById('statusMsg');
+            btn.disabled = true;
+            status.className = 'status-msg';
+            status.textContent = 'Saving…';
+
+            try {
+                let image_url = uploadedUrl;
+                const fileEl  = document.getElementById('imageFile');
+                if (fileEl.files[0]) {
+                    status.textContent = 'Uploading image…';
+                    const result = await uploadAsset(isGlobal ? null : campaignId, 'image', fileEl.files[0]);
+                    image_url = result.publicUrl;
+                }
+
+                const homebrewPayload = {
+                    id:                 editId || undefined,
+                    content_type:       contentType,
+                    name,
+                    player_description: document.getElementById('fPlayerDesc').value.trim() || null,
+                    notes:              document.getElementById('fNotes').value.trim() || null,
+                    image_url:          image_url || null,
+                    data:               collectData(),
+                    change_notes:       document.getElementById('changeNotes').value.trim() || null,
+                };
+
+                const savedId = await saveHomebrew(currentUser.uid, isGlobal ? null : campaignId, homebrewPayload);
+
+                status.textContent = editId ? 'Saved.' : 'Created!';
+                document.getElementById('changeNotes').value = '';
+
+                if (!editId) {
+                    // Redirect to edit page so subsequent saves increment version correctly
+                    window.location.href = isGlobal
+                        ? `homebrew-editor.html?id=${savedId}&scope=global`
+                        : `homebrew-editor.html?id=${savedId}&campaign=${campaignId}`;
+                } else {
+                    existingItem = await getHomebrewItem(editId);
+                    document.getElementById('hbeTitle').textContent = existingItem.name;
+                    loadVersionHistory();
+                }
+            } catch (e) {
+                status.className = 'status-msg err';
+                status.textContent = 'Save failed: ' + (e.message || e);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        // ── Template picker ──────────────────────────────────────────────────
+
+        const OFFICIAL_JSON = {
+            weapon:        '/data/base/weapons.json',
+            armor:         '/data/base/armor.json',
+            loot_item:     '/data/base/loot.json',
+            domain_card:   '/data/base/domain-cards.json',
+            ancestry:      '/data/base/ancestries.json',
+            community:     '/data/base/communities.json',
+            class:         '/data/base/classes.json',
+            campaign_frame:'/data/base/campaign-frames.json',
+            environment:   '/data/base/environments.json',
+        };
+
+        function stripHtml(str) {
+            return str ? str.replace(/<[^>]*>/g, '') : '';
+        }
+
+        async function loadOfficialData(type) {
+            if (officialDataCache[type]) return officialDataCache[type];
+            const url = OFFICIAL_JSON[type];
+            if (!url) return [];
+            const raw = await fetch(url).then(r => r.json());
+            let list = Array.isArray(raw) ? raw : Object.values(raw);
+            if (type === 'loot_item') {
+                // loot.json is [{metadata}, [item1, item2, ...]]
+                list = Array.isArray(list[1]) ? list[1] : [];
+            }
+            officialDataCache[type] = list;
+            return list;
+        }
+
+        function mapOfficialToData(type, item) {
+            const flatFeatures = arr => (arr || []).map(f => ({
+                name: f.name || '', description: stripHtml(f.description || '')
+            }));
+            switch (type) {
+                case 'weapon':
+                    return {
+                        name: item.name,
+                        player_description: '',
+                        data: {
+                            trait:       normalizeBurden(item.burden),
+                            category:    guessCategory(item.range),
+                            range:       item.range || 'Melee',
+                            damage_dice: item.damage || '',
+                            burden:      '1',
+                            features:    item.feature ? [item.feature] : (item.features || []),
+                            rarity:      'common',
+                        },
+                    };
+                case 'armor':
+                    return {
+                        name: item.name,
+                        player_description: '',
+                        data: {
+                            base_score:  item.armorScore ?? 2,
+                            armor_slots: 2,
+                            features:    item.feature ? [item.feature] : (item.features || []),
+                            rarity:      'common',
+                        },
+                    };
+                case 'loot_item':
+                    return {
+                        name: item.name,
+                        player_description: item.description || '',
+                        data: {
+                            rarity:     item.rarity || 'common',
+                            consumable: item.type === 'consumable',
+                            effect:     item.description || '',
+                            value:      'handful',
+                        },
+                    };
+                case 'domain_card':
+                    return {
+                        name: item.name,
+                        player_description: '',
+                        data: {
+                            domain:      item.domain ? cap(item.domain) : '',
+                            card_type:   item.type || 'Ability',
+                            level:       item.level || 1,
+                            recall_cost: item.recallCost ?? 2,
+                            effect:      item.description || '',
+                            remembrance: '',
+                        },
+                    };
+                case 'ancestry':
+                case 'community':
+                    return {
+                        name: item.name,
+                        player_description: item.lore || '',
+                        data: { features: flatFeatures(item.features) },
+                    };
+                case 'class':
+                    return {
+                        name: item.name,
+                        player_description: stripHtml(item.description || ''),
+                        data: {
+                            starting_hp:      item.startingHp ?? 6,
+                            starting_evasion: item.startingEvasion ?? 10,
+                            spellcast_trait:  item.spellcastTrait || null,
+                            class_items:      item.classItems || '',
+                            domains:          ['', ''],
+                            hope_feature: {
+                                name:        item.hopeFeature?.name || '',
+                                description: stripHtml(item.hopeFeature?.description || ''),
+                            },
+                            subclasses: (item.subclasses || []).slice(0, 2).map(sub => ({
+                                name:           sub.name || '',
+                                description:    sub.description || '',
+                                foundation:     sub.features?.foundation?.[0]     ? { name: sub.features.foundation[0].name,     description: stripHtml(sub.features.foundation[0].description) }     : { name: '', description: '' },
+                                specialization: sub.features?.specialization?.[0] ? { name: sub.features.specialization[0].name, description: stripHtml(sub.features.specialization[0].description) } : { name: '', description: '' },
+                                mastery:        sub.features?.mastery?.[0]        ? { name: sub.features.mastery[0].name,        description: stripHtml(sub.features.mastery[0].description) }        : { name: '', description: '' },
+                            })),
+                            class_features: flatFeatures(item.classFeatures),
+                        },
+                    };
+                case 'campaign_frame':
+                    return {
+                        name: item.name,
+                        player_description: item.pitch || item.setting_summary || '',
+                        data: {},
+                    };
+                case 'environment':
+                    return {
+                        name: item.name,
+                        player_description: item.description || '',
+                        data: {},
+                    };
+                default:
+                    return { name: item.name, player_description: '', data: {} };
+            }
+        }
+
+        function normalizeBurden(burden) {
+            const b = (burden || '').toLowerCase();
+            if (b.includes('two')) return 'Two-handed';
+            if (b.includes('off')) return 'Off-hand';
+            return 'One-handed';
+        }
+
+        function guessCategory(range) {
+            const r = (range || '').toLowerCase();
+            if (r.includes('far') || r.includes('ranged')) return 'Ranged';
+            if (r.includes('thrown')) return 'Thrown';
+            return 'Melee';
+        }
+
+        function tplMetaLine(type, item, isOfficial) {
+            if (!isOfficial) {
+                const d = item.data || {};
+                switch (type) {
+                    case 'weapon':      return `${d.trait || ''} · ${d.range || 'Melee'} · ${d.damage_dice || ''}`;
+                    case 'armor':       return `Score ${d.base_score ?? '?'}`;
+                    case 'loot_item':   return `${d.rarity || ''} · ${d.consumable ? 'consumable' : 'item'}`;
+                    case 'domain_card': return `${d.domain || ''} · ${d.card_type || ''} · L${d.level ?? 1}`;
+                    case 'ancestry': case 'community': return `${(d.features || []).length} features`;
+                    case 'class':       return `HP ${d.starting_hp ?? '?'} · Evasion ${d.starting_evasion ?? '?'}`;
+                    default:            return '';
+                }
+            }
+            switch (type) {
+                case 'weapon':      return `${item.burden || ''} · ${item.range || 'Melee'} · ${item.damage || ''}`;
+                case 'armor':       return `Score ${item.armorScore ?? '?'}`;
+                case 'loot_item':   return `${item.rarity || ''} · ${item.type || 'item'}`;
+                case 'domain_card': return `${item.domain || ''} · ${item.type || ''} · L${item.level ?? 1}`;
+                case 'ancestry': case 'community': return `${(item.features || []).length} features`;
+                case 'class':       return `HP ${item.startingHp ?? '?'} · Evasion ${item.startingEvasion ?? '?'}`;
+                case 'campaign_frame': return item.pitch ? item.pitch.substring(0, 48) + '…' : '';
+                case 'environment': return `T${item.tier || '?'} · ${item.type || ''}`;
+                default:            return '';
+            }
+        }
+
+        async function openTemplatePicker() {
+            if (isGlobal) {
+                const raw = await getMyLibrary(currentUser.uid, contentType);
+                homebrewForTpl = raw.map(r => ({ ...r, data: r.data || {} }));
+            } else {
+                homebrewForTpl = await getHomebrew(campaignId, contentType);
+                homebrewForTpl = homebrewForTpl.map(r => ({ ...r, data: r.data || {} }));
+            }
+            const hasOfficial = !!OFFICIAL_JSON[contentType];
+            tplTab = hasOfficial ? 'official' : 'homebrew';
+            document.getElementById('tplTabOfficial').classList.toggle('active', tplTab === 'official');
+            document.getElementById('tplTabHomebrew').classList.toggle('active', tplTab === 'homebrew');
+            tplSearch = '';
+            document.getElementById('tplSearch').value = '';
+            document.getElementById('templateOverlay').style.display = 'flex';
+            await renderTemplatePicker();
+            document.getElementById('tplSearch').focus();
+        }
+
+        function closeTemplatePicker() {
+            document.getElementById('templateOverlay').style.display = 'none';
+        }
+
+        async function renderTemplatePicker() {
+            const results = document.getElementById('tplResults');
+            results.innerHTML = '<div class="tpl-empty">Loading…</div>';
+
+            if (tplTab === 'official') {
+                if (!OFFICIAL_JSON[contentType]) {
+                    results.innerHTML = '<div class="tpl-empty">No official templates for this type.</div>';
+                    return;
+                }
+                let list = await loadOfficialData(contentType);
+                if (tplSearch) {
+                    const q = tplSearch.toLowerCase();
+                    list = list.filter(i => (i.name || '').toLowerCase().includes(q));
+                }
+                if (!list.length) { results.innerHTML = '<div class="tpl-empty">No results.</div>'; return; }
+                results.innerHTML = '';
+                list.slice(0, 120).forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'tpl-row';
+                    row.innerHTML =
+                        `<span class="tpl-row-name">${esc(item.name || '')}</span>` +
+                        `<span class="tpl-row-meta">${tplMetaLine(contentType, item, true)}</span>`;
+                    row.addEventListener('click', () => applyTemplate(item, true));
+                    results.appendChild(row);
+                });
+            } else {
+                let list = homebrewForTpl;
+                if (tplSearch) {
+                    const q = tplSearch.toLowerCase();
+                    list = list.filter(i => (i.name || '').toLowerCase().includes(q));
+                }
+                if (!list.length) {
+                    results.innerHTML = `<div class="tpl-empty">No homebrew ${TYPE_LABELS[contentType] || contentType}s yet.</div>`;
+                    return;
+                }
+                results.innerHTML = '';
+                list.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'tpl-row';
+                    row.innerHTML =
+                        `<span class="tpl-row-name">${esc(item.name || '')}</span>` +
+                        `<span class="tpl-row-meta">${tplMetaLine(contentType, item, false)}</span>`;
+                    row.addEventListener('click', () => applyTemplate(item, false));
+                    results.appendChild(row);
+                });
+            }
+        }
+
+        function applyTemplate(source, isOfficial) {
+            const mapped = isOfficial
+                ? mapOfficialToData(contentType, source)
+                : { name: source.name, player_description: source.player_description || '', data: source.data || {} };
+
+            document.getElementById('fName').value = 'Copy of ' + mapped.name;
+            document.getElementById('fPlayerDesc').value = mapped.player_description || '';
+            document.getElementById('fNotes').value = '';
+
+            buildTypeFields(contentType, mapped.data);
+
+            uploadedUrl = null;
+            document.getElementById('imgPreview').src = '';
+            document.getElementById('imgPreview').style.display = 'none';
+            document.getElementById('uploadZoneText').style.display = '';
+            document.getElementById('imageFile').value = '';
+
+            closeTemplatePicker();
+            document.getElementById('fName').focus();
+            document.getElementById('fName').select();
+        }
+
+        document.getElementById('tplTriggerBtn').addEventListener('click', openTemplatePicker);
+        document.getElementById('tplCloseBtn').addEventListener('click', closeTemplatePicker);
+        document.getElementById('templateOverlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('templateOverlay')) closeTemplatePicker();
+        });
+        document.getElementById('tplTabOfficial').addEventListener('click', async () => {
+            tplTab = 'official';
+            document.getElementById('tplTabOfficial').classList.add('active');
+            document.getElementById('tplTabHomebrew').classList.remove('active');
+            await renderTemplatePicker();
+        });
+        document.getElementById('tplTabHomebrew').addEventListener('click', async () => {
+            tplTab = 'homebrew';
+            document.getElementById('tplTabHomebrew').classList.add('active');
+            document.getElementById('tplTabOfficial').classList.remove('active');
+            await renderTemplatePicker();
+        });
+        document.getElementById('tplSearch').addEventListener('input', async e => {
+            tplSearch = e.target.value;
+            await renderTemplatePicker();
+        });
+
+        function esc(str) {
+            return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function cap(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+    </script>
+</body>
+</html>

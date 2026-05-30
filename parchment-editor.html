@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parchment Editor — Brackenroll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0e0b08;
+            color: #e8dcc8;
+            font-family: 'Cinzel', serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 24px;
+            height: 52px;
+            background: #14110d;
+            border-bottom: 1px solid rgba(201,168,76,0.28);
+            flex-shrink: 0;
+        }
+        .top-bar-back {
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #6a5a40;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .top-bar-back:hover { color: #c9a84c; }
+        .top-bar-title { font-size: 0.82em; font-weight: 600; color: #e8dcc8; letter-spacing: 0.06em; }
+        .top-bar-spacer { flex: 1; }
+        .save-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 7px 20px;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: #e8c96a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .save-btn:hover { background: rgba(201,168,76,0.25); }
+        .save-btn:disabled { opacity: 0.4; cursor: default; }
+
+        .editor-wrap {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 24px;
+            gap: 32px;
+        }
+
+        .editor-form {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .field-label {
+            font-size: 0.6em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #8a7860;
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,168,76,0.25);
+            color: #e8dcc8;
+            padding: 8px 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field-input:focus { border-color: #c9a84c; }
+        .field-input::placeholder { color: #4a3e2e; }
+
+        .type-row { display: flex; gap: 8px; }
+        .type-btn {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 9px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.22);
+            color: #6a5a40;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .type-btn.selected { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.1); }
+
+        .field-textarea {
+            width: 100%;
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(201,168,76,0.25);
+            color: #e8dcc8;
+            padding: 10px;
+            outline: none;
+            resize: vertical;
+            min-height: 180px;
+            line-height: 1.6;
+            transition: border-color 0.2s;
+        }
+        .field-textarea:focus { border-color: #c9a84c; }
+        .field-textarea::placeholder { color: #4a3e2e; }
+
+        .style-row { display: flex; gap: 8px; }
+        .style-btn {
+            flex: 1;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.95em;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid rgba(201,168,76,0.18);
+            color: #6a5a40;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        .style-btn.selected { border-color: #c9a84c; color: #c9a84c; background: rgba(201,168,76,0.08); }
+
+        .upload-zone {
+            border: 1px dashed rgba(201,168,76,0.3);
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-zone:hover { border-color: rgba(201,168,76,0.6); background: rgba(201,168,76,0.04); }
+        .upload-zone-text { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.9em; color: #5a4e3e; }
+        .upload-img-preview {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border: 1px solid rgba(201,168,76,0.2);
+            display: none;
+        }
+
+        .status-msg {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: #5a9e5a;
+            text-align: center;
+            min-height: 1.4em;
+        }
+        .status-msg.err { color: #c06060; }
+
+        /* Preview parchment */
+        .parch-preview {
+            width: 360px;
+            flex-shrink: 0;
+        }
+        .parch-preview-label {
+            font-size: 0.58em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #5a4e3e;
+            margin-bottom: 10px;
+        }
+        .parch-preview-scroll {
+            background: #f4ead2;
+            padding: 28px 32px;
+            position: relative;
+            min-height: 200px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+        }
+        .parch-preview-scroll::before,
+        .parch-preview-scroll::after {
+            content: '';
+            display: block;
+            height: 18px;
+            background: linear-gradient(to bottom, #c9a060, #d4a844);
+            margin: 0 -32px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .parch-preview-scroll::before { margin-top: -28px; margin-bottom: 20px; }
+        .parch-preview-scroll::after  { margin-top: 20px; margin-bottom: -28px; }
+        .parch-preview-title-el {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2a1800;
+            text-align: center;
+            margin-bottom: 14px;
+            letter-spacing: 0.04em;
+        }
+        .parch-preview-body-el {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: #2a1800;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .parch-preview-img-el {
+            max-width: 100%;
+            border: 1px solid rgba(80,40,0,0.2);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a class="top-bar-back" id="backLink" href="index.html">← Campaign</a>
+        <div class="top-bar-title">New Parchment</div>
+        <div class="top-bar-spacer"></div>
+        <button class="save-btn" id="btnSave">Save to Library</button>
+    </div>
+
+    <div class="editor-wrap">
+        <div class="editor-form">
+            <div>
+                <div class="field-label">Title</div>
+                <input class="field-input" id="parchTitle" type="text" placeholder="A Letter from Varen…" maxlength="80">
+            </div>
+
+            <div>
+                <div class="field-label">Type</div>
+                <div class="type-row">
+                    <button class="type-btn selected" data-type="text">Text</button>
+                    <button class="type-btn" data-type="image">Image</button>
+                </div>
+            </div>
+
+            <!-- Text fields -->
+            <div id="textFields">
+                <div class="field-label">Body</div>
+                <textarea class="field-textarea" id="parchBody" placeholder="Write the contents of this parchment…"></textarea>
+                <div class="field-label" style="margin-top:12px;">Style</div>
+                <div class="style-row">
+                    <button class="style-btn selected" data-style="scroll">Scroll</button>
+                    <button class="style-btn" data-style="letter">Letter</button>
+                </div>
+            </div>
+
+            <!-- Image fields -->
+            <div id="imageFields" style="display:none;">
+                <div class="field-label">Handout Image</div>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="imageFile" accept="image/*" style="display:none;">
+                    <img class="upload-img-preview" id="imgPreview" alt="">
+                    <div class="upload-zone-text" id="uploadZoneText">Click to upload an image</div>
+                </div>
+            </div>
+
+            <div class="status-msg" id="statusMsg"></div>
+        </div>
+
+        <div class="parch-preview" id="parchPreviewWrap">
+            <div class="parch-preview-label">Preview</div>
+            <div class="parch-preview-scroll">
+                <div class="parch-preview-title-el" id="previewTitle">Title</div>
+                <div class="parch-preview-body-el"  id="previewBody"></div>
+                <img class="parch-preview-img-el"   id="previewImg" alt="">
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { onAuthChange, getCampaigns, saveParchment, uploadAsset } from './supabase-client.js';
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+
+        let currentUser = null;
+        let parchType   = 'text';
+        let parchStyle  = 'scroll';
+        let uploadedUrl = null;
+
+        onAuthChange(async (user) => {
+            if (!user) { window.location.href = 'signin.html?redirect=' + encodeURIComponent(window.location.href); return; }
+            currentUser = user;
+            if (campaignId) {
+                document.getElementById('backLink').href = `campaign.html?id=${campaignId}`;
+            }
+        });
+
+        // Type toggle
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                parchType = btn.dataset.type;
+                document.getElementById('textFields').style.display  = parchType === 'text'  ? 'block' : 'none';
+                document.getElementById('imageFields').style.display = parchType === 'image' ? 'block' : 'none';
+                updatePreview();
+            });
+        });
+
+        // Style toggle
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                parchStyle = btn.dataset.style;
+            });
+        });
+
+        // Live preview
+        document.getElementById('parchTitle').addEventListener('input', updatePreview);
+        document.getElementById('parchBody').addEventListener('input',  updatePreview);
+
+        function updatePreview() {
+            const title = document.getElementById('parchTitle').value || 'Untitled';
+            const body  = document.getElementById('parchBody').value;
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewBody').textContent  = body;
+            const imgEl = document.getElementById('previewImg');
+            if (parchType === 'image' && uploadedUrl) {
+                imgEl.src   = uploadedUrl;
+                imgEl.style.display = 'block';
+                document.getElementById('previewBody').style.display = 'none';
+            } else {
+                imgEl.style.display = 'none';
+                document.getElementById('previewBody').style.display = 'block';
+            }
+        }
+
+        // Image upload
+        const uploadZone = document.getElementById('uploadZone');
+        const imageFile  = document.getElementById('imageFile');
+        const imgPreview = document.getElementById('imgPreview');
+
+        uploadZone.addEventListener('click', () => imageFile.click());
+        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = '#c9a84c'; });
+        uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+        uploadZone.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadZone.style.borderColor = '';
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
+        imageFile.addEventListener('change', () => { if (imageFile.files[0]) handleFile(imageFile.files[0]); });
+
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                imgPreview.src = e.target.result;
+                imgPreview.style.display = 'block';
+                document.getElementById('uploadZoneText').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Save
+        document.getElementById('btnSave').addEventListener('click', async () => {
+            if (!currentUser || !campaignId) return;
+            const title = document.getElementById('parchTitle').value.trim();
+            if (!title) { document.getElementById('parchTitle').focus(); return; }
+
+            const btn = document.getElementById('btnSave');
+            const status = document.getElementById('statusMsg');
+            btn.disabled = true;
+            status.className = 'status-msg';
+            status.textContent = 'Saving…';
+
+            try {
+                let canvas_data;
+
+                if (parchType === 'text') {
+                    canvas_data = {
+                        type:  'text',
+                        style: parchStyle,
+                        title,
+                        body:  document.getElementById('parchBody').value,
+                    };
+                } else {
+                    const file = imageFile.files[0];
+                    if (!file) { status.className = 'status-msg err'; status.textContent = 'Please select an image.'; btn.disabled = false; return; }
+                    status.textContent = 'Uploading image…';
+                    const { publicUrl } = await uploadAsset(campaignId, 'image', file);
+                    canvas_data = { type: 'image', url: publicUrl, label: title };
+                }
+
+                await saveParchment(currentUser.uid, campaignId, { name: title, canvas_data });
+                status.className = 'status-msg';
+                status.textContent = 'Saved! You can close this tab.';
+            } catch (e) {
+                status.className = 'status-msg err';
+                status.textContent = 'Save failed: ' + (e.message || e);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        updatePreview();
+    </script>
+</body>
+</html>

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Parchment Companion — Brackenroll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold:     #c9a84c;
+            --gold-dim: rgba(201,168,76,0.3);
+            --bg-deep:  #0e0b08;
+            --bg-mid:   #14110d;
+            --bg-panel: #1a140c;
+            --text:     #e8dcc8;
+            --text-dim: #6a5a40;
+            --parch:    #f4ead2;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-deep);
+            color: var(--text);
+            font-family: 'Cinzel', serif;
+            overflow: hidden;
+        }
+
+        /* ── Top bar ──────────────────────────────────────────────────────────── */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            height: 50px;
+            background: var(--bg-mid);
+            border-bottom: 1px solid var(--gold-dim);
+            padding: 0 16px;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .top-title {
+            font-size: 0.7em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+        .top-spacer { flex: 1; }
+        .top-user {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.88em;
+            color: var(--text-dim);
+        }
+
+        /* ── Tab bar ──────────────────────────────────────────────────────────── */
+        .tab-bar {
+            display: flex;
+            background: var(--bg-mid);
+            border-bottom: 1px solid var(--gold-dim);
+            flex-shrink: 0;
+        }
+        .tab-btn {
+            flex: 1;
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px 4px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: -1px;
+        }
+        .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        /* ── App shell ─────────────────────────────────────────────────────────── */
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .tab-content { flex: 1; overflow: hidden; display: none; flex-direction: column; }
+        .tab-content.active { display: flex; }
+
+        /* ── Draw tab ─────────────────────────────────────────────────────────── */
+        .draw-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-mid);
+            border-bottom: 1px solid var(--gold-dim);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .draw-tool-btn {
+            width: 36px; height: 36px;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            transition: all 0.15s;
+            border-radius: 2px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .draw-tool-btn:hover,
+        .draw-tool-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+        .color-dot {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+        .color-dot.active { border-color: #e8dcc8; }
+        .draw-sep { width: 1px; height: 24px; background: var(--gold-dim); flex-shrink: 0; margin: 0 2px; }
+        .size-label { font-size: 0.55em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); flex-shrink: 0; }
+        .size-slider { width: 80px; accent-color: var(--gold); cursor: pointer; }
+        .bg-toggle-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.55em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .bg-toggle-btn.parchment { border-color: rgba(201,168,76,0.5); color: #c9a84c; }
+        .draw-spacer { flex: 1; }
+        .draw-save-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 7px 16px;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: #e8c96a;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .draw-save-btn:hover { background: rgba(201,168,76,0.25); }
+        .draw-clear-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 7px 12px;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .draw-clear-btn:hover { color: #c06060; border-color: rgba(192,96,96,0.4); }
+
+        .draw-canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #1a160e;
+        }
+        #drawCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            cursor: crosshair;
+        }
+        .draw-status {
+            position: absolute;
+            bottom: 10px; left: 50%;
+            transform: translateX(-50%);
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.85em;
+            color: rgba(201,168,76,0.6);
+            pointer-events: none;
+            transition: opacity 0.5s;
+            white-space: nowrap;
+        }
+        .draw-status.hidden { opacity: 0; }
+
+        /* ── Live tab ─────────────────────────────────────────────────────────── */
+        .live-header {
+            padding: 14px 16px 10px;
+            flex-shrink: 0;
+        }
+        .live-header-title {
+            font-size: 0.6em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #8a7860;
+            margin-bottom: 4px;
+        }
+        .live-note {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.82em;
+            color: #4a3e2e;
+        }
+        .live-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .live-item {
+            background: var(--bg-panel);
+            border: 1px solid var(--gold-dim);
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .live-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+        .live-item-icon { font-size: 1.4em; flex-shrink: 0; }
+        .live-item-name {
+            flex: 1;
+            font-size: 0.72em;
+            color: var(--text);
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .live-item-arrow { color: var(--text-dim); font-size: 0.8em; flex-shrink: 0; }
+        .live-empty {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.9em;
+            color: #4a3e2e;
+            text-align: center;
+            padding: 32px 0;
+        }
+
+        /* ── Live drawing overlay ─────────────────────────────────────────────── */
+        .live-draw-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-deep);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+        }
+        .live-draw-overlay.open { display: flex; }
+        .live-draw-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg-mid);
+            border-bottom: 1px solid var(--gold-dim);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .live-draw-title {
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            flex: 1;
+        }
+        .live-back-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .live-back-btn:hover { color: var(--gold); border-color: var(--gold); }
+        #liveDrawCanvas {
+            flex: 1;
+            display: block;
+            width: 100%;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        /* ── Inbox tab ─────────────────────────────────────────────────────────── */
+        .inbox-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .inbox-item {
+            background: var(--bg-panel);
+            border: 1px solid var(--gold-dim);
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .inbox-item:hover { border-color: var(--gold); }
+        .inbox-item-name {
+            font-size: 0.72em;
+            color: var(--text);
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+        .inbox-item-meta {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.8em;
+            color: #5a4a38;
+        }
+        .inbox-empty {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.9em;
+            color: #4a3e2e;
+            text-align: center;
+            padding: 32px 0;
+        }
+
+        /* ── Viewer overlay ───────────────────────────────────────────────────── */
+        .viewer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 20px;
+        }
+        .viewer-overlay.open { display: flex; }
+        .viewer-title {
+            font-size: 0.7em;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+        #viewerCanvas {
+            max-width: 100%;
+            max-height: 65vh;
+            border: 1px solid var(--gold-dim);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.9);
+            display: block;
+        }
+        .viewer-close {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 8px 24px;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .viewer-close:hover { color: var(--gold); border-color: var(--gold); }
+        .viewer-text-body {
+            background: var(--parch);
+            color: #2a1800;
+            font-family: 'EB Garamond', serif;
+            font-size: 1.1em;
+            line-height: 1.7;
+            padding: 28px 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 65vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.9);
+            display: none;
+        }
+        .viewer-text-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.05em;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+            color: #2a1800;
+        }
+
+        /* ── Sign-in screen ───────────────────────────────────────────────────── */
+        .signin-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+        .signin-title { font-size: 1em; color: var(--gold); letter-spacing: 0.08em; }
+        .signin-note {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 0.9em;
+            color: #5a4a38;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+        .signin-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px 28px;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: #e8c96a;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .signin-btn:hover { background: rgba(201,168,76,0.25); }
+    </style>
+</head>
+<body>
+<div class="app-shell" id="appShell" style="display:none;">
+    <div class="top-bar">
+        <div class="top-title">Parchment Companion</div>
+        <div class="top-spacer"></div>
+        <div class="top-user" id="topUser"></div>
+    </div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="draw">Draw</button>
+        <button class="tab-btn" data-tab="live">Live Table</button>
+        <button class="tab-btn" data-tab="inbox">Inbox</button>
+    </div>
+
+    <!-- Draw tab -->
+    <div class="tab-content active" id="tab-draw">
+        <div class="draw-toolbar">
+            <button class="draw-tool-btn active" id="btnPen" title="Pen">✒</button>
+            <button class="draw-tool-btn" id="btnEraser" title="Eraser">◻</button>
+            <div class="draw-sep"></div>
+            <div id="colorDots"></div>
+            <div class="draw-sep"></div>
+            <span class="size-label">Size</span>
+            <input class="size-slider" id="drawSizeSlider" type="range" min="1" max="20" value="4">
+            <div class="draw-sep"></div>
+            <button class="bg-toggle-btn parchment" id="btnBgToggle">Parchment</button>
+            <div class="draw-spacer"></div>
+            <button class="draw-clear-btn" id="btnDrawClear">Clear</button>
+            <button class="draw-save-btn" id="btnDrawSave">Save</button>
+        </div>
+        <div class="draw-canvas-wrap">
+            <canvas id="drawCanvas"></canvas>
+            <div class="draw-status hidden" id="drawStatus"></div>
+        </div>
+    </div>
+
+    <!-- Live tab -->
+    <div class="tab-content" id="tab-live">
+        <div class="live-header">
+            <div class="live-header-title">Active on Table</div>
+            <div class="live-note">Tap a parchment to draw on it with your Pencil.</div>
+        </div>
+        <div class="live-list" id="liveList"></div>
+    </div>
+
+    <!-- Inbox tab -->
+    <div class="tab-content" id="tab-inbox">
+        <div class="inbox-list" id="inboxList"></div>
+    </div>
+</div>
+
+<!-- Sign-in screen (shown when not authenticated) -->
+<div class="signin-screen" id="signinScreen" style="display:none;">
+    <div class="signin-title">Parchment Companion</div>
+    <div class="signin-note">Sign in to Brackenroll to draw, receive, and view parchments.</div>
+    <a class="signin-btn" href="signin.html?redirect=companion.html">Sign In</a>
+</div>
+
+<!-- Live drawing overlay -->
+<div class="live-draw-overlay" id="liveDrawOverlay">
+    <div class="live-draw-bar">
+        <button class="live-back-btn" id="btnLiveBack">← Back</button>
+        <span class="live-draw-title" id="liveDrawTitle"></span>
+        <button class="draw-tool-btn" id="btnLivePen" title="Pen" style="width:32px;height:32px;">✒</button>
+        <button class="draw-tool-btn" id="btnLiveEraser" title="Eraser" style="width:32px;height:32px;">◻</button>
+        <div id="liveColorDots" style="display:flex;gap:4px;"></div>
+    </div>
+    <canvas id="liveDrawCanvas"></canvas>
+</div>
+
+<!-- Viewer overlay -->
+<div class="viewer-overlay" id="viewerOverlay">
+    <div class="viewer-title" id="viewerTitle"></div>
+    <canvas id="viewerCanvas"></canvas>
+    <div class="viewer-text-body" id="viewerTextBody">
+        <div class="viewer-text-title" id="viewerTextTitle"></div>
+        <div id="viewerTextContent"></div>
+    </div>
+    <button class="viewer-close" id="btnViewerClose">Close</button>
+</div>
+
+<script type="module">
+import { onAuthChange, getActiveSession, getCampaigns,
+         loadActiveParchments, loadPlayerParchments,
+         createActiveParchment, updateActiveParchmentData, deleteActiveParchment,
+         saveParchment,
+         sendParchmentStroke, sendParchmentOpen, sendParchmentClose,
+         createTableBroadcastChannel } from './supabase-client.js';
+import { ParchmentDraw, INK_COLORS } from './parchment-draw.js';
+
+let currentUser    = null;
+let session        = null;
+let campaignId     = null;
+let broadcastCh    = null;
+
+let drawInstance   = null;
+let liveDrawInstance = null;
+let currentLiveAp  = null;
+let activeParchList = [];
+let inboxList      = [];
+let liveDrawSaveTimer = null;
+let drawBackground = 'parchment';
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+
+onAuthChange(async (user) => {
+    if (!user) {
+        document.getElementById('signinScreen').style.display = 'flex';
+        return;
+    }
+    currentUser = user;
+    document.getElementById('topUser').textContent = user.email?.split('@')[0] || 'Player';
+    document.getElementById('appShell').style.display = 'flex';
+
+    // Find an active session for any of the user's campaigns
+    try {
+        const campaigns = await getCampaigns(user.uid);
+        for (const c of campaigns) {
+            const s = await getActiveSession(c.id);
+            if (s) { session = s; campaignId = c.id; break; }
+        }
+    } catch (e) { console.warn('session lookup failed:', e); }
+
+    initDraw();
+    initTabs();
+    initLiveTab();
+    initInbox();
+
+    if (session) {
+        broadcastCh = createTableBroadcastChannel(session.id, () => {}, () => {}, {
+            onStroke:   onRemoteStroke,
+            onOpen:     onRemoteOpen,
+            onClose:    onRemoteClose,
+        });
+    }
+});
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+
+function initTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+    });
+}
+
+// ── Draw tab ─────────────────────────────────────────────────────────────────
+
+function initDraw() {
+    const canvas = document.getElementById('drawCanvas');
+    const wrap   = canvas.parentElement;
+
+    // Size canvas to container
+    canvas.style.width  = wrap.clientWidth  + 'px';
+    canvas.style.height = wrap.clientHeight + 'px';
+
+    drawInstance = new ParchmentDraw(canvas, { background: drawBackground });
+
+    // Color dots
+    const dots = document.getElementById('colorDots');
+    dots.style.cssText = 'display:flex;gap:4px;';
+    INK_COLORS.forEach((c, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'color-dot' + (i === 0 ? ' active' : '');
+        dot.style.background = c.value;
+        dot.title = c.label;
+        dot.addEventListener('click', () => {
+            document.querySelectorAll('#colorDots .color-dot').forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            drawInstance.setColor(c.value);
+            drawInstance.setTool('pen');
+            document.getElementById('btnPen').classList.add('active');
+            document.getElementById('btnEraser').classList.remove('active');
+        });
+        dots.appendChild(dot);
+    });
+
+    document.getElementById('btnPen').addEventListener('click', () => {
+        drawInstance.setTool('pen');
+        document.getElementById('btnPen').classList.add('active');
+        document.getElementById('btnEraser').classList.remove('active');
+    });
+    document.getElementById('btnEraser').addEventListener('click', () => {
+        drawInstance.setTool('eraser');
+        document.getElementById('btnEraser').classList.add('active');
+        document.getElementById('btnPen').classList.remove('active');
+    });
+    document.getElementById('drawSizeSlider').addEventListener('input', e => {
+        drawInstance.setWidth(parseInt(e.target.value));
+    });
+
+    document.getElementById('btnBgToggle').addEventListener('click', () => {
+        drawBackground = drawBackground === 'parchment' ? 'blank' : 'parchment';
+        const btn = document.getElementById('btnBgToggle');
+        btn.textContent = drawBackground === 'parchment' ? 'Parchment' : 'Blank';
+        btn.classList.toggle('parchment', drawBackground === 'parchment');
+        // Recreate with new background
+        drawInstance.background = drawBackground;
+        drawInstance.redraw();
+    });
+
+    document.getElementById('btnDrawClear').addEventListener('click', () => {
+        if (!confirm('Clear this parchment?')) return;
+        drawInstance.clear();
+    });
+
+    document.getElementById('btnDrawSave').addEventListener('click', saveDrawToLibrary);
+
+    // Resize on orientation change
+    window.addEventListener('resize', () => {
+        if (drawInstance) {
+            canvas.style.width  = wrap.clientWidth  + 'px';
+            canvas.style.height = wrap.clientHeight + 'px';
+            drawInstance.resize();
+        }
+    });
+}
+
+async function saveDrawToLibrary() {
+    if (!currentUser || !campaignId) {
+        showStatus('No active session found.', true);
+        return;
+    }
+    const name = prompt('Name this parchment:', 'Untitled');
+    if (!name) return;
+
+    const canvas_data = {
+        type:       'drawing',
+        background: drawBackground,
+        strokes:    drawInstance.getStrokes(),
+    };
+    try {
+        await saveParchment(currentUser.uid, campaignId, { name, canvas_data });
+        showStatus('Saved to library.');
+        drawInstance.clear();
+    } catch (e) {
+        showStatus('Save failed.', true);
+        console.error(e);
+    }
+}
+
+function showStatus(msg, isErr = false) {
+    const el = document.getElementById('drawStatus');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    if (isErr) el.style.color = '#c06060';
+    else el.style.color = 'rgba(201,168,76,0.7)';
+    setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+// ── Live tab ──────────────────────────────────────────────────────────────────
+
+async function initLiveTab() {
+    if (!session) {
+        document.getElementById('liveList').innerHTML =
+            '<p class="live-empty">No active session found.</p>';
+        return;
+    }
+    try {
+        activeParchList = await loadActiveParchments(session.id);
+        renderLiveList();
+    } catch (e) { console.warn('loadActiveParchments failed:', e); }
+}
+
+function renderLiveList() {
+    const list = document.getElementById('liveList');
+    if (!activeParchList.length) {
+        list.innerHTML = '<p class="live-empty">No parchments are open on the table right now.</p>';
+        return;
+    }
+    list.innerHTML = '';
+    activeParchList.forEach(ap => {
+        const item = document.createElement('div');
+        item.className = 'live-item';
+        item.innerHTML = `
+            <span class="live-item-icon">✍</span>
+            <span class="live-item-name">${esc(ap.label || 'Untitled')}</span>
+            <span class="live-item-arrow">→</span>`;
+        item.addEventListener('click', () => openLiveDraw(ap));
+        list.appendChild(item);
+    });
+}
+
+function openLiveDraw(ap) {
+    currentLiveAp = ap;
+    const overlay = document.getElementById('liveDrawOverlay');
+    overlay.classList.add('open');
+    document.getElementById('liveDrawTitle').textContent = ap.label || 'Untitled';
+
+    const canvas = document.getElementById('liveDrawCanvas');
+    const bar    = document.querySelector('.live-draw-bar');
+    canvas.style.width  = window.innerWidth  + 'px';
+    canvas.style.height = (window.innerHeight - bar.offsetHeight) + 'px';
+
+    if (liveDrawInstance) {
+        liveDrawInstance.canvas.removeEventListener('pointerdown', liveDrawInstance._onDownBound);
+    }
+
+    liveDrawInstance = new ParchmentDraw(canvas, {
+        background: ap.canvas_data?.background || 'parchment',
+        onStrokeComplete: stroke => onLiveStrokeComplete(ap.id, stroke),
+    });
+    liveDrawInstance.loadStrokes(ap.canvas_data?.strokes || []);
+
+    // Live toolbar
+    const liveDots = document.getElementById('liveColorDots');
+    liveDots.innerHTML = '';
+    INK_COLORS.forEach((c, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'color-dot' + (i === 0 ? ' active' : '');
+        dot.style.cssText = `background:${c.value};width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;flex-shrink:0;`;
+        dot.addEventListener('click', () => {
+            liveDots.querySelectorAll('.color-dot').forEach(d => d.style.borderColor = 'transparent');
+            dot.style.borderColor = '#e8dcc8';
+            liveDrawInstance.setColor(c.value);
+            liveDrawInstance.setTool('pen');
+        });
+        liveDots.appendChild(dot);
+    });
+
+    document.getElementById('btnLivePen').onclick = () => {
+        liveDrawInstance.setTool('pen');
+        document.getElementById('btnLivePen').classList.add('active');
+        document.getElementById('btnLiveEraser').classList.remove('active');
+    };
+    document.getElementById('btnLiveEraser').onclick = () => {
+        liveDrawInstance.setTool('eraser');
+        document.getElementById('btnLiveEraser').classList.add('active');
+        document.getElementById('btnLivePen').classList.remove('active');
+    };
+}
+
+function onLiveStrokeComplete(activeParchmentId, stroke) {
+    if (broadcastCh) sendParchmentStroke(broadcastCh, activeParchmentId, stroke);
+    // Debounced save
+    if (liveDrawSaveTimer) clearTimeout(liveDrawSaveTimer);
+    liveDrawSaveTimer = setTimeout(() => {
+        if (!liveDrawInstance || !currentLiveAp) return;
+        const canvas_data = { ...(currentLiveAp.canvas_data || {}), strokes: liveDrawInstance.getStrokes() };
+        updateActiveParchmentData(activeParchmentId, canvas_data)
+            .catch(e => console.error('live save failed:', e));
+    }, 2500);
+}
+
+document.getElementById('btnLiveBack').addEventListener('click', () => {
+    document.getElementById('liveDrawOverlay').classList.remove('open');
+    currentLiveAp   = null;
+    liveDrawInstance = null;
+});
+
+// ── Inbox tab ──────────────────────────────────────────────────────────────────
+
+async function initInbox() {
+    if (!currentUser) return;
+    try {
+        inboxList = await loadPlayerParchments(currentUser.uid);
+        renderInbox();
+    } catch (e) { console.warn('loadPlayerParchments failed:', e); }
+}
+
+function renderInbox() {
+    const list = document.getElementById('inboxList');
+    if (!inboxList.length) {
+        list.innerHTML = '<p class="inbox-empty">No parchments received yet.</p>';
+        return;
+    }
+    list.innerHTML = '';
+    inboxList.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'inbox-item';
+        const when = p.received_at ? new Date(p.received_at).toLocaleDateString() : '';
+        item.innerHTML = `
+            <div class="inbox-item-name">${esc(p.name || 'Untitled')}</div>
+            <div class="inbox-item-meta">${when}${p.context_note ? ' — ' + esc(p.context_note) : ''}</div>`;
+        item.addEventListener('click', () => openViewer(p));
+        list.appendChild(item);
+    });
+}
+
+// ── Viewer ────────────────────────────────────────────────────────────────────
+
+function openViewer(p) {
+    const overlay   = document.getElementById('viewerOverlay');
+    const canvas    = document.getElementById('viewerCanvas');
+    const textBody  = document.getElementById('viewerTextBody');
+    const type      = p.canvas_data?.type || 'drawing';
+
+    document.getElementById('viewerTitle').textContent = p.name || 'Parchment';
+    overlay.classList.add('open');
+
+    canvas.style.display   = 'none';
+    textBody.style.display = 'none';
+
+    if (type === 'drawing') {
+        canvas.style.cssText = 'max-width:100%;max-height:60vh;border:1px solid rgba(201,168,76,0.3);display:block;';
+        canvas.style.width  = '540px';
+        canvas.style.height = '360px';
+        const d = new ParchmentDraw(canvas, { background: p.canvas_data?.background || 'parchment', readOnly: true });
+        d.loadStrokes(p.canvas_data?.strokes || []);
+    } else if (type === 'text') {
+        textBody.style.display = 'block';
+        document.getElementById('viewerTextTitle').textContent   = p.canvas_data?.title || p.name;
+        document.getElementById('viewerTextContent').textContent = p.canvas_data?.body  || '';
+    } else if (type === 'image') {
+        canvas.style.display = 'none';
+        const img = document.createElement('img');
+        img.src = p.canvas_data?.url || '';
+        img.style.cssText = 'max-width:100%;max-height:65vh;border:1px solid rgba(201,168,76,0.3);display:block;';
+        overlay.insertBefore(img, document.getElementById('btnViewerClose'));
+    }
+}
+
+document.getElementById('btnViewerClose').addEventListener('click', () => {
+    document.getElementById('viewerOverlay').classList.remove('open');
+    // Remove any dynamically-added image
+    document.querySelectorAll('#viewerOverlay img').forEach(i => i.remove());
+});
+
+// ── Broadcast receivers ───────────────────────────────────────────────────────
+
+function onRemoteStroke({ id, stroke }) {
+    if (currentLiveAp?.id === id && liveDrawInstance) {
+        liveDrawInstance.applyStroke(stroke);
+    }
+}
+
+function onRemoteOpen(ap) {
+    if (!activeParchList.find(x => x.id === ap.id)) {
+        activeParchList.push(ap);
+        renderLiveList();
+    }
+}
+
+function onRemoteClose({ id }) {
+    activeParchList = activeParchList.filter(x => x.id !== id);
+    renderLiveList();
+    if (currentLiveAp?.id === id) {
+        document.getElementById('liveDrawOverlay').classList.remove('open');
+        currentLiveAp = null;
+    }
+}
+
+// ── Util ──────────────────────────────────────────────────────────────────────
+
+function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

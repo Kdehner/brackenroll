@@ -1,4 +1,4 @@
-import { onAuthChange, signOutUser, getUserProfile } from './firebase-init.js';
+import { onAuthChange, signOutUser, getUserProfile } from './supabase-client.js';
 
 (function () {
     const nav = document.querySelector('.site-nav');
@@ -13,6 +13,7 @@ import { onAuthChange, signOutUser, getUserProfile } from './firebase-init.js';
             '<ul class="nav-links">' +
                 '<li><a href="index.html">Campaigns</a></li>' +
                 '<li><a href="character-builder.html">Characters</a></li>' +
+                '<li><a href="library.html">My Library</a></li>' +
                 '<li><a href="handbook.html">Handbook</a></li>' +
             '</ul>' +
         '</div>' +
@@ -62,7 +63,7 @@ import { onAuthChange, signOutUser, getUserProfile } from './firebase-init.js';
         if (existing) existing.remove();
 
         const link = document.createElement('a');
-        link.href = 'index.html';
+        link.href = 'signin.html';
         link.className = 'nav-signin-link';
         link.textContent = 'Sign In';
         navRight.insertBefore(link, btn);
@@ -119,14 +120,18 @@ import { onAuthChange, signOutUser, getUserProfile } from './firebase-init.js';
     // ── Auth state ───────────────────────────────────────────────────────────
     renderSignedOut(); // default until auth resolves
 
-    onAuthChange(async (user) => {
+    onAuthChange(async (user, needsOnboarding) => {
         if (!user) {
             renderSignedOut();
             return;
         }
+        if (needsOnboarding && page !== 'index.html') {
+            window.location.href = 'index.html';
+            return;
+        }
         const profile = await getUserProfile(user.uid);
-        const displayName = profile?.displayName || user.displayName || user.email || 'Account';
-        const avatarColor = profile?.avatarColor || '';
+        const displayName = profile?.display_name || user.user_metadata?.full_name || user.email || 'Account';
+        const avatarColor = profile?.avatar_color || '';
         renderSignedIn(displayName, avatarColor);
     });
 }());

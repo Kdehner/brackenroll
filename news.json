@@ -1,0 +1,23 @@
+[
+  {
+    "id": "canvas-era",
+    "date": "2026-05-14",
+    "tag": "Release",
+    "title": "Brackenroll Enters the Canvas Era",
+    "body": "The live session table is now available in early access. Drop tokens, move them in real time, and run encounters directly from the table. Powered by Supabase Broadcast — every move syncs instantly across every connected player."
+  },
+  {
+    "id": "character-builder-v3",
+    "date": "2026-05-01",
+    "tag": "Feature",
+    "title": "Character Builder: Fully Rebuilt for V3",
+    "body": "The 13-step guided builder now walks you through identity, class, subclass, ancestry, community, traits, domain cards, experiences, equipment, inventory, background, and connections. Characters save to your account and sync to the full sheet automatically."
+  },
+  {
+    "id": "launch",
+    "date": "2026-04-15",
+    "tag": "Launch",
+    "title": "Brackenroll Is Open",
+    "body": "Our custom Daggerheart VTT is live. Create an account, start a campaign as GM or join one as a player, and build your first character. Built for hybrid and remote play — every feature designed around Hope, Fear, and the way Daggerheart actually runs at the table."
+  }
+]

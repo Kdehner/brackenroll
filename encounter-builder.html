@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encounters — Brackenroll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .enc-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 56px 100px;
+        }
+
+        /* ── Header ── */
+        .enc-back {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .enc-back:hover { color: var(--gold); }
+        .enc-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+        .enc-subtitle {
+            font-family: 'EB Garamond', serif;
+            font-size: 1em;
+            color: var(--ink-dim);
+            font-style: italic;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        /* ── Section headers ── */
+        .sect-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .sect-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--gold-mid);
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        /* ── Encounter cards ── */
+        .enc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2px;
+            margin-bottom: 24px;
+        }
+        .enc-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 18px 20px 14px;
+        }
+        .enc-card-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .enc-card-meta {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-muted);
+            margin-bottom: 14px;
+        }
+        .enc-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ── New encounter inline form ── */
+        .new-enc-form {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px 22px;
+            margin-bottom: 28px;
+            display: grid;
+            grid-template-columns: 1fr 220px auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: 1px solid var(--gold);
+            padding: 10px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary:hover { background: var(--h-gold-b); }
+        .btn-primary:disabled { opacity: 0.5; cursor: default; }
+        .btn-secondary {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.35);
+            background: transparent;
+            padding: 10px 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-sm {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.3);
+            background: transparent;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .btn-sm:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-danger-sm {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(180,60,60,0.7);
+            border: 1px solid rgba(180,60,60,0.25);
+            background: transparent;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .btn-danger-sm:hover { border-color: rgba(180,60,60,0.6); color: rgba(180,60,60,0.9); }
+
+        /* ── Form inputs ── */
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-input, .form-select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            padding: 8px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-input:focus, .form-select:focus { border-color: var(--gold); }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+        }
+
+        /* ── Badges ── */
+        .badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.56em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            white-space: nowrap;
+        }
+        .badge-tier   { color: var(--gold);     border: 1px solid rgba(201,168,76,0.3); }
+        .badge-role   { color: var(--ink-dim);   border: 1px solid var(--border); }
+        .badge-scene  { color: var(--ink-muted); border: 1px solid var(--border); font-family: 'EB Garamond',serif; font-style:italic; font-size:0.75em; letter-spacing:0; text-transform:none; }
+
+        /* ── Detail view ── */
+        .detail-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .detail-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.7em;
+            font-weight: 700;
+            color: var(--h-gold-b);
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ── Entry list ── */
+        .entry-list {
+            margin-bottom: 12px;
+        }
+        .entry-row {
+            display: grid;
+            grid-template-columns: 180px 1fr auto auto auto;
+            gap: 12px;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: none;
+            padding: 12px 16px;
+        }
+        .entry-row:first-child { border-top: 1px solid var(--border); }
+        .entry-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.82em;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 0.04em;
+        }
+        .entry-source {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.92em;
+            color: var(--ink-muted);
+        }
+        .entry-hp {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-dim);
+            white-space: nowrap;
+        }
+
+        /* ── Picker panel ── */
+        .picker-panel {
+            border: 1px solid var(--border-gold);
+            margin-top: 24px;
+        }
+        .picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-gold);
+            background: rgba(201,168,76,0.04);
+        }
+        .picker-header-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold-mid);
+        }
+        .picker-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+        .picker-tab {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: var(--ink-dim);
+            border: none;
+            background: transparent;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.2s;
+        }
+        .picker-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .picker-tab:hover { color: var(--ink); }
+        .picker-controls {
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .picker-search {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.92em;
+            padding: 6px 10px;
+            outline: none;
+            flex: 1;
+            min-width: 160px;
+            transition: border-color 0.2s;
+        }
+        .picker-search:focus { border-color: var(--gold); }
+        .tier-filters { display: flex; gap: 4px; }
+        .tier-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .tier-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.07); }
+        .tier-btn:hover { border-color: var(--border-gold); color: var(--ink-muted); }
+        .picker-list {
+            max-height: 360px;
+            overflow-y: auto;
+            background: var(--card-bg);
+        }
+        .picker-row {
+            display: grid;
+            grid-template-columns: 1fr 55px 130px 50px auto;
+            gap: 10px;
+            align-items: center;
+            padding: 9px 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        .picker-row:last-child { border-bottom: none; }
+        .picker-row:hover { background: rgba(255,255,255,0.025); }
+        .picker-adv-name {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.95em;
+            color: var(--ink);
+        }
+        .picker-adv-tier {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+        }
+        .picker-adv-role {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.85em;
+            color: var(--ink-dim);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .picker-adv-hp {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-muted);
+        }
+        .btn-add-entry {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.3);
+            background: transparent;
+            padding: 4px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+        .btn-add-entry:hover { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .btn-add-entry:disabled { opacity: 0.4; cursor: default; }
+        .picker-empty {
+            padding: 20px 16px;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        /* ── Loot panel ── */
+        .loot-controls-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 80px auto;
+            gap: 10px;
+            align-items: end;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+        .loot-ctrl-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            display: block;
+            margin-bottom: 5px;
+        }
+        .loot-select {
+            appearance: none;
+            background: rgba(255,255,255,0.04);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            border: 1px solid var(--border-mid);
+            color: var(--ink);
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            padding: 7px 22px 7px 10px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .loot-select:focus { border-color: var(--gold); }
+        .btn-loot-roll {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #0c0a07;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background 0.2s;
+            align-self: end;
+        }
+        .btn-loot-roll:hover { background: var(--h-gold-b); }
+        .btn-loot-roll:disabled { opacity: 0.4; cursor: default; }
+        .loot-results-list { background: var(--card-bg); }
+        .loot-result-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .loot-result-row:last-child { border-bottom: none; }
+        .loot-result-main { flex: 1; min-width: 0; }
+        .loot-result-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.78em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .loot-result-desc {
+            font-family: 'EB Garamond', serif;
+            font-size: 0.9em;
+            color: var(--ink-muted);
+            line-height: 1.4;
+        }
+        .loot-result-badges { display: flex; gap: 6px; margin-top: 5px; }
+        .loot-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.52em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border: 1px solid;
+        }
+        .lb-common    { color: rgba(180,180,160,0.75); border-color: rgba(180,180,160,0.2); }
+        .lb-uncommon  { color: rgba(120,180,100,0.85); border-color: rgba(120,180,100,0.25); }
+        .lb-rare      { color: rgba(100,140,220,0.85); border-color: rgba(100,140,220,0.25); }
+        .lb-legendary { color: var(--gold);            border-color: rgba(201,168,76,0.35); }
+        .lb-type      { color: var(--ink-dim);         border-color: var(--border); }
+        .btn-loot-reroll {
+            flex-shrink: 0;
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            color: var(--ink-dim);
+            font-size: 1em;
+            line-height: 1;
+            padding: 5px 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 1px;
+        }
+        .btn-loot-reroll:hover { border-color: var(--gold); color: var(--gold); }
+        .loot-empty {
+            padding: 16px;
+            font-family: 'EB Garamond', serif;
+            font-size: 0.88em;
+            color: var(--ink-dim);
+            font-style: italic;
+            background: var(--card-bg);
+        }
+
+        /* ── Misc ── */
+        .section-empty {
+            color: var(--ink-dim);
+            font-style: italic;
+            font-size: 0.9em;
+            padding: 12px 0;
+        }
+        .add-adv-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .enc-wrap { padding: 28px 20px 60px; }
+            .enc-title { font-size: 1.7em; }
+            .enc-grid { grid-template-columns: 1fr; }
+            .new-enc-form { grid-template-columns: 1fr; }
+            .entry-row { grid-template-columns: 1fr auto; grid-template-rows: auto auto; }
+            .entry-source, .entry-hp { display: none; }
+            .picker-row { grid-template-columns: 1fr 50px auto; }
+            .picker-adv-tier, .picker-adv-hp { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"></nav>
+
+    <div class="enc-wrap" id="encWrap" style="display:none;">
+
+        <!-- ── List View ──────────────────────────────────────────────────── -->
+        <div id="listView">
+            <a href="#" class="enc-back" id="backToCampaign">← Campaign</a>
+            <div class="enc-title">Encounters</div>
+            <div class="enc-subtitle" id="campaignNameSub"></div>
+
+            <!-- Inline create form -->
+            <div class="new-enc-form">
+                <div>
+                    <label class="form-label" for="encName">Encounter Name</label>
+                    <input type="text" id="encName" class="form-input" placeholder="e.g. Ambush at the Mill" />
+                </div>
+                <div>
+                    <label class="form-label" for="encScene">Linked Scene <span style="opacity:0.55;">(optional)</span></label>
+                    <select id="encScene" class="form-select">
+                        <option value="">None</option>
+                    </select>
+                </div>
+                <button class="btn-primary" id="createEncBtn">Create</button>
+            </div>
+
+            <div class="enc-grid" id="encGrid"></div>
+            <div id="encEmpty" style="display:none;">
+                <p class="section-empty">No encounters yet. Create one above to get started.</p>
+            </div>
+        </div>
+
+        <!-- ── Detail View ──────────────────────────────────────────────── -->
+        <div id="detailView" style="display:none;">
+            <a href="#" class="enc-back" id="backToList">← Encounters</a>
+
+            <div class="detail-header">
+                <div>
+                    <div class="detail-title" id="detailName"></div>
+                    <div class="detail-meta" id="detailMeta"></div>
+                </div>
+            </div>
+
+            <!-- Entry list -->
+            <div class="sect-header">
+                <h2>Adversaries</h2>
+                <span id="entryCount" style="font-family:'EB Garamond',serif;font-size:0.85em;color:var(--ink-dim);"></span>
+            </div>
+            <div class="entry-list" id="entryList"></div>
+            <div id="entryEmpty" style="display:none;">
+                <p class="section-empty">No adversaries yet. Add some from the picker below.</p>
+            </div>
+
+            <!-- Add adversary / Roll loot bar -->
+            <div class="add-adv-bar">
+                <button class="btn-secondary" id="togglePickerBtn">+ Add Adversary</button>
+                <button class="btn-secondary" id="toggleLootBtn">Roll Loot</button>
+            </div>
+
+            <!-- Loot Panel -->
+            <div class="picker-panel" id="lootPanel" style="display:none;margin-top:24px;">
+                <div class="picker-header">
+                    <span class="picker-header-title">Loot Rewards</span>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button class="btn-danger-sm" id="clearLootBtn" style="display:none;">Clear Saved</button>
+                        <button class="btn-danger-sm" id="closeLootBtn">Close</button>
+                    </div>
+                </div>
+                <div class="loot-controls-row">
+                    <div>
+                        <span class="loot-ctrl-label">Rarity</span>
+                        <select class="loot-select" id="lootRarity">
+                            <option value="common">Common (2d12)</option>
+                            <option value="uncommon">Uncommon (3d12)</option>
+                            <option value="rare">Rare (4d12)</option>
+                            <option value="legendary">Legendary (5d12)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="loot-ctrl-label">Type</span>
+                        <select class="loot-select" id="lootType">
+                            <option value="items">Items</option>
+                            <option value="consumables">Consumables</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="loot-ctrl-label">Count</span>
+                        <select class="loot-select" id="lootCount">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <button class="btn-loot-roll" id="lootRollBtn" disabled>Roll</button>
+                </div>
+                <div id="lootResultsList" class="loot-results-list">
+                    <div class="loot-empty">Configure the options above and roll.</div>
+                </div>
+            </div>
+
+            <!-- Adversary Picker -->
+            <div class="picker-panel" id="pickerPanel" style="display:none;">
+                <div class="picker-header">
+                    <span class="picker-header-title">Choose an Adversary</span>
+                    <button class="btn-danger-sm" id="closePickerBtn">Close</button>
+                </div>
+                <div class="picker-tabs">
+                    <button class="picker-tab active" id="tabOfficial" data-tab="official">Official (173)</button>
+                    <button class="picker-tab" id="tabCustom" data-tab="custom">Custom</button>
+                </div>
+                <div class="picker-controls" id="officialControls">
+                    <input type="search" class="picker-search" id="pickerSearch" placeholder="Search by name…" />
+                    <div class="tier-filters" id="tierFilters">
+                        <button class="tier-btn active" data-tier="0">All</button>
+                        <button class="tier-btn" data-tier="1">T1</button>
+                        <button class="tier-btn" data-tier="2">T2</button>
+                        <button class="tier-btn" data-tier="3">T3</button>
+                        <button class="tier-btn" data-tier="4">T4</button>
+                    </div>
+                </div>
+                <div class="picker-list" id="pickerList"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="nav.js"></script>
+    <script type="module">
+        import {
+            onAuthChange, getCampaign, getScenes,
+            getAdversaries, getEncounters, createEncounter, deleteEncounter,
+            getEncounterWithEntries, addEncounterEntry, removeEncounterEntry,
+            saveLootResults,
+        } from './supabase-client.js';
+        import { makeLog } from './logger.js';
+        import { loadLootData, rollSet, rollOne } from './loot-roller.js';
+
+        const log = makeLog('data');
+
+        async function fetchJson(url) {
+            const r = await fetch(url);
+            if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
+            return r.json();
+        }
+
+        function titleCase(str) {
+            return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        function truncRole(role) {
+            if (!role) return '—';
+            // Strip dirty role strings (anything after first comma or parenthesis is flavor)
+            const clean = role.split(' Motives')[0].split(' GIANT')[0].split(':')[0].trim();
+            return clean.length > 22 ? clean.slice(0, 20) + '…' : clean;
+        }
+
+        const params     = new URLSearchParams(window.location.search);
+        const campaignId = params.get('campaign');
+
+        let currentUser       = null;
+        let scenes            = [];
+        let encounters        = [];
+        let officialAdv       = [];
+        let customAdv         = [];
+        let activeEncounter   = null;
+        let activeEntries     = [];
+        let pickerTab         = 'official';
+        let tierFilter        = 0;
+        let searchQuery       = '';
+        let lootData          = null;
+        let lootResults       = [];
+        let lootRarity        = 'common';
+        let lootType          = 'items';
+
+        onAuthChange(async user => {
+            if (!user) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(location.href)}`;
+                return;
+            }
+            currentUser = user;
+            if (!campaignId) { window.location.href = 'index.html'; return; }
+
+            const campaign = await getCampaign(campaignId);
+            if (!campaign || campaign.gm_id !== user.uid) {
+                window.location.href = `campaign.html?id=${campaignId}`;
+                return;
+            }
+
+            document.getElementById('backToCampaign').href = `campaign.html?id=${campaignId}`;
+            document.getElementById('campaignNameSub').textContent = campaign.name;
+            document.getElementById('encWrap').style.display = 'block';
+
+            // Load everything in parallel
+            [scenes, encounters, officialAdv, customAdv] = await Promise.all([
+                getScenes(campaignId),
+                getEncounters(campaignId),
+                fetchJson('/data/base/adversaries.json'),
+                getAdversaries(campaignId),
+            ]);
+
+            populateSceneSelect();
+            renderEncounterList();
+        });
+
+        // ── List view ──────────────────────────────────────────────────────
+
+        function populateSceneSelect() {
+            const sel = document.getElementById('encScene');
+            scenes.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.name || 'Unnamed Scene';
+                sel.appendChild(opt);
+            });
+        }
+
+        function renderEncounterList() {
+            const grid  = document.getElementById('encGrid');
+            const empty = document.getElementById('encEmpty');
+            grid.innerHTML = '';
+            if (encounters.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            encounters.forEach(enc => grid.appendChild(buildEncCard(enc)));
+        }
+
+        function buildEncCard(enc) {
+            const scene = scenes.find(s => s.id === enc.scene_id);
+            const card  = document.createElement('div');
+            card.className = 'enc-card';
+
+            const name = document.createElement('div');
+            name.className = 'enc-card-name';
+            name.textContent = enc.name;
+
+            const meta = document.createElement('div');
+            meta.className = 'enc-card-meta';
+            const parts = [`${enc.entry_count} adversar${enc.entry_count !== 1 ? 'ies' : 'y'}`];
+            if (scene) parts.push(scene.name || 'Unnamed Scene');
+            meta.textContent = parts.join(' · ');
+
+            const actions = document.createElement('div');
+            actions.className = 'enc-card-actions';
+
+            const openBtn = document.createElement('button');
+            openBtn.className = 'btn-sm';
+            openBtn.textContent = 'Open';
+            openBtn.addEventListener('click', () => openEncounter(enc.id));
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-danger-sm';
+            delBtn.textContent = 'Delete';
+            delBtn.addEventListener('click', () => handleDeleteEncounter(enc.id, enc.name));
+
+            actions.append(openBtn, delBtn);
+            card.append(name, meta, actions);
+            return card;
+        }
+
+        async function handleCreateEncounter() {
+            const name    = document.getElementById('encName').value.trim();
+            const sceneId = document.getElementById('encScene').value || null;
+            if (!name) { document.getElementById('encName').focus(); return; }
+
+            const btn = document.getElementById('createEncBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating…';
+            try {
+                const id = await createEncounter(currentUser.uid, { campaign_id: campaignId, name, scene_id: sceneId });
+                document.getElementById('encName').value = '';
+                document.getElementById('encScene').value = '';
+                encounters = await getEncounters(campaignId);
+                renderEncounterList();
+                openEncounter(id);
+            } catch (err) {
+                log.error('createEncounter failed:', err);
+                alert('Failed to create encounter.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Create';
+            }
+        }
+
+        async function handleDeleteEncounter(id, name) {
+            if (!confirm(`Delete "${name}"? All entries and tokens will be removed.`)) return;
+            try {
+                await deleteEncounter(id);
+                encounters = await getEncounters(campaignId);
+                renderEncounterList();
+            } catch (err) {
+                log.error('deleteEncounter failed:', err);
+                alert('Failed to delete encounter.');
+            }
+        }
+
+        // ── Detail view ────────────────────────────────────────────────────
+
+        async function openEncounter(id) {
+            const data = await getEncounterWithEntries(id);
+            activeEncounter = data;
+            activeEntries   = (data.encounter_entries || []).slice().sort((a, b) => a.sort_order - b.sort_order);
+
+            // Reset loot state for this encounter
+            lootResults = [];
+            document.getElementById('lootPanel').style.display   = 'none';
+            document.getElementById('pickerPanel').style.display = 'none';
+
+            document.getElementById('listView').style.display   = 'none';
+            document.getElementById('detailView').style.display = 'block';
+
+            renderDetailHeader();
+            renderEntryList();
+            renderPicker();
+            loadSavedLoot(data);
+        }
+
+        function renderDetailHeader() {
+            document.getElementById('detailName').textContent = activeEncounter.name;
+            const scene = scenes.find(s => s.id === activeEncounter.scene_id);
+            const meta  = document.getElementById('detailMeta');
+            meta.innerHTML = '';
+            if (scene) {
+                const badge = document.createElement('span');
+                badge.className = 'badge badge-scene';
+                badge.textContent = scene.name || 'Unnamed Scene';
+                meta.appendChild(badge);
+            }
+        }
+
+        function renderEntryList() {
+            const list  = document.getElementById('entryList');
+            const empty = document.getElementById('entryEmpty');
+            const count = document.getElementById('entryCount');
+            list.innerHTML = '';
+            count.textContent = `${activeEntries.length} adversar${activeEntries.length !== 1 ? 'ies' : 'y'}`;
+
+            if (activeEntries.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            activeEntries.forEach(entry => list.appendChild(buildEntryRow(entry)));
+        }
+
+        function buildEntryRow(entry) {
+            // Look up adversary stats for display
+            let advName = entry.label;
+            let hp = null;
+            let tier = null;
+            let role = null;
+
+            if (entry.adversary_id) {
+                const official = officialAdv.find(a => a.id === entry.adversary_id);
+                if (official) {
+                    advName = official.name ? titleCase(official.name) : entry.label;
+                    hp      = official.hp;
+                    tier    = official.tier;
+                    role    = truncRole(official.role);
+                }
+            } else if (entry.custom_adversary_id) {
+                const custom = customAdv.find(a => a.id === entry.custom_adversary_id);
+                if (custom) {
+                    advName = custom.name;
+                    hp      = custom.hp;
+                    tier    = custom.tier;
+                    role    = truncRole(custom.role);
+                }
+            }
+
+            const row = document.createElement('div');
+            row.className = 'entry-row';
+
+            const labelEl = document.createElement('div');
+            labelEl.className = 'entry-label';
+            labelEl.textContent = entry.label;
+
+            const sourceEl = document.createElement('div');
+            sourceEl.className = 'entry-source';
+            const badges = [];
+            if (tier) badges.push(`<span class="badge badge-tier">T${tier}</span>`);
+            if (role) badges.push(`<span class="badge badge-role">${role}</span>`);
+            sourceEl.innerHTML = badges.join(' ');
+
+            const hpEl = document.createElement('div');
+            hpEl.className = 'entry-hp';
+            hpEl.textContent = hp != null ? `HP ${hp}` : '';
+
+            const custom_adversary_id = entry.custom_adversary_id;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'btn-danger-sm';
+            removeBtn.textContent = 'Remove';
+            removeBtn.addEventListener('click', () => handleRemoveEntry(entry.id, entry.token_definitions?.id));
+
+            row.append(labelEl, sourceEl, hpEl, removeBtn);
+            return row;
+        }
+
+        async function handleRemoveEntry(entryId, tokenDefinitionId) {
+            const scene = scenes.find(s => s.id === activeEncounter.scene_id);
+            const msg = scene
+                ? 'Remove this adversary? The token will also be removed from the scene.'
+                : 'Remove this adversary from the encounter?';
+            if (!confirm(msg)) return;
+            try {
+                await removeEncounterEntry(entryId, tokenDefinitionId);
+                // Reload entries
+                const data = await getEncounterWithEntries(activeEncounter.id);
+                activeEncounter = data;
+                activeEntries   = (data.encounter_entries || []).slice().sort((a, b) => a.sort_order - b.sort_order);
+                renderEntryList();
+            } catch (err) {
+                log.error('removeEncounterEntry failed:', err);
+                alert('Failed to remove adversary.');
+            }
+        }
+
+        // ── Adversary picker ───────────────────────────────────────────────
+
+        function renderPicker() {
+            // Update custom tab label
+            document.getElementById('tabCustom').textContent = `Custom (${customAdv.length})`;
+            renderPickerList();
+        }
+
+        function renderPickerList() {
+            const list = document.getElementById('pickerList');
+            list.innerHTML = '';
+
+            const q = searchQuery.toLowerCase();
+
+            if (pickerTab === 'official') {
+                document.getElementById('officialControls').style.display = 'flex';
+                let filtered = officialAdv.filter(a => {
+                    const name = titleCase(a.name || '');
+                    if (tierFilter > 0 && a.tier !== tierFilter) return false;
+                    if (q && !name.toLowerCase().includes(q)) return false;
+                    return true;
+                });
+                filtered.sort((a, b) => (a.tier - b.tier) || titleCase(a.name).localeCompare(titleCase(b.name)));
+
+                if (filtered.length === 0) {
+                    list.innerHTML = '<div class="picker-empty">No adversaries match your search.</div>';
+                    return;
+                }
+                filtered.forEach(adv => list.appendChild(buildPickerRow(adv, false)));
+            } else {
+                document.getElementById('officialControls').style.display = 'none';
+                const filtered = customAdv.filter(a => !q || a.name.toLowerCase().includes(q));
+                if (filtered.length === 0) {
+                    list.innerHTML = `<div class="picker-empty">${customAdv.length === 0
+                        ? 'No custom adversaries yet. <a href="adversary-editor.html?campaign=' + campaignId + '" style="color:var(--gold);">Create one →</a>'
+                        : 'No adversaries match your search.'}</div>`;
+                    return;
+                }
+                filtered.forEach(adv => list.appendChild(buildPickerRow(adv, true)));
+            }
+        }
+
+        function buildPickerRow(adv, isCustom) {
+            const name = isCustom ? adv.name : titleCase(adv.name || '');
+            const role = truncRole(adv.role || '');
+
+            const row = document.createElement('div');
+            row.className = 'picker-row';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'picker-adv-name';
+            nameEl.textContent = name;
+
+            const tierEl = document.createElement('div');
+            tierEl.className = 'picker-adv-tier';
+            tierEl.textContent = adv.tier ? `T${adv.tier}` : '—';
+
+            const roleEl = document.createElement('div');
+            roleEl.className = 'picker-adv-role';
+            roleEl.textContent = role;
+
+            const hpEl = document.createElement('div');
+            hpEl.className = 'picker-adv-hp';
+            hpEl.textContent = adv.hp != null ? `HP ${adv.hp}` : '—';
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'btn-add-entry';
+            addBtn.textContent = '+ Add';
+            addBtn.addEventListener('click', () => handleAddEntry(adv, isCustom, addBtn));
+
+            row.append(nameEl, tierEl, roleEl, hpEl, addBtn);
+            return row;
+        }
+
+        async function handleAddEntry(adv, isCustom, btn) {
+            btn.disabled = true;
+            btn.textContent = 'Adding…';
+            try {
+                const sceneId = activeEncounter.scene_id || null;
+                await addEncounterEntry(currentUser.uid, {
+                    encounterId: activeEncounter.id,
+                    campaignId,
+                    sceneId,
+                    adversary: adv,
+                    isCustom,
+                });
+                // Reload entries
+                const data = await getEncounterWithEntries(activeEncounter.id);
+                activeEncounter = data;
+                activeEntries   = (data.encounter_entries || []).slice().sort((a, b) => a.sort_order - b.sort_order);
+                renderEntryList();
+                // Update encounter list entry count
+                encounters = await getEncounters(campaignId);
+            } catch (err) {
+                log.error('addEncounterEntry failed:', err);
+                alert('Failed to add adversary.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '+ Add';
+            }
+        }
+
+        // ── Loot roller ────────────────────────────────────────────────────
+
+        async function openLootPanel() {
+            document.getElementById('lootPanel').style.display = 'block';
+            document.getElementById('pickerPanel').style.display = 'none';
+            document.getElementById('lootPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (!lootData) {
+                lootData = await loadLootData();
+                document.getElementById('lootRollBtn').disabled = false;
+            }
+        }
+
+        function loadSavedLoot(enc) {
+            if (!enc.loot_results) return;
+            const saved = enc.loot_results;
+            lootRarity  = saved.rarity || 'common';
+            lootType    = saved.type   || 'items';
+            lootResults = saved.items  || [];
+            document.getElementById('lootRarity').value = lootRarity;
+            document.getElementById('lootType').value   = lootType;
+            updateLootBtnLabel();
+        }
+
+        function updateLootBtnLabel() {
+            const btn      = document.getElementById('toggleLootBtn');
+            const clearBtn = document.getElementById('clearLootBtn');
+            const hasSaved = lootResults.length > 0;
+            btn.textContent = hasSaved ? `Loot (${lootResults.length})` : 'Roll Loot';
+            clearBtn.style.display = hasSaved ? 'inline-block' : 'none';
+        }
+
+        function persistLoot() {
+            if (!activeEncounter) return;
+            const payload = lootResults.length
+                ? { rarity: lootRarity, type: lootType, items: lootResults }
+                : null;
+            saveLootResults(activeEncounter.id, payload).catch(e => log.error('saveLootResults failed:', e));
+        }
+
+        function rollLoot() {
+            lootRarity  = document.getElementById('lootRarity').value;
+            lootType    = document.getElementById('lootType').value;
+            const count = parseInt(document.getElementById('lootCount').value, 10);
+            lootResults = rollSet(lootRarity, lootType, count, lootData);
+            renderLootResults();
+            updateLootBtnLabel();
+            persistLoot();
+        }
+
+        function renderLootResults() {
+            const list = document.getElementById('lootResultsList');
+            list.innerHTML = '';
+            if (!lootResults.length) {
+                list.innerHTML = '<div class="loot-empty">Configure the options above and roll.</div>';
+                return;
+            }
+            lootResults.forEach((item, idx) => list.appendChild(buildLootRow(item, idx)));
+        }
+
+        function buildLootRow(item, idx) {
+            const row = document.createElement('div');
+            row.className = 'loot-result-row';
+
+            const main = document.createElement('div');
+            main.className = 'loot-result-main';
+            main.innerHTML =
+                `<div class="loot-result-name">${item.name}</div>` +
+                `<div class="loot-result-desc">${item.description}</div>` +
+                `<div class="loot-result-badges">
+                    <span class="loot-badge lb-${item.rarity}">${item.rarity}</span>
+                    <span class="loot-badge lb-type">${item.type}</span>
+                </div>`;
+
+            const rerollBtn = document.createElement('button');
+            rerollBtn.className = 'btn-loot-reroll';
+            rerollBtn.title = 'Re-roll this slot';
+            rerollBtn.textContent = '↻';
+            rerollBtn.addEventListener('click', () => {
+                lootResults[idx] = rollOne(lootRarity, lootType, lootData);
+                row.replaceWith(buildLootRow(lootResults[idx], idx));
+                persistLoot();
+            });
+
+            row.append(main, rerollBtn);
+            return row;
+        }
+
+        async function handleClearLoot() {
+            if (!confirm('Clear the saved loot for this encounter?')) return;
+            lootResults = [];
+            renderLootResults();
+            updateLootBtnLabel();
+            persistLoot();
+        }
+
+        // ── Event wiring ───────────────────────────────────────────────────
+
+        document.getElementById('createEncBtn').addEventListener('click', handleCreateEncounter);
+        document.getElementById('encName').addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleCreateEncounter();
+        });
+
+        document.getElementById('backToList').addEventListener('click', e => {
+            e.preventDefault();
+            document.getElementById('detailView').style.display = 'none';
+            document.getElementById('listView').style.display   = 'block';
+            renderEncounterList();
+        });
+
+        document.getElementById('togglePickerBtn').addEventListener('click', () => {
+            const panel = document.getElementById('pickerPanel');
+            const isOpen = panel.style.display !== 'none';
+            panel.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                document.getElementById('lootPanel').style.display = 'none';
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                document.getElementById('pickerSearch').focus();
+            }
+        });
+
+        document.getElementById('closePickerBtn').addEventListener('click', () => {
+            document.getElementById('pickerPanel').style.display = 'none';
+        });
+
+        document.getElementById('toggleLootBtn').addEventListener('click', () => {
+            const panel = document.getElementById('lootPanel');
+            if (panel.style.display !== 'none') {
+                panel.style.display = 'none';
+            } else {
+                document.getElementById('pickerPanel').style.display = 'none';
+                openLootPanel();
+            }
+        });
+        document.getElementById('closeLootBtn').addEventListener('click', () => {
+            document.getElementById('lootPanel').style.display = 'none';
+        });
+        document.getElementById('clearLootBtn').addEventListener('click', handleClearLoot);
+        document.getElementById('lootRollBtn').addEventListener('click', rollLoot);
+
+        // Tabs
+        document.querySelectorAll('.picker-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                pickerTab = btn.dataset.tab;
+                searchQuery = '';
+                document.getElementById('pickerSearch').value = '';
+                renderPickerList();
+            });
+        });
+
+        // Tier filter
+        document.getElementById('tierFilters').addEventListener('click', e => {
+            const btn = e.target.closest('.tier-btn');
+            if (!btn) return;
+            document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            tierFilter = parseInt(btn.dataset.tier, 10);
+            renderPickerList();
+        });
+
+        // Search
+        document.getElementById('pickerSearch').addEventListener('input', e => {
+            searchQuery = e.target.value;
+            renderPickerList();
+        });
+    </script>
+</body>
+</html>

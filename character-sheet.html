@@ -256,69 +256,6 @@
             color: var(--ink-muted);
             font-style: italic;
         }
-        .auth-screen {
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 48px 24px;
-        }
-        .auth-screen h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5em;
-            color: var(--ink);
-            margin-bottom: 12px;
-        }
-        .auth-screen p {
-            color: var(--ink-muted);
-            max-width: 400px;
-            margin-bottom: 28px;
-            line-height: 1.7;
-        }
-        .btn-google {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #fff;
-            color: #3c4043;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-size: 0.95em;
-            font-family: 'EB Garamond', serif;
-            cursor: pointer;
-            transition: box-shadow 0.15s;
-        }
-        .btn-google:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
-        .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); width: 280px; }
-        .auth-tab {
-            flex: 1; padding: 8px 0;
-            font-family: 'Cinzel', serif; font-size: 0.68em; letter-spacing: 0.1em; text-transform: uppercase;
-            border: none; background: transparent; color: var(--ink-dim); cursor: pointer; transition: all 0.15s;
-        }
-        .auth-tab.active { background: var(--gold); color: #f5edd8; }
-        .auth-tab:not(.active):hover { color: var(--ink); }
-        .auth-panel { display: none; width: 100%; max-width: 320px; }
-        .auth-panel.active { display: block; }
-        .auth-field { margin-bottom: 14px; text-align: left; }
-        .auth-field label { display: block; font-family: 'Cinzel', serif; font-size: 0.65em; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 5px; }
-        .auth-field input {
-            width: 100%; background: rgba(248,242,228,0.6); border: 1px solid var(--border);
-            padding: 9px 12px; font-family: 'EB Garamond', serif; font-size: 1em; color: var(--ink);
-            outline: none; box-sizing: border-box; transition: border-color 0.15s;
-        }
-        .auth-field input:focus { border-color: var(--border-gold); }
-        .auth-btn {
-            width: 100%; font-family: 'Cinzel', serif; font-size: 0.72em; letter-spacing: 0.1em;
-            text-transform: uppercase; padding: 11px; border: 1px solid var(--gold); background: var(--gold);
-            color: #f5edd8; cursor: pointer; transition: background 0.15s; margin-bottom: 10px;
-        }
-        .auth-btn:hover { background: var(--gold-mid); border-color: var(--gold-mid); }
-        .auth-switch { font-size: 0.82em; color: var(--ink-dim); cursor: pointer; background: none; border: none; padding: 0; font-family: 'EB Garamond', serif; }
-        .auth-switch:hover { color: var(--gold-mid); }
-
         /* ── Sheet Header ────────────────────────── */
         .sheet-header {
             display: grid;
@@ -1631,6 +1568,13 @@
             .char-name { font-size: 1.5em; }
             .damage-flow { gap: 2px; }
         }
+
+        /* Read-only mode */
+        body.sheet-read-only button,
+        body.sheet-read-only input,
+        body.sheet-read-only select,
+        body.sheet-read-only textarea { pointer-events: none; opacity: 0.7; }
+        body.sheet-read-only #save-indicator { display: none; }
     </style>
 </head>
 <body>
@@ -1641,41 +1585,22 @@
 <div class="container">
     <div id="view-loading" class="loading-msg">Loading…</div>
 
-    <div id="view-auth" class="auth-screen" style="display:none;">
-        <h2>Sign In to View Sheet</h2>
-        <p>Your characters are saved to your account. Sign in to access them.</p>
-
-        <div class="auth-tabs">
-            <button class="auth-tab active" id="tab-google" onclick="window.switchAuthTab('google')">Google</button>
-            <button class="auth-tab" id="tab-email" onclick="window.switchAuthTab('email')">Email</button>
+    <div id="view-auth" class="auth-placeholder" style="display:none;">
+        <div class="auth-placeholder-tag">Character Sheet</div>
+        <div class="auth-placeholder-title">Sign In to View Your Sheet</div>
+        <p class="auth-placeholder-body">Your characters are saved to your account and accessible from any device.</p>
+        <div class="signin-prompt">
+            <a href="signin.html?redirect=character-builder.html" class="btn-sp btn-sp-primary">Sign In</a>
+            <a href="signin.html?redirect=character-builder.html&tab=register" class="btn-sp btn-sp-secondary">Create Account</a>
         </div>
-
-        <div class="auth-panel active" id="panel-google">
-            <button class="btn-google" id="btn-google-signin">
-                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
-                Sign in with Google
-            </button>
-        </div>
-
-        <div class="auth-panel" id="panel-email">
-            <div class="auth-field">
-                <label>Email</label>
-                <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com">
-            </div>
-            <div class="auth-field">
-                <label>Password</label>
-                <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
-            </div>
-            <button class="auth-btn" id="btn-email-submit">Sign In</button>
-            <div style="text-align:center;">
-                <button class="auth-switch" id="btn-auth-mode-switch">No account? Create one</button>
-            </div>
-        </div>
-
-        <p id="auth-error" style="margin-top:16px;font-size:0.85em;color:#8a2020;max-width:400px;display:none;"></p>
     </div>
 
     <div id="view-sheet" style="display:none;">
+
+        <!-- ── Read-only banner ──────────────────── -->
+        <div id="read-only-banner" style="display:none;background:rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.25);padding:10px 24px;text-align:center;font-family:'Cinzel',serif;font-size:0.72em;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-mid);">
+            Viewing character sheet · Read-only
+        </div>
 
         <!-- ── Character Banner ─────────────────── -->
         <div class="char-banner">
@@ -1726,7 +1651,15 @@
 </footer>
 
 <script type="module">
-import { auth, signInWithGoogle, emailSignIn, emailRegister, signOutUser, onAuthChange, getUserRole, getCharacter, updateCharacter } from './firebase-init.js';
+import { signOutUser, onAuthChange, getUserRole, getCharacter, updateCharacter } from './supabase-client.js';
+import { makeLog } from './logger.js';
+const log = makeLog('data');
+
+const fetchJson = async url => {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
+    return r.json();
+};
 
 const CLASS_DOMAINS = {
     warrior:'Blade,Bone', guardian:'Blade,Valor', ranger:'Bone,Sage',
@@ -1738,6 +1671,8 @@ const TRAIT_NAMES = ['Agility','Strength','Finesse','Instinct','Presence','Knowl
 let currentUser = null;
 let userRole    = 'player';
 let char        = null;
+let readOnly    = false;
+let targetUid   = null;
 let classes     = [];
 let domainCards  = [];
 let armorList    = [];
@@ -1753,62 +1688,6 @@ function show(id) {
         document.getElementById(v).style.display = v === id ? '' : 'none';
     });
 }
-
-// Auth tab switcher
-let emailAuthMode = 'signin';
-window.switchAuthTab = (tab) => {
-    document.getElementById('tab-google').classList.toggle('active', tab === 'google');
-    document.getElementById('tab-email').classList.toggle('active', tab === 'email');
-    document.getElementById('panel-google').classList.toggle('active', tab === 'google');
-    document.getElementById('panel-email').classList.toggle('active', tab === 'email');
-    document.getElementById('auth-error').style.display = 'none';
-};
-
-document.getElementById('btn-auth-mode-switch').addEventListener('click', () => {
-    emailAuthMode = emailAuthMode === 'signin' ? 'register' : 'signin';
-    document.getElementById('btn-email-submit').textContent = emailAuthMode === 'signin' ? 'Sign In' : 'Create Account';
-    document.getElementById('btn-auth-mode-switch').textContent = emailAuthMode === 'signin' ? 'No account? Create one' : 'Already have an account? Sign in';
-    document.getElementById('auth-error').style.display = 'none';
-});
-
-document.getElementById('btn-google-signin').addEventListener('click', async () => {
-    const errEl = document.getElementById('auth-error');
-    errEl.style.display = 'none';
-    try { await signInWithGoogle(); }
-    catch(e) {
-        errEl.textContent = e.code === 'auth/unauthorized-domain'
-            ? 'This domain is not authorized in Firebase. Add it under Authentication → Settings → Authorized Domains in the Firebase Console.'
-            : (e.message || 'Sign-in failed. Check the browser console for details.');
-        errEl.style.display = '';
-    }
-});
-
-document.getElementById('btn-email-submit').addEventListener('click', async () => {
-    const errEl    = document.getElementById('auth-error');
-    const email    = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
-    errEl.style.display = 'none';
-    if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = ''; return; }
-    try {
-        if (emailAuthMode === 'register') {
-            await emailRegister(email, password);
-        } else {
-            await emailSignIn(email, password);
-        }
-    } catch(e) {
-        const msgs = {
-            'auth/email-already-in-use': 'An account with this email already exists.',
-            'auth/invalid-email':        'Please enter a valid email address.',
-            'auth/weak-password':        'Password must be at least 6 characters.',
-            'auth/user-not-found':       'No account found with this email.',
-            'auth/wrong-password':       'Incorrect password.',
-            'auth/invalid-credential':   'Incorrect email or password.',
-        };
-        errEl.textContent = msgs[e.code] || e.message || 'Authentication failed.';
-        errEl.style.display = '';
-    }
-});
-
 
 onAuthChange(async user => {
     currentUser = user;
@@ -1833,16 +1712,22 @@ async function boot() {
         return;
     }
 
+    targetUid = params.get('uid') || currentUser.uid;
+    readOnly  = targetUid !== currentUser.uid;
+    if (readOnly) document.body.classList.add('sheet-read-only');
+
+    log.info('loading sheet data for', charId);
     const [charData, classData, cardData, armorData, weaponData, lootData, ancestryData, communityData] = await Promise.all([
-        getCharacter(currentUser.uid, charId),
-        fetch('/data/base/classes.json').then(r => r.json()),
-        fetch('/data/base/domain-cards.json').then(r => r.json()),
-        fetch('/data/base/armor.json?v=3').then(r => r.json()),
-        fetch('/data/base/weapons.json?v=3').then(r => r.json()),
-        fetch('/data/base/loot.json').then(r => r.json()),
-        fetch('/data/base/ancestries.json').then(r => r.json()),
-        fetch('/data/base/communities.json').then(r => r.json()),
+        getCharacter(targetUid, charId),
+        fetchJson('/data/base/classes.json'),
+        fetchJson('/data/base/domain-cards.json'),
+        fetchJson('/data/base/armor.json?v=3'),
+        fetchJson('/data/base/weapons.json?v=3'),
+        fetchJson('/data/base/loot.json'),
+        fetchJson('/data/base/ancestries.json'),
+        fetchJson('/data/base/communities.json'),
     ]);
+    log.info('sheet data loaded');
 
     if (!charData) {
         document.getElementById('view-loading').textContent = 'Character not found.';
@@ -1907,10 +1792,14 @@ async function boot() {
 
     renderSheet();
     show('view-sheet');
+    if (readOnly) {
+        document.getElementById('read-only-banner').style.display = 'block';
+    }
 }
 
 // ── Debounced save ────────────────────────────────────────────────────────────
 function scheduleSave() {
+    if (readOnly) return;
     const ind = document.getElementById('save-indicator');
     ind.textContent = 'Saving…';
     clearTimeout(saveTimer);
@@ -1925,7 +1814,7 @@ function scheduleSave() {
             setTimeout(() => { if (ind.textContent === 'Saved') ind.textContent = ''; }, 2000);
         } catch(e) {
             ind.textContent = 'Save failed';
-            console.error(e);
+            log.error('sheet save failed:', e);
         }
     }, 1000);
 }
@@ -2560,6 +2449,7 @@ function renderBody(cls, domains) {
 
     // ── Shared equip helpers ──
     function saveEquipment() {
+        if (readOnly) return;
         updateCharacter(currentUser.uid, char.id, {
             weaponId: char.weaponId, secondaryId: char.secondaryId,
             armorId: char.armorId, sheetState: char.sheetState,
