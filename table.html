@@ -3236,9 +3236,9 @@
             const main = document.createElement('div');
             main.className = 'loot-result-main';
             main.innerHTML =
-                `<div class="loot-result-name">${item.name}</div>` +
-                `<div class="loot-result-desc">${item.description}</div>` +
-                `<div class="loot-result-meta loot-r-${item.rarity}">${item.rarity} · ${item.type}${item.homebrew ? ' · homebrew' : ''}</div>`;
+                `<div class="loot-result-name">${escHtml(item.name)}</div>` +
+                `<div class="loot-result-desc">${escHtml(item.description)}</div>` +
+                `<div class="loot-result-meta loot-r-${item.rarity}">${escHtml(item.rarity)} · ${escHtml(item.type)}${item.homebrew ? ' · homebrew' : ''}</div>`;
 
             const rerollBtn = document.createElement('button');
             rerollBtn.className = 'loot-reroll-btn';

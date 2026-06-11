@@ -426,12 +426,51 @@ const fetchJson = async url => {
     return r.json();
 };
 
+// Canonical data ships descriptions as PLAIN TEXT (\n blocks, "• " bullets).
+function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function richText(str) {
+    if (str == null || str === '') return '';
+    const lines = String(str).split('\n');
+    const out = [];
+    let para = [], bullets = [];
+    const flushPara = () => { if (para.length) { out.push('<p>' + para.map(escHtml).join('<br>') + '</p>'); para = []; } };
+    const flushBullets = () => { if (bullets.length) { out.push('<ul>' + bullets.map(b => '<li>' + escHtml(b) + '</li>').join('') + '</ul>'); bullets = []; } };
+    for (const raw of lines) {
+        const l = raw.trim();
+        if (l === '') { flushPara(); flushBullets(); continue; }
+        const m = l.match(/^[•\-]\s+(.*)$/);
+        if (m) { flushPara(); bullets.push(m[1]); }
+        else { flushBullets(); para.push(l); }
+    }
+    flushPara(); flushBullets();
+    return out.join('');
+}
+// One-line preview from plain text: collapse whitespace/bullets, then truncate.
+function preview(str, n) {
+    const flat = String(str || '').replace(/^[•\-]\s+/gm, '').replace(/\s+/g, ' ').trim();
+    return flat.length > n ? escHtml(flat.slice(0, n)) + '…' : escHtml(flat);
+}
+// Title-case a possibly UPPERCASE display name (data is source of truth; cosmetic only).
+function displayName(s) {
+    return String(s || '').toLowerCase().replace(/\b([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 // ── Constants ─────────────────────────────────────────────────────────────────
+// Fallback only — canonical `classes[].domains` is the source of truth. See classDomains().
 const CLASS_DOMAINS = {
     warrior:'Blade,Bone', guardian:'Blade,Valor', ranger:'Bone,Sage',
     druid:'Arcana,Sage',  bard:'Grace,Splendor',  rogue:'Grace,Midnight',
     seraph:'Splendor,Valor', sorcerer:'Arcana,Midnight', wizard:'Codex,Arcana'
 };
+// Domains for a class, read from the data; falls back to the static map if absent.
+// Returns an array of Title-Case domain names (e.g. ['Grace','Codex']).
+function classDomains(cls) {
+    if (cls && Array.isArray(cls.domains) && cls.domains.length) return cls.domains;
+    return (CLASS_DOMAINS[cls?.id] || '').split(',').filter(Boolean);
+}
 const CLASS_ROLES = {
     warrior:'Melee Fighter', guardian:'Protector & Tank', ranger:'Hunter & Tracker',
     druid:'Nature Mage', bard:'Performer & Support', rogue:'Trickster & Operative',
@@ -798,12 +837,12 @@ function validateStep(n) {
 function renderStep2() {
     const grid = document.getElementById('class-grid');
     grid.innerHTML = CLASSES.map(cls => {
-        const domains = CLASS_DOMAINS[cls.id] || '';
+        const domains = classDomains(cls);
         const sel = state.classId === cls.id ? ' selected' : '';
         return `<div class="pick-card${sel}" data-class="${cls.id}">
-            <div class="pick-name">${cls.name}</div>
+            <div class="pick-name">${escHtml(cls.name)}</div>
             <div class="pick-tag">${CLASS_ROLES[cls.id] || ''}</div>
-            <div class="pick-desc">${domains.replace(',', ' &amp; ')} · HP ${cls.startingHp} · Evasion ${cls.startingEvasion}</div>
+            <div class="pick-desc">${escHtml(domains.join(' & '))} · HP ${cls.startingHp} · Evasion ${cls.startingEvasion}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-class]').forEach(card => {
@@ -829,9 +868,9 @@ function renderStep3() {
         const name = typeof sub === 'string' ? sub : sub.name;
         const desc = typeof sub === 'string' ? '' : (sub.description || '');
         const sel  = state.subclassName === name ? ' selected' : '';
-        return `<div class="pick-card${sel}" data-sub="${name}">
-            <div class="pick-name">${name}</div>
-            <div class="pick-desc">${desc}</div>
+        return `<div class="pick-card${sel}" data-sub="${escHtml(name)}">
+            <div class="pick-name">${escHtml(name)}</div>
+            <div class="pick-desc">${richText(desc)}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-sub]').forEach(card => {
@@ -848,10 +887,9 @@ function renderStep4() {
     const grid = document.getElementById('ancestry-grid');
     grid.innerHTML = ANCESTRIES.map(a => {
         const sel  = state.ancestry === a.name ? ' selected' : '';
-        const desc = a.lore ? a.lore.slice(0,90) + '…' : '';
-        return `<div class="pick-card${sel}" data-ancestry="${a.name}">
-            <div class="pick-name">${a.name}</div>
-            <div class="pick-desc">${desc}</div>
+        return `<div class="pick-card${sel}" data-ancestry="${escHtml(a.name)}">
+            <div class="pick-name">${escHtml(a.name)}</div>
+            <div class="pick-desc">${preview(a.lore, 90)}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-ancestry]').forEach(card => {
@@ -868,10 +906,9 @@ function renderStep5() {
     const grid = document.getElementById('community-grid');
     grid.innerHTML = COMMUNITIES.map(c => {
         const sel  = state.community === c.name ? ' selected' : '';
-        const desc = c.lore ? c.lore.slice(0,90) + '…' : '';
-        return `<div class="pick-card${sel}" data-community="${c.name}">
-            <div class="pick-name">${c.name}</div>
-            <div class="pick-desc">${desc}</div>
+        return `<div class="pick-card${sel}" data-community="${escHtml(c.name)}">
+            <div class="pick-name">${escHtml(c.name)}</div>
+            <div class="pick-desc">${preview(c.lore, 90)}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-community]').forEach(card => {
@@ -929,7 +966,7 @@ function renderStep6() {
 function renderStep7() {
     const cls = CLASSES.find(c => c.id === state.classId);
     if (!cls) return;
-    const domains = CLASS_DOMAINS[cls.id].split(',');
+    const domains = classDomains(cls);
 
     function updateCounter() {
         const n = state.domainCards.length;
@@ -946,9 +983,9 @@ function renderStep7() {
                 ${cards.map(card => {
                     const sel = state.domainCards.includes(card.name) ? ' selected' : '';
                     return `<div class="pick-card${sel}" data-card="${card.name.replace(/"/g,'&quot;')}">
-                        <div class="pick-name">${card.name}</div>
-                        <div class="pick-tag">${card.type || 'Ability'}${card.recallCost > 0 ? ' · Recall ' + card.recallCost : ''}</div>
-                        <div class="pick-desc">${card.description ? card.description.slice(0,120) + '…' : ''}</div>
+                        <div class="pick-name">${displayName(card.name)}</div>
+                        <div class="pick-tag">${escHtml(card.type || 'Ability')}${card.recallCost > 0 ? ' · Recall ' + card.recallCost : ''}</div>
+                        <div class="pick-desc">${preview(card.description, 120)}</div>
                     </div>`;
                 }).join('')}
             </div>

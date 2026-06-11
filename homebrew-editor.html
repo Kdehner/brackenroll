@@ -1125,10 +1125,13 @@
             const url = OFFICIAL_JSON[type];
             if (!url) return [];
             const raw = await fetch(url).then(r => r.json());
-            let list = Array.isArray(raw) ? raw : Object.values(raw);
+            let list;
             if (type === 'loot_item') {
-                // loot.json is [{metadata}, [item1, item2, ...]]
-                list = Array.isArray(list[1]) ? list[1] : [];
+                // loot.json is an object { rules, items[], consumables[] }. Offer both
+                // pools; each entry already carries type: 'item' | 'consumable'.
+                list = [...(raw.items || []), ...(raw.consumables || [])];
+            } else {
+                list = Array.isArray(raw) ? raw : Object.values(raw);
             }
             officialDataCache[type] = list;
             return list;

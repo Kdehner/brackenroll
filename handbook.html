@@ -1278,6 +1278,43 @@ let CLASSES = [], ANCESTRIES = [], COMMUNITIES = [], DOMAIN_CARDS = [], WEAPONS 
 
 const DOMAIN_ORDER = ['arcana','blade','bone','codex','grace','midnight','sage','splendor','valor'];
 
+// ── Text rendering ──────────────────────────────────────────────────────────
+// Canonical data ships descriptions as PLAIN TEXT: blocks are \n-joined and
+// bullet lines start with "• ". Escape, then convert blank-line breaks to
+// paragraphs and consecutive bullet lines to <ul><li>. Never trust raw HTML.
+function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function richText(str) {
+    if (str == null || str === '') return '';
+    const lines = String(str).split('\n');
+    const out = [];
+    let para = [], bullets = [];
+    const flushPara = () => { if (para.length) { out.push('<p>' + para.map(escHtml).join('<br>') + '</p>'); para = []; } };
+    const flushBullets = () => { if (bullets.length) { out.push('<ul>' + bullets.map(b => '<li>' + escHtml(b) + '</li>').join('') + '</ul>'); bullets = []; } };
+    for (const raw of lines) {
+        const l = raw.trim();
+        if (l === '') { flushPara(); flushBullets(); continue; }
+        const m = l.match(/^[•\-]\s+(.*)$/);
+        if (m) { flushPara(); bullets.push(m[1]); }
+        else { flushBullets(); para.push(l); }
+    }
+    flushPara(); flushBullets();
+    return out.join('');
+}
+
+// Domains for a class, read from canonical data; falls back to the static map.
+function classDomains(cls) {
+    if (cls && Array.isArray(cls.domains) && cls.domains.length) return cls.domains;
+    return CLASS_DOMAINS[cls?.id] || [];
+}
+// Title-case a possibly UPPERCASE display name (cosmetic; never mutates data).
+function displayName(s) {
+    return String(s || '').toLowerCase().replace(/\b([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 // Equipment filter state
 let equipSlot = 'primary', equipTier = 'all';
 
@@ -1309,7 +1346,7 @@ async function loadData() {
 function renderClasses() {
     const grid = document.getElementById('class-grid');
     grid.innerHTML = CLASSES.map(cls => {
-        const domains = CLASS_DOMAINS[cls.id] || [];
+        const domains = classDomains(cls);
         const role    = CLASS_ROLES[cls.id]   || '';
         return `<div class="click-card" onclick="openClassModal('${cls.id}')">
             <div class="click-card-name">${cls.name}</div>
@@ -1324,9 +1361,9 @@ function renderClasses() {
 function renderAncestries() {
     const grid = document.getElementById('ancestry-grid');
     grid.innerHTML = ANCESTRIES.map(anc => {
-        const short = anc.lore ? anc.lore.slice(0, 80) + '&hellip;' : '';
+        const short = anc.lore ? escHtml(anc.lore.slice(0, 80)) + '&hellip;' : '';
         return `<div class="anc-card" onclick="openAncestryModal('${anc.id}')">
-            <div class="anc-card-name">${anc.name}</div>
+            <div class="anc-card-name">${escHtml(anc.name)}</div>
             <div class="anc-card-desc">${short}</div>
         </div>`;
     }).join('');
@@ -1337,10 +1374,10 @@ function renderCommunities() {
     const grid = document.getElementById('community-grid');
     grid.innerHTML = COMMUNITIES.map(com => {
         const feat = (com.features || [])[0];
-        const short = com.lore ? com.lore.slice(0, 70) + '&hellip;' : '';
+        const short = com.lore ? escHtml(com.lore.slice(0, 70)) + '&hellip;' : '';
         return `<div class="anc-card" onclick="openCommunityModal('${com.id}')">
-            <div class="anc-card-name">${com.name}</div>
-            ${feat ? `<div class="anc-card-feat">${feat.name}</div>` : ''}
+            <div class="anc-card-name">${escHtml(com.name)}</div>
+            ${feat ? `<div class="anc-card-feat">${escHtml(feat.name)}</div>` : ''}
             <div class="anc-card-desc">${short}</div>
         </div>`;
     }).join('');
@@ -1386,11 +1423,11 @@ function renderEquipment() {
                     <th>Name</th><th>Minor</th><th>Major</th><th>Score</th><th>Feature</th>
                 </tr></thead>
                 <tbody>${byTier[t].map(a => `<tr>
-                    <td>${a.name}</td>
+                    <td>${escHtml(a.name)}</td>
                     <td>${a.minorThreshold}+lvl</td>
                     <td>${a.majorThreshold}+lvl</td>
                     <td>${a.armorScore}</td>
-                    <td>${a.feature || '—'}</td>
+                    <td>${a.feature ? escHtml(a.feature) : '—'}</td>
                 </tr>`).join('')}</tbody>
             </table>
             </div>`).join('') || '<p style="color:var(--ink-dim);font-style:italic;">No items found.</p>';
@@ -1408,12 +1445,12 @@ function renderEquipment() {
                 <th>Name</th><th>Trait</th><th>Range</th><th>Damage</th><th>Burden</th><th>Feature</th>
             </tr></thead>
             <tbody>${byTier[t].map(w => `<tr>
-                <td>${w.name}</td>
-                <td>${w.trait || '—'}</td>
-                <td>${w.range || '—'}</td>
-                <td>${w.damage || '—'}</td>
-                <td>${w.burden || '—'}</td>
-                <td>${w.feature || '—'}</td>
+                <td>${escHtml(w.name)}</td>
+                <td>${w.trait ? escHtml(w.trait) : '—'}</td>
+                <td>${w.range ? escHtml(w.range) : '—'}</td>
+                <td>${w.damage ? escHtml(w.damage) : '—'}</td>
+                <td>${w.burden ? escHtml(w.burden) : '—'}</td>
+                <td>${w.feature ? escHtml(w.feature) : '—'}</td>
             </tr>`).join('')}</tbody>
         </table>
         </div>`).join('') || '<p style="color:var(--ink-dim);font-style:italic;">No items found.</p>';
@@ -1432,9 +1469,9 @@ function renderSubclassFeatures(features) {
             <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">${t.label}</div>
             ${features[t.key].map(f => {
                 if (typeof f === 'object' && f.name) {
-                    return `<div class="modal-feature"><div class="modal-feature-name">${f.name}</div>${f.description}</div>`;
+                    return `<div class="modal-feature"><div class="modal-feature-name">${escHtml(f.name)}</div>${richText(f.description)}</div>`;
                 }
-                return `<div class="modal-feature"><p>${f}</p></div>`;
+                return `<div class="modal-feature">${richText(f)}</div>`;
             }).join('')}
         </div>`
     ).join('');
@@ -1443,7 +1480,7 @@ function renderSubclassFeatures(features) {
 function openClassModal(id) {
     const cls     = CLASSES.find(c => c.id === id);
     if (!cls) return;
-    const domains = CLASS_DOMAINS[cls.id] || [];
+    const domains = classDomains(cls);
     const role    = CLASS_ROLES[cls.id]   || '';
     document.getElementById('modal-content').innerHTML = `
         <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -1451,7 +1488,7 @@ function openClassModal(id) {
         <div class="modal-title">${cls.name}</div>
         <div class="modal-subtitle">${role} &middot; ${domains.join(' &amp; ')}</div>
         <hr class="modal-divider">
-        ${cls.description ? `<p class="modal-desc" style="margin-bottom:16px;">${cls.description}</p>` : ''}
+        ${cls.description ? `<div class="modal-desc" style="margin-bottom:16px;">${richText(cls.description)}</div>` : ''}
         <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;font-size:0.9em;color:var(--ink-muted);">
             <span><strong>Starting HP:</strong> ${cls.startingHp}</span>
             <span><strong>Starting Evasion:</strong> ${cls.startingEvasion}</span>
@@ -1459,36 +1496,36 @@ function openClassModal(id) {
         </div>
         ${cls.classItems ? `
         <div class="modal-section-head">Class Item</div>
-        <p class="modal-desc">${cls.classItems}</p>` : ''}
+        <div class="modal-desc">${richText(cls.classItems)}</div>` : ''}
         ${cls.hopeFeature ? `
         <div class="modal-section-head">Hope Feature</div>
         <div class="modal-feature">
-            <div class="modal-feature-name">${cls.hopeFeature.name}</div>
-            <p>${cls.hopeFeature.description}</p>
+            <div class="modal-feature-name">${escHtml(cls.hopeFeature.name)}</div>
+            ${richText(cls.hopeFeature.description)}
         </div>` : ''}
         ${cls.classFeatures?.length ? `
         <div class="modal-section-head">Class Features</div>
         ${cls.classFeatures.map(f => `
         <div class="modal-feature">
-            <div class="modal-feature-name">${f.name}</div>
-            <p>${f.description}</p>
+            <div class="modal-feature-name">${escHtml(f.name)}</div>
+            ${richText(f.description)}
         </div>`).join('')}` : ''}
         <div class="modal-section-head">Subclasses</div>
         ${(cls.subclasses || []).map(sub => `
         <div class="subclass-block">
-            <div class="subclass-name">${sub.name}</div>
-            <div class="subclass-tagline">${sub.description || ''}</div>
+            <div class="subclass-name">${escHtml(sub.name)}</div>
+            <div class="subclass-tagline">${richText(sub.description)}</div>
             ${renderSubclassFeatures(sub.features)}
         </div>`).join('')}
         ${cls.backgroundQuestions?.length ? `
         <div class="modal-section-head">Background Questions</div>
         <ul style="padding-left:18px;margin:0;">
-            ${cls.backgroundQuestions.map(q => `<li class="modal-desc" style="margin-bottom:6px;">${q}</li>`).join('')}
+            ${cls.backgroundQuestions.map(q => `<li class="modal-desc" style="margin-bottom:6px;">${escHtml(q)}</li>`).join('')}
         </ul>` : ''}
         ${cls.connections?.length ? `
         <div class="modal-section-head">Connections</div>
         <ul style="padding-left:18px;margin:0;">
-            ${cls.connections.map(c => `<li class="modal-desc" style="margin-bottom:6px;">${c}</li>`).join('')}
+            ${cls.connections.map(c => `<li class="modal-desc" style="margin-bottom:6px;">${escHtml(c)}</li>`).join('')}
         </ul>` : ''}
     `;
     document.getElementById('modal-shared').classList.add('active');
@@ -1501,15 +1538,15 @@ function openAncestryModal(id) {
     document.getElementById('modal-content').innerHTML = `
         <button class="modal-close" onclick="closeModal()">&times;</button>
         <div class="modal-tag">Ancestry</div>
-        <div class="modal-title">${anc.name}</div>
+        <div class="modal-title">${escHtml(anc.name)}</div>
         <hr class="modal-divider">
-        <p class="modal-desc">${anc.lore || ''}</p>
+        <div class="modal-desc">${richText(anc.lore)}</div>
         ${(anc.features || []).length ? `
         <div class="modal-section-head">Ancestry Features</div>
         ${anc.features.map(f => `
         <div class="modal-feature">
-            <div class="modal-feature-name">${f.name}</div>
-            <p>${f.description}</p>
+            <div class="modal-feature-name">${escHtml(f.name)}</div>
+            ${richText(f.description)}
         </div>`).join('')}` : ''}
     `;
     document.getElementById('modal-shared').classList.add('active');
@@ -1522,15 +1559,15 @@ function openCommunityModal(id) {
     document.getElementById('modal-content').innerHTML = `
         <button class="modal-close" onclick="closeModal()">&times;</button>
         <div class="modal-tag">Community</div>
-        <div class="modal-title">${com.name}</div>
+        <div class="modal-title">${escHtml(com.name)}</div>
         <hr class="modal-divider">
-        <p class="modal-desc">${com.lore || ''}</p>
+        <div class="modal-desc">${richText(com.lore)}</div>
         ${(com.features || []).length ? `
         <div class="modal-section-head">Community Feature</div>
         ${com.features.map(f => `
         <div class="modal-feature">
-            <div class="modal-feature-name">${f.name}</div>
-            <p>${f.description}</p>
+            <div class="modal-feature-name">${escHtml(f.name)}</div>
+            ${richText(f.description)}
         </div>`).join('')}` : ''}
     `;
     document.getElementById('modal-shared').classList.add('active');
@@ -1569,10 +1606,10 @@ function showDomainCards(domain) {
                     const recallBadge = c.recallCost > 0 ? `<span class="dc-badge recall">R${c.recallCost}</span>` : '';
                     return `<div class="dc-card">
                         <div class="dc-card-header">
-                            <div class="dc-card-name">${c.name}</div>
+                            <div class="dc-card-name">${displayName(c.name)}</div>
                             <div class="dc-card-badges">${typeBadge}${recallBadge}</div>
                         </div>
-                        <div class="dc-card-desc">${c.description}</div>
+                        <div class="dc-card-desc">${richText(c.description)}</div>
                     </div>`;
                 }).join('')}
             </div>

@@ -1668,6 +1668,39 @@ const CLASS_DOMAINS = {
 };
 const TRAIT_NAMES = ['Agility','Strength','Finesse','Instinct','Presence','Knowledge'];
 
+// Canonical data ships descriptions as PLAIN TEXT (\n blocks, "• " bullets).
+// Escape, then convert blank-line breaks to <p> and bullet runs to <ul><li>.
+function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function richText(str) {
+    if (str == null || str === '') return '';
+    const lines = String(str).split('\n');
+    const out = [];
+    let para = [], bullets = [];
+    const flushPara = () => { if (para.length) { out.push('<p>' + para.map(escHtml).join('<br>') + '</p>'); para = []; } };
+    const flushBullets = () => { if (bullets.length) { out.push('<ul>' + bullets.map(b => '<li>' + escHtml(b) + '</li>').join('') + '</ul>'); bullets = []; } };
+    for (const raw of lines) {
+        const l = raw.trim();
+        if (l === '') { flushPara(); flushBullets(); continue; }
+        const m = l.match(/^[•\-]\s+(.*)$/);
+        if (m) { flushPara(); bullets.push(m[1]); }
+        else { flushBullets(); para.push(l); }
+    }
+    flushPara(); flushBullets();
+    return out.join('');
+}
+// One-line preview from plain text; collapse bullets/whitespace then truncate + escape.
+function preview(str, n) {
+    const flat = String(str || '').replace(/^[•\-]\s+/gm, '').replace(/\s+/g, ' ').trim();
+    return flat.length > n ? escHtml(flat.slice(0, n)) + '…' : escHtml(flat);
+}
+// Title-case a possibly UPPERCASE display name (cosmetic; never mutates data).
+function displayName(s) {
+    return String(s || '').toLowerCase().replace(/\b([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 let currentUser = null;
 let userRole    = 'player';
 let char        = null;
@@ -2350,8 +2383,7 @@ function renderBody(cls, domains) {
         hfName.textContent = hf.name || '';
         const hfDesc = document.createElement('div');
         hfDesc.style.cssText = 'font-family:"EB Garamond",serif;font-size:0.8em;color:var(--ink-muted);line-height:1.5;';
-        const tmp = document.createElement('div'); tmp.innerHTML = hf.description || '';
-        hfDesc.textContent = tmp.textContent;
+        hfDesc.innerHTML = richText(hf.description);
         hfEl.append(hfName, hfDesc);
         hopeSec.appendChild(hfEl);
     }
@@ -2418,8 +2450,8 @@ function renderBody(cls, domains) {
     if (classFeatures.length) {
         cfSec.innerHTML += classFeatures.map(f =>
             typeof f === 'string'
-                ? `<div class="feature-item"><div class="feature-desc">${f}</div></div>`
-                : `<div class="feature-item">${f.name ? `<div class="feature-name">${f.name}</div>` : ''}<div class="feature-desc">${f.description || ''}</div></div>`
+                ? `<div class="feature-item"><div class="feature-desc">${richText(f)}</div></div>`
+                : `<div class="feature-item">${f.name ? `<div class="feature-name">${escHtml(f.name)}</div>` : ''}<div class="feature-desc">${richText(f.description)}</div></div>`
         ).join('');
     } else {
         cfSec.innerHTML += `<p style="font-size:0.85em;color:var(--ink-dim);font-style:italic;">No class features found.</p>`;
@@ -2865,8 +2897,7 @@ function renderBody(cls, domains) {
             fName.style.cssText = 'font-family:Cinzel,serif;font-size:0.72em;font-weight:700;color:var(--ink);margin-bottom:2px;';
             fName.textContent = f.name;
             const fDesc = document.createElement('div'); fDesc.className = 'dc-card-desc';
-            const tmp = document.createElement('div'); tmp.innerHTML = f.description || '';
-            fDesc.textContent = tmp.textContent;
+            fDesc.innerHTML = richText(f.description);
             fWrap.append(fName, fDesc);
             groupEl.appendChild(fWrap);
         });
@@ -2965,11 +2996,11 @@ function renderBody(cls, domains) {
 
         const hdr = document.createElement('div'); hdr.className = 'dc-card-header';
         const nameEl = document.createElement('div'); nameEl.className = 'dc-card-name';
-        nameEl.textContent = card ? card.name : cardName;
+        nameEl.textContent = displayName(card ? card.name : cardName);
         const meta = document.createElement('div'); meta.className = 'dc-card-meta';
 
         if (card?.domain) {
-            const tag = document.createElement('span'); tag.className = 'dc-tag'; tag.textContent = card.domain;
+            const tag = document.createElement('span'); tag.className = 'dc-tag'; tag.textContent = displayName(card.domain);
             meta.appendChild(tag);
         }
         if (card?.type) {
@@ -3011,7 +3042,7 @@ function renderBody(cls, domains) {
         el.appendChild(hdr);
 
         if (card?.description) {
-            const desc = document.createElement('div'); desc.className = 'dc-card-desc'; desc.textContent = card.description;
+            const desc = document.createElement('div'); desc.className = 'dc-card-desc'; desc.innerHTML = richText(card.description);
             el.appendChild(desc);
         }
 
@@ -3810,8 +3841,8 @@ function openLevelUpModal() {
                 const sel = session.mcTmp.subclassName === sub.name;
                 const btn = document.createElement('button'); btn.type = 'button';
                 btn.style.cssText = `text-align:left;padding:8px 12px;border-radius:6px;border:2px solid ${sel ? 'var(--gold)' : 'var(--border)'};background:${sel ? 'rgba(180,140,60,0.15)' : 'transparent'};cursor:pointer;`;
-                const sd = sub.description ? sub.description.slice(0, 80) + (sub.description.length > 80 ? '…' : '') : '';
-                btn.innerHTML = `<div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${sub.name}</div>${sd ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:2px;">${sd}</div>` : ''}`;
+                const sd = preview(sub.description, 80);
+                btn.innerHTML = `<div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${escHtml(sub.name)}</div>${sd ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:2px;">${sd}</div>` : ''}`;
                 btn.addEventListener('click', () => { session.mcTmp = { ...session.mcTmp, subclassName: sub.name, featureName: null }; render(); });
                 col.appendChild(btn);
             });
@@ -3837,8 +3868,8 @@ function openLevelUpModal() {
                 const sel = session.mcTmp.featureName === fname;
                 const btn = document.createElement('button'); btn.type = 'button';
                 btn.style.cssText = `text-align:left;padding:8px 12px;border-radius:6px;border:2px solid ${sel ? 'var(--gold)' : 'var(--border)'};background:${sel ? 'rgba(180,140,60,0.15)' : 'transparent'};cursor:pointer;`;
-                const sd = fdesc ? fdesc.slice(0, 100) + (fdesc.length > 100 ? '…' : '') : '';
-                btn.innerHTML = `<div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${fname}</div>${sd ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:2px;line-height:1.3;">${sd}</div>` : ''}`;
+                const sd = preview(fdesc, 100);
+                btn.innerHTML = `<div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${escHtml(fname)}</div>${sd ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:2px;line-height:1.3;">${sd}</div>` : ''}`;
                 btn.addEventListener('click', () => { session.mcTmp = { ...session.mcTmp, featureName: fname }; session.mcPick = { ...session.mcTmp }; render(); });
                 col.appendChild(btn);
             });
@@ -3910,7 +3941,7 @@ function openLevelUpModal() {
                     const sel = c.name === session[slotKey];
                     const row = document.createElement('div');
                     row.style.cssText = `display:flex;align-items:center;justify-content:space-between;padding:7px 10px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04);background:${sel ? 'rgba(180,140,60,0.15)' : 'transparent'};`;
-                    row.innerHTML = `<div><div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${c.name}${sel ? ' ✓' : ''}</div>${c.description ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:1px;line-height:1.3;">${c.description.slice(0,90)}${c.description.length>90?'…':''}</div>` : ''}</div><span style="font-size:0.63em;font-family:Oswald,sans-serif;letter-spacing:0.08em;color:var(--ink-dim);flex-shrink:0;margin-left:8px;text-transform:uppercase;">${c.type||''}</span>`;
+                    row.innerHTML = `<div><div style="font-family:Cinzel,serif;font-size:0.8em;font-weight:700;color:var(--ink);">${displayName(c.name)}${sel ? ' ✓' : ''}</div>${c.description ? `<div style="font-size:0.7em;color:var(--ink-dim);margin-top:1px;line-height:1.3;">${preview(c.description, 90)}</div>` : ''}</div><span style="font-size:0.63em;font-family:Oswald,sans-serif;letter-spacing:0.08em;color:var(--ink-dim);flex-shrink:0;margin-left:8px;text-transform:uppercase;">${escHtml(c.type||'')}</span>`;
                     row.addEventListener('mouseenter', () => { if (!sel) row.style.background = 'rgba(180,140,60,0.07)'; });
                     row.addEventListener('mouseleave', () => { if (!sel) row.style.background = 'transparent'; });
                     row.addEventListener('click', () => { session[slotKey] = c.name; selDisplay.textContent = `Selected: ${c.name}`; buildList(); });

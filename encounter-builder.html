@@ -702,6 +702,11 @@
             return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
         }
 
+        function escHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
         function truncRole(role) {
             if (!role) return '—';
             // Strip dirty role strings (anything after first comma or parenthesis is flavor)
@@ -1141,7 +1146,7 @@
             main.className = 'loot-result-main';
             main.innerHTML =
                 `<div class="loot-result-name">${item.name}</div>` +
-                `<div class="loot-result-desc">${item.description}</div>` +
+                `<div class="loot-result-desc">${escHtml(item.description)}</div>` +
                 `<div class="loot-result-badges">
                     <span class="loot-badge lb-${item.rarity}">${item.rarity}</span>
                     <span class="loot-badge lb-type">${item.type}</span>
