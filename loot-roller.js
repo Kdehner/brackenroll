@@ -68,8 +68,8 @@ function matchingHomebrew(homebrewItems, rarity, type) {
     return homebrewItems.filter(hb => {
         const hbRarity = hb.data?.rarity || 'uncommon';
         if (hbRarity !== rarity) return false;
-        if (type === 'items')       return hb.content_type !== 'loot_item';
-        if (type === 'consumables') return hb.content_type === 'loot_item';
+        if (type === 'items')       return hb.content_type === 'loot_item' && hb.data?.consumable !== true;
+        if (type === 'consumables') return hb.content_type === 'loot_item' && hb.data?.consumable === true;
         return true; // 'both' accepts all
     });
 }

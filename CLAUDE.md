@@ -14,6 +14,7 @@ Act as a **coding wizard who also knows everything about Daggerheart**. Both rol
 - **No unnecessary automation in GM tools.** Tools help the GM track things — they don't make decisions or enforce rules. If a feature could auto-do something, suggest it before building it in.
 - **Log significant decisions.** Update memory when things change.
 - **No self-hosting ever.** Fully managed/hosted services only. Stay on free tiers during dev.
+- **Tests travel with features.** Any feature add or change must include a test update. New page → new spec. Changed selector/ID → update `tests/lib/selectors.js`. Changed flow → update the relevant spec. See the Test Suite section below.
 
 ---
 
@@ -550,6 +551,59 @@ A reskin of the official "Witherwild" campaign frame to prevent player meta-gami
 - Auto-clear after 12s via `scheduleDiceClear()` in `handleRollComplete`
 - Physics tuned for clustering: `throwForce:3`, `spinForce:2`, `linearDamping:0.6`, `angularDamping:0.6`
 - Solo Hope/Fear buttons roll 1d12 with the player's themed die (logged as `standard` roll type)
+
+---
+
+## Test Suite
+
+Full Playwright E2E suite in `tests/`. 91 tests across 9 spec files. Runs in Docker (no local Playwright install needed). See `docs/TESTING.md` for full architecture.
+
+### Run commands
+```bash
+# Full suite
+docker run --rm \
+  -v /home/kevbot/projects/brackenroll-dev/tests:/tests \
+  mcr.microsoft.com/playwright:v1.52.0-jammy \
+  bash -c "cd /tests && npm install && npx playwright test"
+
+# Single spec
+docker run --rm \
+  -v /home/kevbot/projects/brackenroll-dev/tests:/tests \
+  mcr.microsoft.com/playwright:v1.52.0-jammy \
+  bash -c "cd /tests && npm install && npx playwright test specs/table.spec.js"
+```
+
+### Mandatory test checklist (do this every feature/fix)
+
+| Change type | Required test action |
+|---|---|
+| New page added | Create `specs/<page>.spec.js`, add selectors to `lib/selectors.js` |
+| New UI element (button, input, panel) | Add selector to `lib/selectors.js`, add assertion in relevant spec |
+| Existing element renamed/moved | Update selector in `lib/selectors.js` — all tests inherit the fix |
+| New user flow (multi-step) | Add a flow test in the relevant spec |
+| Flow changed (steps reordered, new step) | Update the flow test in the relevant spec |
+| Feature removed | Delete its tests and selectors |
+
+### Which spec owns what
+
+| Feature area | Spec file |
+|---|---|
+| Auth, session, redirect | `specs/auth.spec.js` |
+| Handbook, rules content | `specs/handbook.spec.js` |
+| Character creation | `specs/character-builder.spec.js` |
+| Homebrew CRUD | `specs/homebrew.spec.js` |
+| Campaign management | `specs/campaign.spec.js` |
+| VTT table | `specs/table.spec.js` |
+| Encounter builder | `specs/encounter-builder.spec.js` |
+| Loot generator | `specs/loot-generator.spec.js` |
+| User profile | `specs/profile.spec.js` |
+
+### Key gotchas learned from QC
+
+- **character-builder**: Page loads in roster view (`#view-roster`). Must click `#btn-new-char` before interacting with form fields. `#btn-new-char` also has class `.btn-next` — always scope next/back clicks to `#view-builder .step.active .btn-next/back`.
+- **Supabase data fetches**: Class cards load async from Supabase. Use `waitForCount(page, selector, n, 20000)` (20s timeout) not the default 10s.
+- **Realtime events**: Quick token drop updates tokens panel via Supabase Realtime — wait at least 5s after the action before checking panel state.
+- **All selectors in one place**: `tests/lib/selectors.js`. Never hardcode selectors in spec files.
 
 ---
 

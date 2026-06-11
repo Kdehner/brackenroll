@@ -543,7 +543,7 @@
 
         onAuthChange(async user => {
             if (!campaignId) return; // promo mode — no auth required
-            if (!user) { window.location.href = 'index.html'; return; }
+            if (!user) { window.location.href = `signin.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`; return; }
             currentUser = user;
             await loadCampaign();
         });

@@ -1,0 +1,21 @@
+{
+  "name": "brackenroll-tests",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:auth": "playwright test specs/auth.spec.js",
+    "test:handbook": "playwright test specs/handbook.spec.js",
+    "test:char": "playwright test specs/character-builder.spec.js",
+    "test:homebrew": "playwright test specs/homebrew.spec.js",
+    "test:campaign": "playwright test specs/campaign.spec.js",
+    "test:table": "playwright test specs/table.spec.js",
+    "test:encounter": "playwright test specs/encounter-builder.spec.js",
+    "test:loot": "playwright test specs/loot-generator.spec.js",
+    "test:profile": "playwright test specs/profile.spec.js",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.52.0"
+  }
+}

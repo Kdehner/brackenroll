@@ -939,8 +939,8 @@
             const sourceEl = document.createElement('div');
             sourceEl.className = 'entry-source';
             const badges = [];
-            if (tier) badges.push(`<span class="badge badge-tier">T${tier}</span>`);
-            if (role) badges.push(`<span class="badge badge-role">${role}</span>`);
+            if (tier) badges.push(`<span class="badge badge-tier">T${escHtml(String(tier))}</span>`);
+            if (role) badges.push(`<span class="badge badge-role">${escHtml(role)}</span>`);
             sourceEl.innerHTML = badges.join(' ');
 
             const hpEl = document.createElement('div');
