@@ -12,83 +12,23 @@ Campaign: a6762bff-15ea-4e13-a4f0-dc61b26cf37a
 | # | File | Issue | Fix Applied |
 |---|------|-------|-------------|
 | F1 | `supabase-client.js:471` | `getTokenDefinitions()` called `.order('created_at', ...)` but `token_definitions` had no `created_at` column → HTTP 400 on every table page load | `ALTER TABLE public.token_definitions ADD COLUMN IF NOT EXISTS created_at timestamptz DEFAULT now()` |
+| H1 | `character-builder.html · renderReview()` | User fields (`name`, `pronouns`, `concept`, `ancestry`, `community`, `subclassName`, `domainCards`, `exp1/2`) injected into `innerHTML` without `escHtml()` → XSS | Applied `escHtml()` to all user-authored fields |
+| H2 | `encounter-builder.html · buildEntryRow()` | `role` string from homebrew adversaries table spliced into badge `innerHTML` without escaping → stored XSS | Applied `escHtml()` to `tier` and `role` before badge construction |
+| H3 | `character-builder.html · renderStep11/12()` | `backgroundQuestions` and `connections` embedded in innerHTML template literals without `escHtml()` | Applied `escHtml(q)` to all question and connection strings |
+| M1 | `loot-roller.js · matchingHomebrew` | Type filter inverted: `items` returned weapons/armor, `consumables` returned loot_item | Rewrote filter: `items` = `loot_item` where `consumable !== true`; `consumables` = `loot_item` where `consumable === true` |
+| M2 | `campaign.html` | Unauthenticated redirect went to `index.html` instead of `signin.html?redirect=…`, losing deep-link | Changed to `signin.html?redirect=${encodeURIComponent(...)}` |
+| M3 | `table.html` | `campaignId` null-check ran synchronously before `onAuthChange`; auth redirect went to `index.html` losing deep-link | Moved null-check inside `onAuthChange`; fixed redirect to `signin.html?redirect=…` |
+| L1 | `characters.html` | No `onAuthChange` guard — pattern break, future data leak risk | Added auth guard; unauthenticated users redirect to `signin.html?redirect=…` |
+| L2 | `character-sheet.html · boot()` | Unknown `classId` caused silent blank render with no error shown | Added explicit check after class lookup; shows `Class not found (id) — character data may be corrupt.` |
+| U1 | `library.html` / `adversary-editor.html` | "+ New → Adversary" from My Library landed on adversary list, required second click | Added `&new=1` to library redirect; `showForm()`/`hideForm()` now toggle `listSection` visibility |
 
 ---
 
-## Open Bugs
-
-### HIGH — XSS (must fix before any public/prod push)
-
-**H1 · character-builder.html · renderReview() · ~line 1176**
-
-`renderReview()` builds review blocks with `block.innerHTML = ...` using:
-- `state.name`
-- `state.pronouns`
-- `state.concept`
-- `state.ancestry`
-- `state.community`
-- `state.subclassName`
-
-None pass through `escHtml()`. User types `<img src=x onerror=alert(1)>` in the name field → XSS fires on the review step. `escHtml()` is already defined (line 430) and used everywhere else in the file — omitted here.
-
-**H2 · encounter-builder.html · buildEntryRow() · ~line 943**
-
-`truncRole()` trims an adversary role string but does not escape it. Result is spliced into a badge via:
-```js
-badges.push('<span class="badge badge-role">' + role + '</span>');
-sourceEl.innerHTML = badges.join(' ');
-```
-Adversary roles come from the homebrew `adversaries` table (user-authored content) → stored XSS path. Confirmed firing by automated test (WARN emitted).
-
-**H3 · character-builder.html · renderStep11/12() · ~lines 1140–1163**
-
-`cls.backgroundQuestions` and `cls.connections` are embedded as `${q}` in innerHTML template literals without `escHtml(q)`. Official data is safe today, but homebrew classes will expose stored XSS when that feature ships.
-
----
-
-### MEDIUM
-
-**M1 · loot-roller.js · matchingHomebrew filter · ~line 71**
-
-Type filter logic is inverted:
-```js
-// Current (wrong):
-if (type === 'items')       return hb.content_type !== 'loot_item'; // returns weapons/armor
-if (type === 'consumables') return hb.content_type === 'loot_item'; // returns loot_item
-```
-When GM enables homebrew toggle on the loot generator: "items" roll pulls weapons/armor homebrew into the pool instead of homebrew loot items, and vice versa for "consumables". No visible error — just wrong results silently.
-
-**M2 · campaign.html · unauthenticated redirect · ~line 546**
-
-Unauthenticated access to `campaign.html` redirects to `index.html` instead of `signin.html?redirect=campaign.html?id=…`. Every other guarded page uses the `?redirect=` pattern. Deep-link is lost for players clicking a campaign invite while logged out.
-
-**M3 · table.html · campaignId guard · ~line 1320**
-
-`campaignId` is read synchronously before `onAuthChange` fires. Race condition: in theory can hit the guard before auth resolves. Harmless in practice today — no observed failure — but will produce double-redirects if `onAuthChange` latency increases.
-
----
-
-### LOW
-
-**L1 · characters.html · no auth guard**
-
-No `onAuthChange` import, no redirect to `signin.html`, no auth gating at all. Currently static content so no data leaks. Breaks the pattern and becomes a hole if dynamic content is added.
-
-**L2 · character-sheet.html · silent blank on unknown classId**
-
-Unknown or missing `classId` in URL silently renders a blank character sheet. Should show a visible "class not found" error state.
-
----
-
-### UX / Not Bugs
-
-**U1 · homebrew-editor.html · `?type=adversary` and `?type=domain` timeout**
-
-Navigating to `homebrew-editor.html?type=adversary` causes a load timeout. Adversary editing is intentionally handled by `adversary-editor.html` — the route is undefined by design. However the page hangs instead of redirecting or showing an error, which breaks any deep-link into adversary homebrew editing.
+### UX / Cosmetic — Not Fixed
 
 **U2 · Scenes panel · `.pushed` class race on push**
 
-After clicking the push button on a scene, the `.pushed` CSS class (green dot) is not set immediately — it updates on the next realtime sync or `renderScenes()` call. The scene IS pushed (scene label appears on canvas and in player view). Cosmetic delay only.
+After clicking the push button on a scene, the `.pushed` CSS class (green dot) is not set immediately — it updates on the next realtime sync or `renderScenes()` call. The scene IS pushed (scene label appears on canvas and in player view). Cosmetic delay only; fixing requires optimistic UI update wired into the realtime subscription path — deferred to V4.
 
 ---
 

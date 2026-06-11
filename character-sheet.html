@@ -1769,6 +1769,10 @@ async function boot() {
 
     char        = charData;
     classes     = Array.isArray(classData)     ? classData     : Object.values(classData);
+    if (!classes.find(c => c.id === char.classId)) {
+        document.getElementById('view-loading').textContent = `Class not found (${char.classId}) — character data may be corrupt.`;
+        return;
+    }
     domainCards = Array.isArray(cardData)       ? cardData      : Object.values(cardData);
     ancestries  = Array.isArray(ancestryData)   ? ancestryData  : Object.values(ancestryData);
     communities = Array.isArray(communityData)  ? communityData : Object.values(communityData);

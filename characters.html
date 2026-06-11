@@ -270,6 +270,12 @@
         <p>The Verdant Curse · Player Resources · 2026</p>
     </footer>
     <script type="module" src="nav.js"></script>
+    <script type="module">
+        import { onAuthChange } from './supabase-client.js';
+        onAuthChange(user => {
+            if (!user) window.location.href = `signin.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        });
+    </script>
 
 </body>
 </html>

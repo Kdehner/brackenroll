@@ -1317,7 +1317,6 @@
 
         const params     = new URLSearchParams(window.location.search);
         const campaignId = params.get('campaign');
-        if (!campaignId) window.location.href = 'index.html';
 
         let currentUser    = null;
         let campaign       = null;
@@ -1400,7 +1399,11 @@
 
         let booted = false;
         onAuthChange(async (user, needsOnboarding) => {
-            if (!user || needsOnboarding) { window.location.href = 'index.html'; return; }
+            if (!campaignId) { window.location.href = 'index.html'; return; }
+            if (!user || needsOnboarding) {
+                window.location.href = `signin.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                return;
+            }
             currentUser = user;
             if (booted) return;
             booted = true;
