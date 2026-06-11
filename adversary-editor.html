@@ -950,8 +950,9 @@
             if (adv) populateForm(adv);
             document.getElementById('formTitle').textContent = adv ? 'Edit Adversary' : 'New Adversary';
             document.getElementById('useTemplateBtn').style.display = adv ? 'none' : 'inline-block';
+            document.getElementById('listSection').style.display = 'none';
             document.getElementById('formSection').style.display = 'block';
-            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('formSection').scrollIntoView({ behavior: 'auto', block: 'start' });
         }
 
         function hideForm() {
@@ -959,6 +960,7 @@
             pendingPortraitUrl = null;
             clearForm();
             document.getElementById('formSection').style.display = 'none';
+            document.getElementById('listSection').style.display = 'block';
         }
 
         function clearForm() {

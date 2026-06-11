@@ -570,7 +570,7 @@
         document.querySelectorAll('.modal-type-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (btn.dataset.type === 'adversary') {
-                    window.location.href = 'adversary-editor.html?scope=global';
+                    window.location.href = 'adversary-editor.html?scope=global&new=1';
                 } else {
                     window.location.href = `homebrew-editor.html?type=${btn.dataset.type}&scope=global`;
                 }
