@@ -67,24 +67,20 @@
         .pick-feature { font-size:0.72em; color:var(--ink-muted); font-style:italic; line-height:1.4; margin-top:2px; }
         .pick-desc { font-size:0.82em; color:var(--ink-muted); line-height:1.5; }
 
-        .trait-pool { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
-        .trait-chip {
-            font-family:'Cinzel',serif; font-size:0.85em; font-weight:700; width:48px; height:48px;
-            display:flex; align-items:center; justify-content:center; border:2px solid var(--border);
-            background:rgba(248,242,228,0.5); cursor:pointer; transition:all 0.15s; color:var(--ink);
-        }
-        .trait-chip:hover { border-color:var(--border-gold); }
-        .trait-chip.selected { border-color:var(--gold); background:rgba(138,92,16,0.1); }
-        .trait-chip.used { opacity:0.35; cursor:default; }
-        .trait-rows { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .trait-rows { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
         .trait-row {
-            display:flex; align-items:center; justify-content:space-between;
-            background:rgba(248,242,228,0.5); border:1px solid var(--border); padding:10px 14px; cursor:pointer; transition:border-color 0.15s;
+            display:flex; flex-direction:column; gap:6px;
+            background:rgba(248,242,228,0.5); border:1px solid var(--border); padding:12px 14px; transition:border-color 0.15s;
         }
-        .trait-row:hover { border-color:var(--border-gold); }
         .trait-row.assigned { border-color:var(--border-gold); }
-        .trait-row-name { font-family:'Cinzel',serif; font-size:0.78em; color:var(--ink-dim); letter-spacing:0.08em; }
-        .trait-row-val  { font-family:'Cinzel',serif; font-size:1.1em; font-weight:700; color:var(--gold-mid); min-width:28px; text-align:right; }
+        .trait-row-name { font-family:'Cinzel',serif; font-size:0.78em; color:var(--ink-dim); letter-spacing:0.08em; text-transform:uppercase; }
+        .trait-row select {
+            font-family:'Cinzel',serif; font-size:1em; font-weight:700; color:var(--gold-mid);
+            background:transparent; border:none; border-bottom:1px solid var(--border-gold); padding:2px 0;
+            cursor:pointer; width:100%; outline:none; appearance:none; -webkit-appearance:none;
+        }
+        .trait-row select:focus { border-bottom-color:var(--gold); }
+        .trait-row select option { font-family:sans-serif; font-weight:400; color:#333; background:#fff; }
 
         .domain-section { margin-bottom:28px; }
         .domain-section-title {
@@ -109,6 +105,47 @@
 
         .bg-question { margin-bottom:20px; }
         .bg-question-text { font-size:0.9em; color:var(--ink); margin-bottom:8px; line-height:1.6; font-style:italic; }
+        .bg-question-input { width:100%; box-sizing:border-box; font-family:'EB Garamond',serif; font-size:0.9em; font-style:italic; color:var(--ink); background:rgba(248,242,228,0.4); border:none; border-bottom:1px dashed var(--border-gold); padding:4px 2px; margin-bottom:8px; outline:none; }
+        .bg-question-input:focus { border-bottom-color:var(--gold-mid); background:rgba(248,242,228,0.7); }
+
+        /* ── Review Dossier ─────────────────────────────────── */
+        #review-block { background:rgba(248,242,228,0.55); border:1px solid var(--border); padding:32px 36px; margin-bottom:24px; }
+        .rv-header { margin-bottom:20px; }
+        .rv-eyebrow { font-family:'Cinzel',serif; font-size:0.6em; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:8px; }
+        .rv-name { font-family:'Cinzel',serif; font-size:2em; font-weight:700; color:var(--ink); line-height:1.1; margin-bottom:4px; }
+        .rv-pronouns { font-size:0.88em; color:var(--ink-dim); font-style:italic; margin-bottom:8px; }
+        .rv-class-line { font-family:'Cinzel',serif; font-size:0.9em; color:var(--gold-mid); letter-spacing:0.04em; margin-bottom:5px; }
+        .rv-identity-line { font-size:0.82em; color:var(--ink-muted); margin-bottom:10px; }
+        .rv-concept { font-size:0.95em; font-style:italic; color:var(--ink-muted); line-height:1.65; border-left:3px solid var(--border-gold); padding-left:14px; margin-top:12px; }
+        .rv-divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+        .rv-divider-gold { border:none; border-top:1px solid var(--border-gold); margin:20px 0; opacity:0.5; }
+        .rv-section-label { font-family:'Cinzel',serif; font-size:0.6em; letter-spacing:0.13em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:10px; }
+        .rv-vitals { display:flex; gap:20px; margin-bottom:20px; }
+        .rv-badge { background:rgba(248,242,228,0.7); border:1px solid var(--border-gold); padding:10px 20px; text-align:center; min-width:72px; }
+        .rv-badge-val { font-family:'Cinzel',serif; font-size:1.6em; font-weight:700; color:var(--ink); line-height:1; }
+        .rv-badge-label { font-family:'Cinzel',serif; font-size:0.55em; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); margin-top:4px; }
+        .rv-stat-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:20px; }
+        .rv-stat-cell { text-align:center; background:rgba(248,242,228,0.6); border:1px solid var(--border); padding:12px 6px; }
+        .rv-stat-abbr { font-family:'Cinzel',serif; font-size:0.56em; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:5px; }
+        .rv-stat-val { font-family:'Cinzel',serif; font-size:1.2em; font-weight:700; color:var(--ink); }
+        .rv-two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+        .rv-card-pills { display:flex; flex-wrap:wrap; gap:6px; }
+        .rv-card-pill { background:rgba(138,92,16,0.1); border:1px solid var(--border-gold); padding:4px 10px; font-size:0.78em; font-family:'Cinzel',serif; color:var(--ink); letter-spacing:0.03em; }
+        .rv-exp-list { list-style:none; padding:0; margin:0; }
+        .rv-exp-list li { font-size:0.88em; color:var(--ink-muted); padding:4px 0; border-bottom:1px solid rgba(120,80,30,0.08); display:flex; gap:8px; }
+        .rv-exp-list li:last-child { border-bottom:none; }
+        .rv-exp-list li::before { content:'—'; color:var(--ink-dim); flex-shrink:0; }
+        .rv-eq-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; margin-bottom:6px; }
+        .rv-eq-item { font-size:0.88em; color:var(--ink-muted); }
+        .rv-eq-item strong { color:var(--ink); font-weight:600; }
+        .rv-inv-pills { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+        .rv-inv-pill { background:rgba(248,242,228,0.7); border:1px solid var(--border); padding:3px 10px; font-size:0.78em; color:var(--ink-muted); }
+        .rv-qa-item { margin-bottom:16px; }
+        .rv-qa-q { font-size:0.82em; font-style:italic; color:var(--ink-muted); margin-bottom:5px; line-height:1.5; }
+        .rv-qa-a { font-size:0.92em; color:var(--ink); line-height:1.65; }
+        .rv-qa-empty { color:var(--ink-dim); }
+        .rv-save-callout { text-align:center; padding:20px 0 4px; }
+        .rv-save-callout p { font-size:0.9em; color:var(--ink-muted); font-style:italic; margin:0; }
 
         .gold-field { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
         .gold-field input[type=number] {
@@ -174,7 +211,53 @@
         .btn-sm { font-size:0.65em !important; padding:7px 14px !important; }
         .error-msg { font-size:0.82em; color:#8a2020; }
         .equip-label { font-family:'Cinzel',serif; font-size:0.72em; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:10px; }
+        .pick-homebrew { font-family:'Cinzel',serif; font-size:0.55em; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold-mid); opacity:0.75; margin-bottom:3px; }
         .loading-msg { text-align:center; padding:60px 24px; color:var(--ink-muted); font-style:italic; }
+
+        /* ── Phase 1: Builder layout ─────────────────────────────────────── */
+        .builder-layout {
+            display:flex; gap:36px; align-items:flex-start;
+            max-width:1060px; margin:0 auto;
+        }
+        .builder-content { flex:1; min-width:0; }
+        .builder-summary { width:220px; flex-shrink:0; position:sticky; top:24px; }
+
+        .summary-panel {
+            background:rgba(248,242,228,0.55); border:1px solid var(--border-gold); padding:20px;
+        }
+        .summary-hdr {
+            font-family:'Cinzel',serif; font-size:0.6em; letter-spacing:0.18em; text-transform:uppercase;
+            color:var(--gold-mid); border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:14px;
+        }
+        .summary-name {
+            font-family:'Cinzel',serif; font-size:1.05em; font-weight:700; color:var(--ink);
+            margin-bottom:16px; line-height:1.3;
+        }
+        .summary-pronouns {
+            display:block; font-size:0.72em; font-weight:400; color:var(--ink-dim); margin-top:2px; letter-spacing:0.02em;
+        }
+        .summary-lbl {
+            font-family:'Cinzel',serif; font-size:0.57em; letter-spacing:0.12em;
+            text-transform:uppercase; color:var(--ink-dim); margin-bottom:3px;
+        }
+        .summary-val {
+            font-family:'Cinzel',serif; font-size:0.85em; font-weight:600; color:var(--ink);
+        }
+        .summary-sub { font-size:0.8em; color:var(--ink-muted); font-style:italic; margin-top:1px; margin-bottom:10px; }
+        .summary-sec { margin-bottom:12px; }
+        .summary-div { border-top:1px solid var(--border); margin:14px 0; }
+        .summary-cards { list-style:none; padding:0; margin:4px 0 0; }
+        .summary-cards li {
+            font-size:0.8em; color:var(--ink-muted); padding:3px 0;
+            border-bottom:1px solid rgba(120,80,30,0.08); line-height:1.4;
+        }
+        .summary-cards li:last-child { border-bottom:none; }
+        .summary-cards li::before { content:'◆ '; color:var(--gold-mid); font-size:0.7em; }
+        .summary-empty { color:var(--ink-dim); font-size:0.8em; font-style:italic; }
+
+        @media (max-width:900px) {
+            .builder-summary { display:none; }
+        }
 
         @media (max-width:700px) {
             .roster-grid { grid-template-columns:1fr; }
@@ -183,6 +266,67 @@
             .trait-rows { grid-template-columns:1fr 1fr; }
             .domain-card-grid { grid-template-columns:1fr 1fr; }
         }
+
+        /* ── Phase 3: Info Modal ─────────────────────────────────────────── */
+        .info-modal-overlay {
+            display:none; position:fixed; inset:0; background:rgba(20,16,10,0.65);
+            z-index:9500; align-items:flex-start; justify-content:center;
+            padding:40px 16px; overflow-y:auto; box-sizing:border-box;
+        }
+        .info-modal-overlay.open { display:flex; }
+        .info-modal-box {
+            background:#f5edd8; border:1px solid var(--border-gold);
+            width:100%; max-width:660px; box-shadow:0 12px 48px rgba(0,0,0,0.45);
+            display:flex; flex-direction:column; max-height:calc(100vh - 80px); flex-shrink:0;
+        }
+        .info-modal-hdr { padding:24px 28px 18px; border-bottom:1px solid var(--border); flex-shrink:0; }
+        .info-modal-tag {
+            font-family:'Cinzel',serif; font-size:0.6em; letter-spacing:0.14em; text-transform:uppercase;
+            color:var(--gold-mid); margin-bottom:6px;
+        }
+        .info-modal-title {
+            font-family:'Cinzel',serif; font-size:1.35em; font-weight:700; color:var(--ink); line-height:1.2;
+        }
+        .info-modal-sub {
+            font-family:'EB Garamond',serif; font-size:0.9em; color:var(--ink-muted); margin-top:5px; font-style:italic;
+        }
+        .info-modal-body {
+            padding:22px 28px; overflow-y:auto; flex:1;
+            font-family:'EB Garamond',serif; font-size:0.97em; color:var(--ink); line-height:1.7;
+        }
+        .info-modal-body p { margin:0 0 12px; }
+        .info-modal-body p:last-child { margin-bottom:0; }
+        .info-modal-body ul { margin:0 0 12px; padding-left:20px; }
+        .info-modal-body li { margin-bottom:4px; }
+        .modal-feat-name {
+            font-family:'Cinzel',serif; font-size:0.77em; font-weight:700; letter-spacing:0.06em;
+            text-transform:uppercase; color:var(--gold-mid); margin:14px 0 4px;
+        }
+        .modal-feat-name:first-child { margin-top:0; }
+        .modal-section-lbl {
+            font-family:'Cinzel',serif; font-size:0.63em; letter-spacing:0.12em; text-transform:uppercase;
+            color:var(--ink-dim); border-bottom:1px solid var(--border); padding-bottom:5px; margin:18px 0 12px;
+        }
+        .modal-stat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:16px; }
+        .modal-stat-row span { font-family:'EB Garamond',serif; font-size:0.92em; color:var(--ink-muted); }
+        .modal-stat-row strong { color:var(--ink); }
+        .info-modal-foot {
+            display:flex; gap:10px; justify-content:flex-end;
+            padding:16px 24px; border-top:1px solid var(--border); flex-shrink:0;
+        }
+        .info-modal-cancel {
+            font-family:'Cinzel',serif; font-size:0.7em; letter-spacing:0.08em; text-transform:uppercase;
+            padding:9px 20px; border:1px solid var(--border); background:transparent;
+            color:var(--ink-dim); cursor:pointer; transition:all 0.15s;
+        }
+        .info-modal-cancel:hover { border-color:var(--border-gold); color:var(--ink); }
+        .info-modal-confirm {
+            font-family:'Cinzel',serif; font-size:0.7em; letter-spacing:0.08em; text-transform:uppercase;
+            padding:9px 22px; border:1px solid var(--gold); background:var(--gold);
+            color:#f5edd8; cursor:pointer; transition:background 0.15s;
+        }
+        .info-modal-confirm:hover:not(:disabled) { background:var(--gold-mid); border-color:var(--gold-mid); }
+        .info-modal-confirm:disabled { opacity:0.4; cursor:default; }
     </style>
 </head>
 <body>
@@ -253,6 +397,8 @@
 
     <!-- ── Builder ────────────────────────────────────────────────────── -->
     <div id="view-builder" style="display:none;">
+    <div class="builder-layout">
+    <div class="builder-content">
         <button class="back-to-roster" id="btn-back-roster">← All Characters</button>
         <div class="progress-bar" id="progress-bar"></div>
         <div class="step-label" id="step-label"></div>
@@ -302,8 +448,7 @@
         <!-- Step 6: Traits -->
         <div class="step" id="step-6">
             <p class="step-heading">Assign Your Traits</p>
-            <p class="step-desc">Distribute these six values across your traits. Click a value, then click a trait to assign it.</p>
-            <div class="trait-pool" id="trait-pool"></div>
+            <p class="step-desc">Assign each of the six values (+2, +1, +1, 0, 0, −1) to a trait. Each value can only be used once.</p>
             <div class="trait-rows" id="trait-rows"></div>
             <div class="btn-row"><button class="btn-back" onclick="prevStep(6)">← Back</button><div class="btn-row-right"><span class="error-msg" id="err-6"></span><button class="btn-next" onclick="nextStep(6)">Domain Cards →</button></div></div>
         </div>
@@ -389,15 +534,33 @@
 
         <!-- Step 13: Review & Save -->
         <div class="step" id="step-13">
-            <p class="step-heading">Review Your Character</p>
-            <p class="step-desc">Everything looks good? Save your character to your account.</p>
-            <div id="review-block" style="background:rgba(248,242,228,0.55);border:1px solid var(--border);padding:28px 32px;margin-bottom:24px;"></div>
+            <p class="step-heading">Your Character</p>
+            <p class="step-desc">Take a moment. This is who you are.</p>
+            <div id="review-block"></div>
             <div class="btn-row"><button class="btn-back" onclick="prevStep(13)">← Back</button><div class="btn-row-right"><span class="error-msg" id="err-13"></span><button class="btn-next" id="btn-save-char">Save Character →</button></div></div>
         </div>
 
+    </div><!-- /builder-content -->
+    <div class="builder-summary" id="builder-summary"></div>
+    </div><!-- /builder-layout -->
     </div><!-- /view-builder -->
 
 </div><!-- /container -->
+
+<div id="info-modal" class="info-modal-overlay">
+    <div class="info-modal-box">
+        <div class="info-modal-hdr">
+            <div class="info-modal-tag" id="info-modal-tag"></div>
+            <div class="info-modal-title" id="info-modal-title"></div>
+            <div class="info-modal-sub" id="info-modal-sub"></div>
+        </div>
+        <div class="info-modal-body" id="info-modal-body"></div>
+        <div class="info-modal-foot">
+            <button class="info-modal-cancel" id="info-modal-cancel">Cancel</button>
+            <button class="info-modal-confirm" id="info-modal-confirm">Select</button>
+        </div>
+    </div>
+</div>
 
 <div id="confirm-overlay" class="confirm-overlay">
     <div class="confirm-box">
@@ -416,7 +579,7 @@
 <footer><p>Brackenroll &middot; Daggerheart Resources &middot; 2026</p></footer>
 
 <script type="module">
-import { signOutUser, onAuthChange, getUserRole, saveCharacter, loadCharacters, deleteCharacter } from './supabase-client.js';
+import { signOutUser, onAuthChange, getUserRole, saveCharacter, loadCharacters, deleteCharacter, getMyLibrary, getHomebrew, getCampaignImports } from './supabase-client.js';
 import { makeLog } from './logger.js';
 const log = makeLog('data');
 
@@ -457,6 +620,9 @@ function preview(str, n) {
 function displayName(s) {
     return String(s || '').toLowerCase().replace(/\b([a-z])/g, (_, c) => c.toUpperCase());
 }
+function homebrewTag(item) {
+    return item?._homebrew ? '<div class="pick-homebrew">Homebrew</div>' : '';
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 // Fallback only — canonical `classes[].domains` is the source of truth. See classDomains().
@@ -482,8 +648,111 @@ const TOTAL_STEPS = 13;
 const STEP_NAMES  = ['','Identity','Class','Subclass','Ancestry','Community','Traits','Domain Cards','Experiences','Equipment','Inventory','Background','Connections','Review'];
 const DEFAULT_INV = ['Torch','50 ft. of rope','Basic supplies (tent, bedroll, tinderbox, rations)'];
 
+// ── Campaign context ──────────────────────────────────────────────────────────
+const CAMPAIGN_ID = new URLSearchParams(location.search).get('campaign') || null;
+
 // ── Data ──────────────────────────────────────────────────────────────────────
 let CLASSES = [], ANCESTRIES = [], COMMUNITIES = [], ALL_DOMAIN_CARDS = [], WEAPONS = [], ARMOR = [];
+
+// Merge homebrew rows into official arrays (dedup by name — official wins).
+function mergeByName(official, incoming) {
+    const names = new Set(official.map(i => i.name));
+    return [...official, ...incoming.filter(i => !names.has(i.name))];
+}
+
+function normalizeHomebrew(row, type) {
+    const d = row.data || {};
+    const base = { id: row.id, name: row.name, _homebrew: true };
+    if (type === 'ancestry' || type === 'community') {
+        return { ...base, lore: row.player_description || '', features: d.features || [] };
+    }
+    if (type === 'domain_card') {
+        return {
+            ...base,
+            domain:      (d.domain || '').toLowerCase(),
+            level:       d.level ?? 1,
+            type:        d.card_type || 'Ability',
+            recallCost:  d.recall_cost ?? 0,
+            description: d.effect || row.player_description || '',
+        };
+    }
+    if (type === 'class') {
+        return {
+            ...base,
+            startingHp:          d.starting_hp ?? 6,
+            startingEvasion:      d.starting_evasion ?? 10,
+            spellcastTrait:       d.spellcast_trait || null,
+            classItems:           d.class_items || '',
+            domains:              d.domains || [],
+            subclasses:           (d.subclasses || []).filter(s => s.name),
+            features:             d.class_features || [],
+            backgroundQuestions:  [],
+            connections:          [],
+        };
+    }
+    if (type === 'weapon') {
+        const twoHanded = d.trait === 'Two-handed';
+        const offHand   = d.trait === 'Off-hand';
+        return {
+            ...base,
+            slot:       offHand ? 'secondary' : 'primary',
+            weaponType: 'physical',
+            trait:      twoHanded ? 'Strength' : 'Agility',
+            range:      d.range || 'Melee',
+            damage:     d.damage_dice || '',
+            burden:     twoHanded ? 'Two-Handed' : '',
+            tier:       1,
+            feature:    Array.isArray(d.features) ? d.features.join(', ') : (d.features || ''),
+        };
+    }
+    if (type === 'armor') {
+        const score = d.base_score ?? 0;
+        return {
+            ...base,
+            armorScore:      score,
+            minorThreshold:  d.armor_slots ?? 0,
+            majorThreshold:  (d.armor_slots ?? 0) + 2,
+            tier:            1,
+            feature:         Array.isArray(d.features) ? d.features.join(', ') : (d.features || ''),
+        };
+    }
+    return base;
+}
+
+async function mergeHomebrew() {
+    const types = ['class', 'ancestry', 'community', 'domain_card', 'weapon', 'armor'];
+    try {
+        const [libraryResults, campaignResults, importedItems] = await Promise.all([
+            Promise.all(types.map(t => getMyLibrary(currentUser.uid, t))),
+            CAMPAIGN_ID ? Promise.all(types.map(t => getHomebrew(CAMPAIGN_ID, t))) : Promise.resolve(types.map(() => [])),
+            CAMPAIGN_ID ? getCampaignImports(CAMPAIGN_ID) : Promise.resolve([]),
+        ]);
+
+        // Bin imported items by content_type
+        const importBuckets = types.reduce((acc, t) => { acc[t] = []; return acc; }, {});
+        for (const item of importedItems) {
+            if (importBuckets[item.content_type]) importBuckets[item.content_type].push(item);
+        }
+
+        const combined = types.reduce((acc, t, i) => {
+            acc[t] = [...(libraryResults[i] || []), ...(campaignResults[i] || []), ...(importBuckets[t] || [])];
+            return acc;
+        }, {});
+
+        if (combined.class.length)       CLASSES          = mergeByName(CLASSES,          combined.class.map(r => normalizeHomebrew(r, 'class')));
+        if (combined.ancestry.length)    ANCESTRIES       = mergeByName(ANCESTRIES,        combined.ancestry.map(r => normalizeHomebrew(r, 'ancestry')));
+        if (combined.community.length)   COMMUNITIES      = mergeByName(COMMUNITIES,       combined.community.map(r => normalizeHomebrew(r, 'community')));
+        if (combined.domain_card.length) ALL_DOMAIN_CARDS = mergeByName(ALL_DOMAIN_CARDS,  combined.domain_card.map(r => normalizeHomebrew(r, 'domain_card')));
+        if (combined.weapon.length)      WEAPONS          = mergeByName(WEAPONS,            combined.weapon.map(r => normalizeHomebrew(r, 'weapon')));
+        if (combined.armor.length)       ARMOR            = mergeByName(ARMOR,              combined.armor.map(r => normalizeHomebrew(r, 'armor')));
+
+        log.info('homebrew merged — classes:', CLASSES.length, 'ancestries:', ANCESTRIES.length,
+            'communities:', COMMUNITIES.length, 'cards:', ALL_DOMAIN_CARDS.length,
+            'weapons:', WEAPONS.length, 'armor:', ARMOR.length);
+    } catch (e) {
+        log.error('mergeHomebrew failed (non-fatal):', e);
+    }
+}
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let currentUser   = null;
@@ -491,11 +760,11 @@ let userRole      = 'player';
 let currentStep   = 1;
 let state         = freshState();
 let traitAssigned = {};
-let selectedChip  = null;
 
 function freshState() {
     return {
         id:          null,
+        campaignId:  CAMPAIGN_ID,
         name:'', pronouns:'', concept:'',
         classId:null, subclassName:null,
         ancestry:null, community:null,
@@ -509,6 +778,8 @@ function freshState() {
         extraInventory:'',
         backgroundAnswers:[],
         connectionAnswers:[],
+        backgroundQuestions:[],
+        connectionQuestions:[],
         sheetState:{ hp:0, stress:0, hope:2, armor:0 }
     };
 }
@@ -556,6 +827,7 @@ onAuthChange(async user => {
     userRole = await getUserRole(user.uid);
     applyRoleToNav();
     document.getElementById('user-email').textContent = user.email || user.user_metadata?.full_name || '';
+    await mergeHomebrew();
     await showRosterView();
 });
 
@@ -602,6 +874,115 @@ function confirmDelete(charId, charName) {
     });
 
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); }, { once: true });
+}
+
+// ── Info Modal ────────────────────────────────────────────────────────────────
+let _modalOnConfirm = null;
+
+function openInfoModal({ tag = '', title, sub = '', body, confirmLabel = 'Select', onConfirm = null, confirmDisabled = false }) {
+    document.getElementById('info-modal-tag').textContent   = tag;
+    document.getElementById('info-modal-title').textContent = title;
+    document.getElementById('info-modal-sub').textContent   = sub;
+    document.getElementById('info-modal-body').innerHTML    = body;
+    const btn = document.getElementById('info-modal-confirm');
+    btn.textContent = confirmLabel;
+    btn.disabled    = confirmDisabled;
+    _modalOnConfirm = onConfirm;
+    document.getElementById('info-modal-body').scrollTop = 0;
+    document.getElementById('info-modal').classList.add('open');
+}
+
+function closeInfoModal() {
+    document.getElementById('info-modal').classList.remove('open');
+    _modalOnConfirm = null;
+}
+
+document.getElementById('info-modal-cancel').addEventListener('click', closeInfoModal);
+document.getElementById('info-modal-confirm').addEventListener('click', () => {
+    if (_modalOnConfirm) _modalOnConfirm();
+    closeInfoModal();
+});
+document.getElementById('info-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('info-modal')) closeInfoModal();
+});
+
+// ── Modal body builders ───────────────────────────────────────────────────────
+function classModalBody(cls) {
+    const domains = classDomains(cls);
+    const stats = [
+        `HP: <strong>${cls.startingHp ?? '—'}</strong>`,
+        `Evasion: <strong>${cls.startingEvasion ?? '—'}</strong>`,
+        ...domains.map(d => `Domain: <strong>${escHtml(d)}</strong>`),
+        ...(cls.spellcastTrait ? [`Spellcast: <strong>${escHtml(cls.spellcastTrait)}</strong>`] : []),
+    ];
+    const feats = (cls.classFeatures || cls.features || []).map(f =>
+        typeof f === 'string'
+            ? `<div class="modal-feat-name">${escHtml(f)}</div>`
+            : `<div class="modal-feat-name">${escHtml(f.name || '')}</div>${richText(f.description || '')}`
+    ).join('');
+    const hopeF = cls.hopeFeature;
+    const hopeBlock = hopeF
+        ? `<div class="modal-section-lbl">Hope Feature</div><div class="modal-feat-name">${escHtml(hopeF.name || '')}</div>${richText(hopeF.description || '')}`
+        : '';
+    return `<div class="modal-stat-row">${stats.map(s => `<span>${s}</span>`).join('')}</div>
+        ${cls.description ? richText(cls.description) : ''}
+        ${feats ? `<div class="modal-section-lbl">Class Features</div>${feats}` : ''}
+        ${hopeBlock}
+        ${cls.classItems ? `<div class="modal-section-lbl">Starting Equipment</div><p>${escHtml(cls.classItems)}</p>` : ''}`;
+}
+
+function subclassModalBody(sub) {
+    if (typeof sub === 'string') return `<p style="color:var(--ink-dim);font-style:italic;">No additional detail available.</p>`;
+    const desc = sub.description ? richText(sub.description) : '';
+    const feats = sub.features || {};
+    const sections = [['Foundation', feats.foundation || []], ['Specialization', feats.specialization || []], ['Mastery', feats.mastery || []]]
+        .filter(([, arr]) => arr.length)
+        .map(([label, arr]) => `<div class="modal-section-lbl">${label}</div>` +
+            arr.map(f => `<div class="modal-feat-name">${escHtml(f.name || '')}</div>${richText(f.description || '')}`).join('')
+        ).join('');
+    return desc + sections || `<p style="color:var(--ink-dim);font-style:italic;">No additional detail available.</p>`;
+}
+
+function ancestryModalBody(a) {
+    const feats = (a.features || []).map(f =>
+        `<div class="modal-feat-name">${escHtml(f.name || '')}</div>${richText(f.description || '')}`
+    ).join('');
+    return (a.lore ? richText(a.lore) : '') +
+        (feats ? `<div class="modal-section-lbl">Ancestry Features</div>${feats}` : '');
+}
+
+function communityModalBody(c) {
+    const feats = (c.features || []).map(f =>
+        `<div class="modal-feat-name">${escHtml(f.name || '')}</div>${richText(f.description || '')}`
+    ).join('');
+    return (c.lore ? richText(c.lore) : '') +
+        (feats ? `<div class="modal-section-lbl">Community Feature</div>${feats}` : '');
+}
+
+function domainCardModalBody(card) {
+    const recall = (card.recallCost ?? 0) > 0 ? `Recall Cost: ${card.recallCost}` : 'No recall cost';
+    return `<div class="modal-stat-row">
+        <span>Type: <strong>${escHtml(card.type || 'Ability')}</strong></span>
+        <span>${escHtml(recall)}</span>
+    </div>${richText(card.description || '')}`;
+}
+
+function weaponModalBody(item) {
+    const stats = [
+        `Trait: <strong>${escHtml(item.trait || '—')}</strong>`,
+        `Range: <strong>${escHtml(item.range || '—')}</strong>`,
+        `Damage: <strong>${escHtml(item.damage || '—')}</strong>`,
+        ...(item.burden ? [`Burden: <strong>${escHtml(item.burden)}</strong>`] : []),
+    ];
+    return `<div class="modal-stat-row">${stats.map(s => `<span>${s}</span>`).join('')}</div>
+        ${item.feature ? richText(item.feature) : '<p style="color:var(--ink-dim);font-style:italic;">No special features.</p>'}`;
+}
+
+function armorModalBody(item) {
+    return `<div class="modal-stat-row">
+        <span>Armor Score: <strong>${item.armorScore ?? '—'}</strong></span>
+        <span>Thresholds: <strong>${item.minorThreshold ?? '—'} / ${item.majorThreshold ?? '—'}</strong></span>
+    </div>${item.feature ? richText(item.feature) : '<p style="color:var(--ink-dim);font-style:italic;">No special features.</p>'}`;
 }
 
 // ── Roster ────────────────────────────────────────────────────────────────────
@@ -679,10 +1060,11 @@ async function editCharacter(charId) {
     if (!char) return;
     state = { ...freshState(), ...char };
     state.domainCards = normalizeDomainCards(state.domainCards);
-    if (!Array.isArray(state.backgroundAnswers)) state.backgroundAnswers = [];
-    if (!Array.isArray(state.connectionAnswers)) state.connectionAnswers = [];
+    if (!Array.isArray(state.backgroundAnswers))  state.backgroundAnswers  = [];
+    if (!Array.isArray(state.connectionAnswers))  state.connectionAnswers  = [];
+    if (!Array.isArray(state.backgroundQuestions)) state.backgroundQuestions = [];
+    if (!Array.isArray(state.connectionQuestions)) state.connectionQuestions = [];
     traitAssigned = {};
-    selectedChip  = null;
     TRAIT_NAMES.forEach(t => {
         const val = state.traits[t];
         if (val !== null) {
@@ -702,10 +1084,11 @@ function resumeDraft(draft) {
     // Strip any legacy non-UUID IDs — Supabase will assign a proper UUID on save
     if (state.id && !isUUID(state.id)) state.id = null;
     state.domainCards = normalizeDomainCards(state.domainCards);
-    if (!Array.isArray(state.backgroundAnswers)) state.backgroundAnswers = [];
-    if (!Array.isArray(state.connectionAnswers)) state.connectionAnswers = [];
+    if (!Array.isArray(state.backgroundAnswers))  state.backgroundAnswers  = [];
+    if (!Array.isArray(state.connectionAnswers))  state.connectionAnswers  = [];
+    if (!Array.isArray(state.backgroundQuestions)) state.backgroundQuestions = [];
+    if (!Array.isArray(state.connectionQuestions)) state.connectionQuestions = [];
     traitAssigned = {};
-    selectedChip  = null;
     TRAIT_NAMES.forEach(t => {
         const val = state.traits[t];
         if (val !== null) {
@@ -720,12 +1103,52 @@ document.getElementById('btn-new-char').onclick = () => {
     clearDraft();
     state = freshState();
     traitAssigned = {};
-    selectedChip  = null;
     startBuilder(1);
 };
 document.getElementById('btn-back-roster').onclick = () => showRosterView();
 
 // ── Builder ───────────────────────────────────────────────────────────────────
+function renderSummaryPanel() {
+    const panel = document.getElementById('builder-summary');
+    if (!panel) return;
+    const cls = CLASSES.find(c => c.id === state.classId);
+    const name = state.name || 'Unnamed';
+    const pronouns = state.pronouns
+        ? `<span class="summary-pronouns">${escHtml(state.pronouns)}</span>` : '';
+    const classVal   = cls ? escHtml(cls.name) : '<span class="summary-empty">—</span>';
+    const subVal     = state.subclassName ? escHtml(state.subclassName) : '<span class="summary-empty">—</span>';
+    const ancestryVal  = state.ancestry  ? escHtml(state.ancestry)  : '<span class="summary-empty">—</span>';
+    const communityVal = state.community ? escHtml(state.community) : '<span class="summary-empty">—</span>';
+    const cards = normalizeDomainCards(state.domainCards);
+    const cardItems = cards.length
+        ? cards.map(c => `<li>${escHtml(typeof c === 'string' ? c : (c.name || ''))}</li>`).join('')
+        : `<li class="summary-empty" style="list-style:none;">None chosen</li>`;
+    panel.innerHTML = `
+        <div class="summary-panel">
+            <div class="summary-hdr">Your Character</div>
+            <div class="summary-name">${escHtml(name)}${pronouns}</div>
+            <div class="summary-sec">
+                <div class="summary-lbl">Class</div>
+                <div class="summary-val">${classVal}</div>
+                <div class="summary-sub">${subVal}</div>
+            </div>
+            <div class="summary-div"></div>
+            <div class="summary-sec">
+                <div class="summary-lbl">Ancestry</div>
+                <div class="summary-val">${ancestryVal}</div>
+            </div>
+            <div class="summary-sec">
+                <div class="summary-lbl">Community</div>
+                <div class="summary-val">${communityVal}</div>
+            </div>
+            <div class="summary-div"></div>
+            <div class="summary-sec">
+                <div class="summary-lbl">Domain Cards</div>
+                <ul class="summary-cards">${cardItems}</ul>
+            </div>
+        </div>`;
+}
+
 function buildProgressBar() {
     const bar = document.getElementById('progress-bar');
     bar.innerHTML = Array.from({length: TOTAL_STEPS}, (_,i) =>
@@ -766,6 +1189,7 @@ function showStep(n) {
     document.getElementById('exp-1').value         = state.exp1     || '';
     document.getElementById('exp-2').value         = state.exp2     || '';
 
+    renderSummaryPanel();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     saveDraft();
 }
@@ -801,6 +1225,10 @@ function captureStep(n) {
     if (n === 11) {
         const cls = CLASSES.find(c => c.id === state.classId);
         const qs  = cls?.backgroundQuestions || [];
+        state.backgroundQuestions = qs.map((q, i) => {
+            const el = document.getElementById(`bg-qt-${i}`);
+            return el ? el.value.trim() || q : (state.backgroundQuestions[i] || q);
+        });
         state.backgroundAnswers = qs.map((_, i) => {
             const el = document.getElementById(`bg-q-${i}`);
             return el ? el.value.trim() : (state.backgroundAnswers[i] || '');
@@ -809,6 +1237,10 @@ function captureStep(n) {
     if (n === 12) {
         const cls = CLASSES.find(c => c.id === state.classId);
         const qs  = cls?.connections || [];
+        state.connectionQuestions = qs.map((q, i) => {
+            const el = document.getElementById(`con-qt-${i}`);
+            return el ? el.value.trim() || q : (state.connectionQuestions[i] || q);
+        });
         state.connectionAnswers = qs.map((_, i) => {
             const el = document.getElementById(`con-q-${i}`);
             return el ? el.value.trim() : (state.connectionAnswers[i] || '');
@@ -840,6 +1272,7 @@ function renderStep2() {
         const domains = classDomains(cls);
         const sel = state.classId === cls.id ? ' selected' : '';
         return `<div class="pick-card${sel}" data-class="${cls.id}">
+            ${homebrewTag(cls)}
             <div class="pick-name">${escHtml(cls.name)}</div>
             <div class="pick-tag">${CLASS_ROLES[cls.id] || ''}</div>
             <div class="pick-desc">${escHtml(domains.join(' & '))} · HP ${cls.startingHp} · Evasion ${cls.startingEvasion}</div>
@@ -847,15 +1280,26 @@ function renderStep2() {
     }).join('');
     grid.querySelectorAll('[data-class]').forEach(card => {
         card.addEventListener('click', () => {
-            state.classId = card.dataset.class;
-            state.subclassName = null;
-            state.domainCards  = [];
-            state.backgroundAnswers = [];
-            state.connectionAnswers = [];
-            state.classInventory = CLASSES.find(c => c.id === state.classId)?.classItems || '';
-            grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            document.getElementById('err-2').textContent = '';
+            const cls = CLASSES.find(c => c.id === card.dataset.class);
+            if (!cls) return;
+            openInfoModal({
+                tag: CLASS_ROLES[cls.id] || '',
+                title: cls.name,
+                sub: classDomains(cls).join(' & ') + ` · HP ${cls.startingHp} · Evasion ${cls.startingEvasion}`,
+                body: classModalBody(cls),
+                confirmLabel: 'Select This Class',
+                onConfirm: () => {
+                    state.classId        = cls.id;
+                    state.subclassName   = null;
+                    state.domainCards    = [];
+                    state.backgroundAnswers = [];
+                    state.connectionAnswers = [];
+                    state.classInventory = cls.classItems || '';
+                    grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    document.getElementById('err-2').textContent = '';
+                }
+            });
         });
     });
 }
@@ -875,10 +1319,20 @@ function renderStep3() {
     }).join('');
     grid.querySelectorAll('[data-sub]').forEach(card => {
         card.addEventListener('click', () => {
-            state.subclassName = card.dataset.sub;
-            grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            document.getElementById('err-3').textContent = '';
+            const name = card.dataset.sub;
+            const subObj = (cls.subclasses || []).find(s => (typeof s === 'string' ? s : s.name) === name) || { name };
+            openInfoModal({
+                tag: escHtml(cls.name) + ' Subclass',
+                title: displayName(name),
+                body: subclassModalBody(subObj),
+                confirmLabel: 'Choose This Subclass',
+                onConfirm: () => {
+                    state.subclassName = name;
+                    grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    document.getElementById('err-3').textContent = '';
+                }
+            });
         });
     });
 }
@@ -888,16 +1342,27 @@ function renderStep4() {
     grid.innerHTML = ANCESTRIES.map(a => {
         const sel  = state.ancestry === a.name ? ' selected' : '';
         return `<div class="pick-card${sel}" data-ancestry="${escHtml(a.name)}">
+            ${homebrewTag(a)}
             <div class="pick-name">${escHtml(a.name)}</div>
             <div class="pick-desc">${preview(a.lore, 90)}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-ancestry]').forEach(card => {
         card.addEventListener('click', () => {
-            state.ancestry = card.dataset.ancestry;
-            grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            document.getElementById('err-4').textContent = '';
+            const name = card.dataset.ancestry;
+            const a = ANCESTRIES.find(x => x.name === name) || { name };
+            openInfoModal({
+                tag: 'Ancestry',
+                title: escHtml(name),
+                body: ancestryModalBody(a),
+                confirmLabel: 'Choose This Ancestry',
+                onConfirm: () => {
+                    state.ancestry = name;
+                    grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    document.getElementById('err-4').textContent = '';
+                }
+            });
         });
     });
 }
@@ -907,55 +1372,60 @@ function renderStep5() {
     grid.innerHTML = COMMUNITIES.map(c => {
         const sel  = state.community === c.name ? ' selected' : '';
         return `<div class="pick-card${sel}" data-community="${escHtml(c.name)}">
+            ${homebrewTag(c)}
             <div class="pick-name">${escHtml(c.name)}</div>
             <div class="pick-desc">${preview(c.lore, 90)}</div>
         </div>`;
     }).join('');
     grid.querySelectorAll('[data-community]').forEach(card => {
         card.addEventListener('click', () => {
-            state.community = card.dataset.community;
-            grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            document.getElementById('err-5').textContent = '';
+            const name = card.dataset.community;
+            const c = COMMUNITIES.find(x => x.name === name) || { name };
+            openInfoModal({
+                tag: 'Community',
+                title: escHtml(name),
+                body: communityModalBody(c),
+                confirmLabel: 'Choose This Community',
+                onConfirm: () => {
+                    state.community = name;
+                    grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    document.getElementById('err-5').textContent = '';
+                }
+            });
         });
     });
 }
 
 function renderStep6() {
-    const pool = document.getElementById('trait-pool');
-    pool.innerHTML = TRAIT_POOL.map((val, i) => {
-        const used = Object.values(traitAssigned).includes(i);
-        const cls  = used ? ' used' : (selectedChip === i ? ' selected' : '');
-        return `<div class="trait-chip${cls}" data-chip="${i}">${val}</div>`;
-    }).join('');
-    pool.querySelectorAll('[data-chip]').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const i = parseInt(chip.dataset.chip);
-            if (Object.values(traitAssigned).includes(i)) return;
-            selectedChip = selectedChip === i ? null : i;
-            renderStep6();
-        });
-    });
+    const usedIndices = new Set(Object.values(traitAssigned));
     const rows = document.getElementById('trait-rows');
     rows.innerHTML = TRAIT_NAMES.map(t => {
-        const val = state.traits[t];
-        return `<div class="trait-row${val !== null ? ' assigned' : ''}" data-trait="${t}">
+        const assignedIdx = traitAssigned[t];
+        const availableOpts = TRAIT_POOL.map((val, i) => {
+            if (i === assignedIdx || !usedIndices.has(i)) return { val, i };
+            return null;
+        }).filter(Boolean);
+        const options = [
+            `<option value="">—</option>`,
+            ...availableOpts.map(({ val, i }) =>
+                `<option value="${i}"${assignedIdx === i ? ' selected' : ''}>${val}</option>`)
+        ].join('');
+        return `<div class="trait-row${assignedIdx !== undefined ? ' assigned' : ''}" data-trait="${t}">
             <span class="trait-row-name">${t}</span>
-            <span class="trait-row-val">${val !== null ? val : '—'}</span>
+            <select data-trait-sel="${t}">${options}</select>
         </div>`;
     }).join('');
-    rows.querySelectorAll('[data-trait]').forEach(row => {
-        row.addEventListener('click', () => {
-            const t = row.dataset.trait;
-            if (selectedChip !== null) {
-                if (traitAssigned[t] !== undefined) delete traitAssigned[t];
-                Object.keys(traitAssigned).forEach(k => { if (traitAssigned[k] === selectedChip) delete traitAssigned[k]; });
-                traitAssigned[t] = selectedChip;
-                state.traits[t]  = TRAIT_POOL[selectedChip];
-                selectedChip = null;
-            } else if (traitAssigned[t] !== undefined) {
+    rows.querySelectorAll('[data-trait-sel]').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const t = sel.dataset.traitSel;
+            if (sel.value === '') {
                 delete traitAssigned[t];
                 state.traits[t] = null;
+            } else {
+                const idx = parseInt(sel.value);
+                traitAssigned[t] = idx;
+                state.traits[t] = TRAIT_POOL[idx];
             }
             document.getElementById('err-6').textContent = '';
             renderStep6();
@@ -983,6 +1453,7 @@ function renderStep7() {
                 ${cards.map(card => {
                     const sel = state.domainCards.includes(card.name) ? ' selected' : '';
                     return `<div class="pick-card${sel}" data-card="${card.name.replace(/"/g,'&quot;')}">
+                        ${homebrewTag(card)}
                         <div class="pick-name">${displayName(card.name)}</div>
                         <div class="pick-tag">${escHtml(card.type || 'Ability')}${card.recallCost > 0 ? ' · Recall ' + card.recallCost : ''}</div>
                         <div class="pick-desc">${preview(card.description, 120)}</div>
@@ -996,16 +1467,29 @@ function renderStep7() {
 
     panels.querySelectorAll('.pick-card[data-card]').forEach(card => {
         card.addEventListener('click', () => {
-            const name = card.dataset.card;
-            if (state.domainCards.includes(name)) {
-                state.domainCards = state.domainCards.filter(n => n !== name);
-                card.classList.remove('selected');
-            } else if (state.domainCards.length < 2) {
-                state.domainCards = [...state.domainCards, name];
-                card.classList.add('selected');
-            }
-            updateCounter();
-            document.getElementById('err-7').textContent = '';
+            const name    = card.dataset.card;
+            const cardObj = ALL_DOMAIN_CARDS.find(c => c.name === name);
+            const isSelected = state.domainCards.includes(name);
+            const deckFull   = state.domainCards.length >= 2 && !isSelected;
+            const domainLabel = cardObj ? (cardObj.domain || '').replace(/\b\w/g, c => c.toUpperCase()) + ` Domain · Level ${cardObj.level ?? 1}` : 'Domain Card';
+            openInfoModal({
+                tag: domainLabel,
+                title: displayName(name),
+                body: domainCardModalBody(cardObj || {}),
+                confirmLabel: isSelected ? 'Remove from Deck' : (deckFull ? 'Deck Full (2/2)' : 'Add to Deck'),
+                confirmDisabled: deckFull,
+                onConfirm: () => {
+                    if (state.domainCards.includes(name)) {
+                        state.domainCards = state.domainCards.filter(n => n !== name);
+                        card.classList.remove('selected');
+                    } else if (state.domainCards.length < 2) {
+                        state.domainCards = [...state.domainCards, name];
+                        card.classList.add('selected');
+                    }
+                    updateCounter();
+                    document.getElementById('err-7').textContent = '';
+                }
+            });
         });
     });
 }
@@ -1034,6 +1518,7 @@ function renderWeaponGrid(gridId, items) {
         const tag = `${item.trait} · ${item.range} · ${item.damage}`;
         const burden = item.burden || '';
         return `<div class="pick-card${sel}" data-id="${item.id}" data-key="weapon">
+            ${homebrewTag(item)}
             <div class="pick-name">${item.name}</div>
             <div class="pick-tag">${tag}</div>
             ${burden ? `<div class="pick-tag" style="font-style:italic;opacity:0.7">${burden}</div>` : ''}
@@ -1044,14 +1529,19 @@ function renderWeaponGrid(gridId, items) {
         card.addEventListener('click', () => {
             const id   = card.dataset.id;
             const item = items.find(i => i.id === id);
-            if (state.weapon?.id === id) {
-                state.weapon = null;
-            } else {
-                state.weapon = item;
-            }
-            // re-render both physical and magic grids to sync selected state
-            renderStep9();
-            document.getElementById('err-9').textContent = '';
+            const isSelected = state.weapon?.id === id;
+            openInfoModal({
+                tag: item.weaponType === 'magic' ? 'Magic Weapon' : 'Physical Weapon',
+                title: item.name,
+                sub: `${item.trait} · ${item.range} · ${item.damage}${item.burden ? ' · ' + item.burden : ''}`,
+                body: weaponModalBody(item),
+                confirmLabel: isSelected ? 'Unequip' : 'Equip This Weapon',
+                onConfirm: () => {
+                    state.weapon = state.weapon?.id === id ? null : item;
+                    renderStep9();
+                    document.getElementById('err-9').textContent = '';
+                }
+            });
         });
     });
 }
@@ -1080,6 +1570,7 @@ function renderEquipGrid(gridId, items, stateKey, tagFn, featureFn) {
         const sel     = state[stateKey]?.id === item.id ? ' selected' : '';
         const feature = featureFn ? featureFn(item) : (item.feature || null);
         return `<div class="pick-card${sel}" data-id="${item.id}" data-key="${stateKey}">
+            ${homebrewTag(item)}
             <div class="pick-name">${item.name}</div>
             <div class="pick-tag">${tagFn(item)}</div>
             ${feature ? `<div class="pick-feature">${feature}</div>` : ''}
@@ -1090,15 +1581,27 @@ function renderEquipGrid(gridId, items, stateKey, tagFn, featureFn) {
             const key  = card.dataset.key;
             const id   = card.dataset.id;
             const item = items.find(i => i.id === id);
-            if (state[key]?.id === id) {
-                state[key] = null;
-                card.classList.remove('selected');
-            } else {
-                state[key] = item;
-                grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-            }
-            if (key === 'weapon') document.getElementById('err-9').textContent = '';
+            const isSelected = state[key]?.id === id;
+            const isArmor    = key === 'armor';
+            openInfoModal({
+                tag: isArmor ? 'Armor' : 'Secondary Weapon',
+                title: item.name,
+                sub: tagFn(item),
+                body: isArmor ? armorModalBody(item) : weaponModalBody(item),
+                confirmLabel: isSelected ? 'Unequip' : (isArmor ? 'Equip This Armor' : 'Equip as Secondary'),
+                onConfirm: () => {
+                    if (state[key]?.id === id) {
+                        state[key] = null;
+                        card.classList.remove('selected');
+                    } else {
+                        state[key] = item;
+                        grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                    }
+                    if (key === 'weapon') document.getElementById('err-9').textContent = '';
+                    updateSecondaryAvailability();
+                }
+            });
         });
     });
 }
@@ -1137,13 +1640,15 @@ function renderStep11() {
         container.innerHTML = '<p style="color:var(--ink-dim);font-style:italic;">No background questions found for this class.</p>';
         return;
     }
-    container.innerHTML = qs.map((q, i) => `
-        <div class="bg-question">
-            <div class="bg-question-text">${i + 1}. ${escHtml(q)}</div>
+    container.innerHTML = qs.map((q, i) => {
+        const qText = state.backgroundQuestions[i] || q;
+        return `<div class="bg-question">
+            <input type="text" class="bg-question-input" id="bg-qt-${i}" value="${escHtml(qText)}" placeholder="Background question…">
             <div class="field-group wide">
                 <textarea id="bg-q-${i}" placeholder="Your answer…">${escHtml(state.backgroundAnswers[i] || '')}</textarea>
             </div>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 }
 
 function renderStep12() {
@@ -1154,61 +1659,132 @@ function renderStep12() {
         container.innerHTML = '<p style="color:var(--ink-dim);font-style:italic;">No connection prompts found for this class.</p>';
         return;
     }
-    container.innerHTML = qs.map((q, i) => `
-        <div class="bg-question">
-            <div class="bg-question-text">${i + 1}. ${escHtml(q)}</div>
+    container.innerHTML = qs.map((q, i) => {
+        const qText = state.connectionQuestions[i] || q;
+        return `<div class="bg-question">
+            <input type="text" class="bg-question-input" id="con-qt-${i}" value="${escHtml(qText)}" placeholder="Connection prompt…">
             <div class="field-group wide">
                 <textarea id="con-q-${i}" placeholder="Your answer…">${escHtml(state.connectionAnswers[i] || '')}</textarea>
             </div>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 }
 
 function renderReview() {
-    const cls     = CLASSES.find(c => c.id === state.classId);
-    const block   = document.getElementById('review-block');
-    const potion  = state.potionChoice === 'health' ? 'Minor Health Potion' : 'Minor Stamina Potion';
+    const cls      = CLASSES.find(c => c.id === state.classId);
+    const block    = document.getElementById('review-block');
+    const potion   = state.potionChoice === 'health' ? 'Minor Health Potion' : 'Minor Stamina Potion';
     const invItems = [...DEFAULT_INV, potion, ...(state.classInventory ? [state.classInventory] : []), ...(state.extraInventory ? [state.extraInventory] : [])];
+    const bgQs     = cls?.backgroundQuestions || [];
+    const conQs    = cls?.connections || [];
+
+    const traitGrid = TRAIT_NAMES.map(t => `
+        <div class="rv-stat-cell">
+            <div class="rv-stat-abbr">${t.slice(0,3)}</div>
+            <div class="rv-stat-val">${state.traits[t]??'—'}</div>
+        </div>`).join('');
+
+    const cardPills = state.domainCards.length
+        ? state.domainCards.map(n => `<span class="rv-card-pill">${escHtml(n)}</span>`).join('')
+        : '<span class="rv-qa-empty">—</span>';
+
+    const expItems = [state.exp1, state.exp2].filter(Boolean);
+    const expList  = expItems.length
+        ? expItems.map(e => `<li>${escHtml(e)}</li>`).join('')
+        : '<li><span class="rv-qa-empty">—</span></li>';
+
+    const invPills = invItems.map(it => `<span class="rv-inv-pill">${escHtml(it)}</span>`).join('');
+
+    const bgSection = bgQs.length ? `
+        <hr class="rv-divider-gold">
+        <div class="rv-section-label">Background</div>
+        ${bgQs.map((q, i) => {
+            const qText = state.backgroundQuestions[i] || q;
+            const aText = state.backgroundAnswers[i] || '';
+            return `<div class="rv-qa-item">
+                <div class="rv-qa-q">${escHtml(qText)}</div>
+                <div class="rv-qa-a">${aText ? escHtml(aText) : '<span class="rv-qa-empty">—</span>'}</div>
+            </div>`;
+        }).join('')}` : '';
+
+    const conSection = conQs.length ? `
+        <hr class="rv-divider-gold">
+        <div class="rv-section-label">Connections</div>
+        ${conQs.map((q, i) => {
+            const qText = state.connectionQuestions[i] || q;
+            const aText = state.connectionAnswers[i] || '';
+            return `<div class="rv-qa-item">
+                <div class="rv-qa-q">${escHtml(qText)}</div>
+                <div class="rv-qa-a">${aText ? escHtml(aText) : '<span class="rv-qa-empty">—</span>'}</div>
+            </div>`;
+        }).join('')}` : '';
 
     block.innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;">
-            <div>
-                <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">Character</div>
-                <div style="font-size:1.3em;font-family:'Cinzel',serif;font-weight:700;color:var(--ink);margin-bottom:2px;">${escHtml(state.name)}</div>
-                ${state.pronouns ? `<div style="font-size:0.85em;color:var(--ink-dim);font-style:italic;margin-bottom:6px;">${escHtml(state.pronouns)}</div>` : ''}
-                <div style="font-size:0.85em;color:var(--gold-mid);font-family:'Cinzel',serif;margin-bottom:6px;">${[cls?.name, state.subclassName].filter(Boolean).map(escHtml).join(' · ')}</div>
-                <div style="font-size:0.85em;color:var(--ink-muted);">Ancestry: <strong>${escHtml(state.ancestry||'—')}</strong> · Community: <strong>${escHtml(state.community||'—')}</strong></div>
-                ${state.concept ? `<div style="font-size:0.88em;color:var(--ink-muted);font-style:italic;margin-top:6px;">"${escHtml(state.concept)}"</div>` : ''}
+        <div class="rv-header">
+            <div class="rv-eyebrow">Character</div>
+            <div class="rv-name">${escHtml(state.name || '—')}</div>
+            ${state.pronouns ? `<div class="rv-pronouns">${escHtml(state.pronouns)}</div>` : ''}
+            <div class="rv-class-line">${[cls?.name, state.subclassName].filter(Boolean).map(escHtml).join(' · ') || '—'}</div>
+            <div class="rv-identity-line">
+                Ancestry: <strong>${escHtml(state.ancestry||'—')}</strong>
+                &nbsp;·&nbsp;
+                Community: <strong>${escHtml(state.community||'—')}</strong>
             </div>
-            <div>
-                <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px;">Stats</div>
-                <div style="font-size:0.88em;color:var(--ink-muted);line-height:1.9;">
-                    HP: <strong>${cls?.startingHp??'—'}</strong> · Evasion: <strong>${cls?.startingEvasion??'—'}</strong><br>
-                    Weapon: <strong>${state.weapon?.name||'—'}</strong> · Armor: <strong>${state.armor?.name||'—'}</strong><br>
-                    ${state.secondary ? `Secondary: <strong>${state.secondary.name}</strong><br>` : ''}
-                    Gold: <strong>${state.gold||0}</strong>
-                </div>
+            ${state.concept ? `<div class="rv-concept">${escHtml(state.concept)}</div>` : ''}
+        </div>
+
+        <hr class="rv-divider">
+
+        <div class="rv-section-label">Vitals</div>
+        <div class="rv-vitals">
+            <div class="rv-badge">
+                <div class="rv-badge-val">${cls?.startingHp??'—'}</div>
+                <div class="rv-badge-label">HP</div>
+            </div>
+            <div class="rv-badge">
+                <div class="rv-badge-val">${cls?.startingEvasion??'—'}</div>
+                <div class="rv-badge-label">Evasion</div>
+            </div>
+            <div class="rv-badge">
+                <div class="rv-badge-val">${state.gold||0}</div>
+                <div class="rv-badge-label">Gold</div>
             </div>
         </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;">
-            ${TRAIT_NAMES.map(t => `
-                <div style="text-align:center;background:rgba(248,242,228,0.6);border:1px solid var(--border);padding:10px 6px;">
-                    <div style="font-family:'Cinzel',serif;font-size:0.58em;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;">${t.slice(0,3)}</div>
-                    <div style="font-family:'Cinzel',serif;font-size:1.1em;font-weight:700;color:var(--ink);">${state.traits[t]??'—'}</div>
-                </div>`).join('')}
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+
+        <div class="rv-section-label">Traits</div>
+        <div class="rv-stat-grid">${traitGrid}</div>
+
+        <hr class="rv-divider">
+
+        <div class="rv-two-col">
             <div>
-                <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">Domain Cards</div>
-                <div style="font-size:0.88em;color:var(--ink-muted);">${state.domainCards.map(escHtml).join('<br>') || '—'}</div>
+                <div class="rv-section-label">Domain Cards</div>
+                <div class="rv-card-pills">${cardPills}</div>
             </div>
             <div>
-                <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">Experiences (+2)</div>
-                <div style="font-size:0.88em;color:var(--ink-muted);">${[state.exp1,state.exp2].filter(Boolean).map(escHtml).join('<br>') || '—'}</div>
+                <div class="rv-section-label">Experiences (+2)</div>
+                <ul class="rv-exp-list">${expList}</ul>
             </div>
         </div>
-        <div style="font-family:'Cinzel',serif;font-size:0.65em;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;">Inventory</div>
-        <div style="font-size:0.88em;color:var(--ink-muted);">${invItems.join(' · ')}</div>
+
+        <hr class="rv-divider">
+
+        <div class="rv-section-label">Equipment</div>
+        <div class="rv-eq-grid">
+            <div class="rv-eq-item">Weapon: <strong>${escHtml(state.weapon?.name||'—')}</strong></div>
+            <div class="rv-eq-item">Armor: <strong>${escHtml(state.armor?.name||'—')}</strong></div>
+            ${state.secondary ? `<div class="rv-eq-item">Secondary: <strong>${escHtml(state.secondary.name)}</strong></div>` : ''}
+        </div>
+
+        <div class="rv-section-label" style="margin-top:14px;">Inventory</div>
+        <div class="rv-inv-pills">${invPills}</div>
+
+        ${bgSection}
+        ${conSection}
+
+        <div class="rv-save-callout">
+            <p>Your character is ready.</p>
+        </div>
     `;
 }
 
